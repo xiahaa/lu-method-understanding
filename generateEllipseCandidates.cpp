@@ -121,8 +121,8 @@ typedef struct
 
 typedef struct image_double_s
 {
-  double * data;
-  int xsize,ysize;
+    double * data;
+    int xsize,ysize;
 } * image_double;
 
 
@@ -494,23 +494,23 @@ image_double new_image_double(int xsize, int ysize)
 image_double new_image_double_ptr( int xsize,
                                           int ysize, double * data )
 {
-  image_double image;
+    image_double image;
 
-  /* check parameters */
-  if( xsize == 0 || ysize == 0 )
-    error("new_image_double_ptr: invalid image size.");
-  if( data == NULL ) error("new_image_double_ptr: NULL data pointer.");
+    /* check parameters */
+    if( xsize == 0 || ysize == 0 )
+        error("new_image_double_ptr: invalid image size.");
+    if( data == NULL ) error("new_image_double_ptr: NULL data pointer.");
 
-  /* get memory */
-  image = (image_double) malloc( sizeof(struct image_double_s) );
-  if( image == NULL ) error("not enough memory.");
+    /* get memory */
+    image = (image_double) malloc( sizeof(struct image_double_s) );
+    if( image == NULL ) error("not enough memory.");
 
-  /* set image */
-  image->xsize = xsize;
-  image->ysize = ysize;
-  image->data = data;
+    /* set image */
+    image->xsize = xsize;
+    image->ysize = ysize;
+    image->data = data;
 
-  return image;
+    return image;
 }
 
 //=================================================================================================================
@@ -563,25 +563,25 @@ static void free_ntuple_list(ntuple_list in)
  */
 static ntuple_list new_ntuple_list(int dim)
 {
-  ntuple_list n_tuple;
+    ntuple_list n_tuple;
 
-  /* check parameters */
-  if( dim == 0 ) error("new_ntuple_list: 'dim' must be positive.");
+    /* check parameters */
+    if( dim == 0 ) error("new_ntuple_list: 'dim' must be positive.");
 
-  /* get memory for list structure */
-  n_tuple = (ntuple_list) malloc( sizeof(struct ntuple_list_s) );
-  if( n_tuple == NULL ) error("not enough memory.");
+    /* get memory for list structure */
+    n_tuple = (ntuple_list) malloc( sizeof(struct ntuple_list_s) );
+    if( n_tuple == NULL ) error("not enough memory.");
 
-  /* initialize list */
-  n_tuple->size = 0;
-  n_tuple->max_size = 1;
-  n_tuple->dim = dim;
+    /* initialize list */
+    n_tuple->size = 0;
+    n_tuple->max_size = 1;
+    n_tuple->dim = dim;
 
-  /* get memory for tuples */
-  n_tuple->values = (double *) malloc( dim*n_tuple->max_size * sizeof(double) );
-  if( n_tuple->values == NULL ) error("not enough memory.");
+    /* get memory for tuples */
+    n_tuple->values = (double *) malloc( dim*n_tuple->max_size * sizeof(double) );
+    if( n_tuple->values == NULL ) error("not enough memory.");
 
-  return n_tuple;
+    return n_tuple;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -603,57 +603,31 @@ static void enlarge_ntuple_list(ntuple_list n_tuple)
 }
 
 /*----------------------------------------------------------------------------*/
-/** Add a 7-tuple to an n-tuple list.
- */
-static void add_7tuple( ntuple_list out, double v1, double v2, double v3,
-                        double v4, double v5, double v6, double v7 )
-{
-  /* check parameters */
-  if( out == NULL ) error("add_7tuple: invalid n-tuple input.");
-  if( out->dim != 7 ) error("add_7tuple: the n-tuple must be a 7-tuple.");
-
-  /* if needed, alloc more tuples to 'out' */
-  if( out->size == out->max_size ) enlarge_ntuple_list(out);
-  if( out->values == NULL ) error("add_7tuple: invalid n-tuple input.");
-
-  /* add new 7-tuple */
-  out->values[ out->size * out->dim + 0 ] = v1;
-  out->values[ out->size * out->dim + 1 ] = v2;
-  out->values[ out->size * out->dim + 2 ] = v3;
-  out->values[ out->size * out->dim + 3 ] = v4;
-  out->values[ out->size * out->dim + 4 ] = v5;
-  out->values[ out->size * out->dim + 5 ] = v6;
-  out->values[ out->size * out->dim + 6 ] = v7;
-
-  /* update number of tuples counter */
-  out->size++;
-}
-/*----------------------------------------------------------------------------*/
 /** Add a 8-tuple to an n-tuple list.
  */
 static void add_8tuple( ntuple_list out, double v1, double v2, double v3,
                         double v4, double v5, double v6, double v7, int v8)
 {
-  /* check parameters */
-  if( out == NULL ) error("add_8tuple: invalid n-tuple input.");
-  if( out->dim != 8 ) error("add_8tuple: the n-tuple must be a 8-tuple.");
+    /* check parameters */
+    if( out == NULL ) error("add_8tuple: invalid n-tuple input.");
+    if( out->dim != 8 ) error("add_8tuple: the n-tuple must be a 8-tuple.");
 
-  /* if needed, alloc more tuples to 'out' */
-  if( out->size == out->max_size ) enlarge_ntuple_list(out);
-  if( out->values == NULL ) error("add_8tuple: invalid n-tuple input.");
+    /* if needed, alloc more tuples to 'out' */
+    if( out->size == out->max_size ) enlarge_ntuple_list(out);
+    if( out->values == NULL ) error("add_8tuple: invalid n-tuple input.");
 
-  /* add new 8-tuple */
-  out->values[ out->size * out->dim + 0 ] = v1;
-  out->values[ out->size * out->dim + 1 ] = v2;
-  out->values[ out->size * out->dim + 2 ] = v3;
-  out->values[ out->size * out->dim + 3 ] = v4;
-  out->values[ out->size * out->dim + 4 ] = v5;
-  out->values[ out->size * out->dim + 5 ] = v6;
-  out->values[ out->size * out->dim + 6 ] = v7;
-  out->values[ out->size * out->dim + 7 ] = v8;
+    /* add new 8-tuple */
+    out->values[ out->size * out->dim + 0 ] = v1;
+    out->values[ out->size * out->dim + 1 ] = v2;
+    out->values[ out->size * out->dim + 2 ] = v3;
+    out->values[ out->size * out->dim + 3 ] = v4;
+    out->values[ out->size * out->dim + 4 ] = v5;
+    out->values[ out->size * out->dim + 5 ] = v6;
+    out->values[ out->size * out->dim + 6 ] = v7;
+    out->values[ out->size * out->dim + 7 ] = v8;
 
-  /* update number of tuples counter */
-  out->size++;
+    /* update number of tuples counter */
+    out->size++;
 }
 /** char image data type
 
@@ -852,49 +826,49 @@ static void gaussian_kernel(ntuple_list kernel, double sigma, double mean)
 static image_double gaussian_sampler( image_double in, double scale,
                                       double sigma_scale )
 {
-  image_double aux,out;
-  ntuple_list kernel;
-  int N,M,h,n,x,y,i;
-  int xc,yc,j,double_x_size,double_y_size;
-  double sigma,xx,yy,sum,prec;
+    image_double aux,out;
+    ntuple_list kernel;
+    int N,M,h,n,x,y,i;
+    int xc,yc,j,double_x_size,double_y_size;
+    double sigma,xx,yy,sum,prec;
 
-  /* check parameters */
-  if( in == NULL || in->data == NULL || in->xsize == 0 || in->ysize == 0 )
+    /* check parameters */
+    if( in == NULL || in->data == NULL || in->xsize == 0 || in->ysize == 0 )
     error("gaussian_sampler: invalid image.");
-  if( scale <= 0.0 ) error("gaussian_sampler: 'scale' must be positive.");
-  if( sigma_scale <= 0.0 )
+    if( scale <= 0.0 ) error("gaussian_sampler: 'scale' must be positive.");
+    if( sigma_scale <= 0.0 )
     error("gaussian_sampler: 'sigma_scale' must be positive.");
 
-  /* compute new image size and get memory for images */
-  if( in->xsize * scale > (double) UINT_MAX ||
+    /* compute new image size and get memory for images */
+    if( in->xsize * scale > (double) UINT_MAX ||
       in->ysize * scale > (double) UINT_MAX )
     error("gaussian_sampler: the output image size exceeds the handled size.");
-  N = (unsigned int) ceil( in->xsize * scale );//上取整
-  M = (unsigned int) ceil( in->ysize * scale );
-  aux = new_image_double(N,in->ysize);
-  out = new_image_double(N,M);
+    N = (unsigned int) ceil( in->xsize * scale );//上取整
+    M = (unsigned int) ceil( in->ysize * scale );
+    aux = new_image_double(N,in->ysize);
+    out = new_image_double(N,M);
 
-  /* sigma, kernel size and memory for the kernel */
-  sigma = scale < 1.0 ? sigma_scale / scale : sigma_scale;
-  /*
+    /* sigma, kernel size and memory for the kernel */
+    sigma = scale < 1.0 ? sigma_scale / scale : sigma_scale;
+    /*
      The size of the kernel is selected to guarantee that the
      the first discarded term is at least 10^prec times smaller
      than the central value. For that, h should be larger than x, with
        e^(-x^2/2sigma^2) = 1/10^prec.
      Then,
        x = sigma * sqrt( 2 * prec * ln(10) ).
-   */
-  prec = 3.0;//高斯核的最外围降到10^(-3)
-  h = (unsigned int) ceil( sigma * sqrt( 2.0 * prec * log(10.0) ) );
-  n = 1+2*h; /* kernel size */
-  kernel = new_ntuple_list(n);
+    */
+    prec = 3.0;//高斯核的最外围降到10^(-3)
+    h = (unsigned int) ceil( sigma * sqrt( 2.0 * prec * log(10.0) ) );
+    n = 1+2*h; /* kernel size */
+    kernel = new_ntuple_list(n);
 
-  /* auxiliary double image size variables */
-  double_x_size = (int) (2 * in->xsize);
-  double_y_size = (int) (2 * in->ysize);
+    /* auxiliary double image size variables */
+    double_x_size = (int) (2 * in->xsize);
+    double_y_size = (int) (2 * in->ysize);
 
-  /* First subsampling: x axis */
-  for(x=0;x<aux->xsize;x++)
+    /* First subsampling: x axis */
+    for(x=0;x<aux->xsize;x++)
     {
       /*
          x   is the coordinate in the new image.
@@ -927,8 +901,8 @@ static image_double gaussian_sampler( image_double in, double scale,
         }
     }
 
-  /* Second subsampling: y axis */
-  for(y=0;y<out->ysize;y++)
+    /* Second subsampling: y axis */
+    for(y=0;y<out->ysize;y++)
     {
       /*
          y   is the coordinate in the new image.
@@ -961,11 +935,11 @@ static image_double gaussian_sampler( image_double in, double scale,
         }
     }
 
-  /* free memory */
-  free_ntuple_list(kernel);
-  free_image_double(aux);
+    /* free memory */
+    free_ntuple_list(kernel);
+    free_image_double(aux);
 
-  return out;
+    return out;
 }
 
 
@@ -996,57 +970,57 @@ static image_double ll_angle( image_double in, double threshold,
                               struct coorlist ** list_p,
                               image_double * modgrad, unsigned int n_bins )
 {
-  image_double g;
-  unsigned int n,p,x,y,adr,i;
-  double com1,com2,gx,gy,norm,norm2;
-  /* the rest of the variables are used for pseudo-ordering
+    image_double g;
+    unsigned int n,p,x,y,adr,i;
+    double com1,com2,gx,gy,norm,norm2;
+    /* the rest of the variables are used for pseudo-ordering
      the gradient magnitude values */
-  int list_count = 0;
-  //struct coorlist * list;
-  struct coorlist *temp;
-  struct coorlist ** range_l_s; /* array of point2iers to start of bin list,表示1024个bin的头指针的指针数组 */
-  struct coorlist ** range_l_e; /* array of point2iers to end of bin list，表示1024个bin的尾指针的指针数组*/
-  struct coorlist * start;
-  struct coorlist * end;
-  double max_grad = 0.0;
+    int list_count = 0;
+    //struct coorlist * list;
+    struct coorlist *temp;
+    struct coorlist ** range_l_s; /* array of point2iers to start of bin list,表示1024个bin的头指针的指针数组 */
+    struct coorlist ** range_l_e; /* array of point2iers to end of bin list，表示1024个bin的尾指针的指针数组*/
+    struct coorlist * start;
+    struct coorlist * end;
+    double max_grad = 0.0;
 
-  /* check parameters */
-  if( in == NULL || in->data == NULL || in->xsize == 0 || in->ysize == 0 )
+    /* check parameters */
+    if( in == NULL || in->data == NULL || in->xsize == 0 || in->ysize == 0 )
     error("ll_angle: invalid image.");
-  if( threshold < 0.0 ) error("ll_angle: 'threshold' must be positive.");
-  if( list_p == NULL ) error("ll_angle: NULL point2ier 'list_p'.");
- // if( mem_p == NULL ) error("ll_angle: NULL point2ier 'mem_p'.");
-  if( modgrad == NULL ) error("ll_angle: NULL point2ier 'modgrad'.");
-  if( n_bins == 0 ) error("ll_angle: 'n_bins' must be positive.");
+    if( threshold < 0.0 ) error("ll_angle: 'threshold' must be positive.");
+    if( list_p == NULL ) error("ll_angle: NULL point2ier 'list_p'.");
+    // if( mem_p == NULL ) error("ll_angle: NULL point2ier 'mem_p'.");
+    if( modgrad == NULL ) error("ll_angle: NULL point2ier 'modgrad'.");
+    if( n_bins == 0 ) error("ll_angle: 'n_bins' must be positive.");
 
-  /* image size shortcuts */
-  n = in->ysize;
-  p = in->xsize;
+    /* image size shortcuts */
+    n = in->ysize;
+    p = in->xsize;
 
-  /* allocate output image */
-  g = new_image_double(in->xsize,in->ysize);
+    /* allocate output image */
+    g = new_image_double(in->xsize,in->ysize);
 
-  /* get memory for the image of gradient modulus */
-  *modgrad = new_image_double(in->xsize,in->ysize);
+    /* get memory for the image of gradient modulus */
+    *modgrad = new_image_double(in->xsize,in->ysize);
 
-  /* get memory for "ordered" list of pixels */
-  //list = (struct coorlist *) calloc( (size_t) (n*p), sizeof(struct coorlist) );
-  //*mem_p = (void *) list;
-  range_l_s = (struct coorlist **) calloc( (size_t) n_bins,
+    /* get memory for "ordered" list of pixels */
+    //list = (struct coorlist *) calloc( (size_t) (n*p), sizeof(struct coorlist) );
+    //*mem_p = (void *) list;
+    range_l_s = (struct coorlist **) calloc( (size_t) n_bins,
                                            sizeof(struct coorlist *) );
-  range_l_e = (struct coorlist **) calloc( (size_t) n_bins,
+    range_l_e = (struct coorlist **) calloc( (size_t) n_bins,
                                            sizeof(struct coorlist *) );
- // if( list == NULL || range_l_s == NULL || range_l_e == NULL )
-  if( range_l_s == NULL || range_l_e == NULL )
+    // if( list == NULL || range_l_s == NULL || range_l_e == NULL )
+    if( range_l_s == NULL || range_l_e == NULL )
     error("not enough memory.");
-  for(i=0;i<n_bins;i++) range_l_s[i] = range_l_e[i] = NULL;
+    for(i=0;i<n_bins;i++) range_l_s[i] = range_l_e[i] = NULL;
 
-  /* 'undefined' on the down and right boundaries */
-  for(x=0;x<p;x++) g->data[(n-1)*p+x] = NOTDEF;// p = in->xsize
-  for(y=0;y<n;y++) g->data[p*y+p-1]   = NOTDEF;// n = in->ysize;
+    /* 'undefined' on the down and right boundaries */
+    for(x=0;x<p;x++) g->data[(n-1)*p+x] = NOTDEF;// p = in->xsize
+    for(y=0;y<n;y++) g->data[p*y+p-1]   = NOTDEF;// n = in->ysize;
 
-  /* compute gradient on the remaining pixels */
-  for(x=0;x<p-1;x++)
+    /* compute gradient on the remaining pixels */
+    for(x=0;x<p-1;x++)
     for(y=0;y<n-1;y++)
       {
         adr = y*p+x;
@@ -1084,8 +1058,8 @@ static image_double ll_angle( image_double in, double threshold,
           }
       }
 
-  /* compute histogram of gradient values */
-  for(x=0;x<p-1;x++)
+    /* compute histogram of gradient values */
+    for(x=0;x<p-1;x++)
     for(y=0;y<n-1;y++)
       {
     temp = new coorlist();
@@ -1110,15 +1084,15 @@ static image_double ll_angle( image_double in, double threshold,
         range_l_e[i]->next = NULL;
       }
 
-  /* Make the list of pixels (almost) ordered by norm value.
+    /* Make the list of pixels (almost) ordered by norm value.
      It starts by the larger bin, so the list starts by the
      pixels with the highest gradient value. Pixels would be ordered
      by norm value, up to a precision given by max_grad/n_bins.
-   */
-  for(i=n_bins-1; i>0 && range_l_s[i]==NULL; i--);//找到第一个不为空的分区bin
-  start = range_l_s[i];
-  end = range_l_e[i];
-  if( start != NULL )
+    */
+    for(i=n_bins-1; i>0 && range_l_s[i]==NULL; i--);//找到第一个不为空的分区bin
+    start = range_l_s[i];
+    end = range_l_e[i];
+    if( start != NULL )
     while(i>0)
       {
         --i;
@@ -1128,13 +1102,13 @@ static image_double ll_angle( image_double in, double threshold,
             end = range_l_e[i];
           }
       }
-  *list_p = start;
- // *mem_p  = start;
-  /* free memory */
-  free( (void *) range_l_s );
-  free( (void *) range_l_e );
+    *list_p = start;
+    // *mem_p  = start;
+    /* free memory */
+    free( (void *) range_l_s );
+    free( (void *) range_l_e );
 
-  return g;
+    return g;
 }
 /*----------------------------------------------------------------------------*/
 /** Is point2i (x,y) aligned to angle theta, up to precision 'prec'?
@@ -2171,65 +2145,63 @@ double * LineSegmentDetection( int * n_out,
                                int n_bins,
                                int ** reg_img, int * reg_x, int * reg_y )
 {
-  image_double image;
-  ntuple_list out = new_ntuple_list(8);
-  double * return_value;
-  image_double scaled_image,angles,modgrad;
-  image_char used;
-  image_char pol;  //对于构成圆弧的像素标记极性，如果梯度的方向和弧的方向指向一致，则为SAME_POLE,否则为OPP_POLE,该标记初始是为0
-  image_int region = NULL;
-  struct coorlist * list_p;
-  struct coorlist * list_p_temp;
-//  struct coorlist * mem_p;
-  struct rect main_rect;//main rect
-  struct rect rect_up,rect_down;//divide the rect into 2 rects:rect_up and rect_down
-  struct point2i * reg;
-  int reg_size,min_reg_size,i;
-  unsigned int xsize,ysize;
-  double rho,reg_angle,prec,p;
-  double log_nfa = -1,logNT;
-//  double log_nfa1,log_nfa2;
-  int ls_count = 0;                   /* line segments are numbered 1,2,3,... */
-  int seed_cnt = 0;
-  int refine_cnt = 0;
-  int reg_size_toosmall_cnt=0;
+    image_double image;
+    ntuple_list out = new_ntuple_list(8);
+    double * return_value;
+    image_double scaled_image,angles,modgrad;
+    image_char used;
+    image_char pol;  //对于构成圆弧的像素标记极性，如果梯度的方向和弧的方向指向一致，则为SAME_POLE,否则为OPP_POLE,该标记初始是为0
+    image_int region = NULL;
+    struct coorlist * list_p;
+    struct coorlist * list_p_temp;
+    //  struct coorlist * mem_p;
+    struct rect main_rect;//main rect
+    struct rect rect_up,rect_down;//divide the rect into 2 rects:rect_up and rect_down
+    struct point2i * reg;
+    int reg_size,min_reg_size,i;
+    unsigned int xsize,ysize;
+    double rho,reg_angle,prec,p;
+    double log_nfa = -1,logNT;
+    //  double log_nfa1,log_nfa2;
+    int ls_count = 0;                   /* line segments are numbered 1,2,3,... */
+    int seed_cnt = 0;
+    int refine_cnt = 0;
+    int reg_size_toosmall_cnt=0;
 
-  /* check parameters */
-  if( img == NULL || X <= 0 || Y <= 0 ) error("invalid image input.");
-  if( scale <= 0.0 ) error("'scale' value must be positive.");
-  if( sigma_scale <= 0.0 ) error("'sigma_scale' value must be positive.");
-  if( quant < 0.0 ) error("'quant' value must be positive.");
-  if( ang_th <= 0.0 || ang_th >= 180.0 )
-    error("'ang_th' value must be in the range (0,180).");
-  if( density_th < 0.0 || density_th > 1.0 )
-    error("'density_th' value must be in the range [0,1].");
-  if( n_bins <= 0 ) error("'n_bins' value must be positive.");
+    /* check parameters */
+    if( img == NULL || X <= 0 || Y <= 0 ) error("invalid image input.");
+    if( scale <= 0.0 ) error("'scale' value must be positive.");
+    if( sigma_scale <= 0.0 ) error("'sigma_scale' value must be positive.");
+    if( quant < 0.0 ) error("'quant' value must be positive.");
+    if( ang_th <= 0.0 || ang_th >= 180.0 )
+        error("'ang_th' value must be in the range (0,180).");
+    if( density_th < 0.0 || density_th > 1.0 )
+        error("'density_th' value must be in the range [0,1].");
+    if( n_bins <= 0 ) error("'n_bins' value must be positive.");
 
+    /* angle tolerance */
+    prec = M_PI * ang_th / 180.0;
+    p = ang_th / 180.0;
 
-  /* angle tolerance */
-  prec = M_PI * ang_th / 180.0;
-  p = ang_th / 180.0;
+    rho = quant / sin(prec); /* gradient magnitude threshold */
 
-  rho = quant / sin(prec); /* gradient magnitude threshold */
-
-
-  /* load and scale image (if necessary) and compute angle at each pixel */
-  image = new_image_double_ptr( (unsigned int) X, (unsigned int) Y, img );
-  if( scale != 1.0 )
+    /* load and scale image (if necessary) and compute angle at each pixel */
+    image = new_image_double_ptr( (unsigned int) X, (unsigned int) Y, img );
+    if( scale != 1.0 )
     {
-    //按照scale进行高斯降采样的图像，注意宽高是上取整，设采样后高宽为imgN*imgM
-      scaled_image = gaussian_sampler( image, scale, sigma_scale );
-    //返回一张梯度角度顺时针旋转90°后的align角度图angles，如果梯度角度是(gx,gy)->(-gy,gx)，
-    //和梯度的模的图modgrad,然后按照n_bins进行伪排序返回链表的头指针list_p,里面存的是坐标
-    angles = ll_angle( scaled_image, rho, &list_p,&modgrad, (unsigned int) n_bins );
-      free_image_double(scaled_image);
+        //按照scale进行高斯降采样的图像，注意宽高是上取整，设采样后高宽为imgN*imgM
+        scaled_image = gaussian_sampler( image, scale, sigma_scale );
+        //返回一张梯度角度顺时针旋转90°后的align角度图angles，如果梯度角度是(gx,gy)->(-gy,gx)，
+        //和梯度的模的图modgrad,然后按照n_bins进行伪排序返回链表的头指针list_p,里面存的是坐标
+        angles = ll_angle( scaled_image, rho, &list_p,&modgrad, (unsigned int) n_bins );
+        free_image_double(scaled_image);
     }
-  else
-    angles = ll_angle( image, rho, &list_p,&modgrad,(unsigned int) n_bins );
-  xsize = angles->xsize;//降采样后的图像的x size，宽度imgM
-  ysize = angles->ysize;//降采样后的图像的y size，高度imgN
+    else
+        angles = ll_angle( image, rho, &list_p,&modgrad,(unsigned int) n_bins );
+    xsize = angles->xsize;//降采样后的图像的x size，宽度imgM
+    ysize = angles->ysize;//降采样后的图像的y size，高度imgN
 
-  /* Number of Tests - NT
+    /* Number of Tests - NT
 
      The theoretical number of tests is Np.(XY)^(5/2)
      where X and Y are number of columns and rows of the image.
@@ -2241,85 +2213,85 @@ double * LineSegmentDetection( int * n_out,
        11 * (X*Y)^(5/2)
      whose logarithm value is
        log10(11) + 5/2 * (log10(X) + log10(Y)).
-  */
-  logNT = 5.0 * ( log10( (double) xsize ) + log10( (double) ysize ) ) / 2.0
+    */
+    logNT = 5.0 * ( log10( (double) xsize ) + log10( (double) ysize ) ) / 2.0
           + log10(11.0);
-  min_reg_size = (int) (-logNT/log10(p)); /* minimal number of point2is in region that can give a meaningful event，每个矩形区域内align point2i最小数量*/
-  /* initialize some structures */
-  if( reg_img != NULL && reg_x != NULL && reg_y != NULL ) /* save region data */
-    region = new_image_int_ini(angles->xsize,angles->ysize,0);//申请与降采样后图像一样大小的int类型的内存，该内存的作用是将检测到的线段序号标到相应的图像格子里，该部分可有可无
-  used = new_image_char_ini(xsize,ysize,NOTUSED);//申请与降采样后图像一样大小的char类型的内存
-  pol  = new_image_char_ini(xsize,ysize,NOTDEF_POL);//像素点处的梯度和弧指向的方向的极性标记
-  reg = (struct point2i *) calloc( (size_t) (xsize*ysize), sizeof(struct point2i) );
-  if( reg == NULL ) error("not enough memory!");
+    min_reg_size = (int) (-logNT/log10(p)); /* minimal number of point2is in region that can give a meaningful event，每个矩形区域内align point2i最小数量*/
+    /* initialize some structures */
+    if( reg_img != NULL && reg_x != NULL && reg_y != NULL ) /* save region data */
+        region = new_image_int_ini(angles->xsize,angles->ysize,0);//申请与降采样后图像一样大小的int类型的内存，该内存的作用是将检测到的线段序号标到相应的图像格子里，该部分可有可无
+    used = new_image_char_ini(xsize,ysize,NOTUSED);//申请与降采样后图像一样大小的char类型的内存
+    pol  = new_image_char_ini(xsize,ysize,NOTDEF_POL);//像素点处的梯度和弧指向的方向的极性标记
+    reg = (struct point2i *) calloc( (size_t) (xsize*ysize), sizeof(struct point2i) );
+    if( reg == NULL ) error("not enough memory!");
 
-  list_p_temp = list_p;//记录头链表的头指针，后面需要利用该头指针进行内存释放
-  /* search for line segments */
-  for(; list_p_temp != NULL; list_p_temp = list_p_temp->next )
-    if( used->data[ list_p_temp->x + list_p_temp->y * used->xsize ] == NOTUSED &&
-        angles->data[ list_p_temp->x + list_p_temp->y * angles->xsize ] != NOTDEF )
-       /* there is no risk of double comparison problems here
-          because we are only interested in the exact NOTDEF value */
-      {
-        /* find the region of connected point2i and ~equal angle */
-        //reg是长度为imgN*imgM的一维point2i型数组，有足够大的空间存储生长的区域，reg_size是里面存储了数据的数量，记录的是区域的point2i
-        //reg_angle是该区域的主方向的double型变量，存的角度是弧度制
-        seed_cnt ++;
-        region_grow( list_p_temp->x, list_p_temp->y, angles, reg, &reg_size,&reg_angle, used, prec );
+    list_p_temp = list_p;//记录头链表的头指针，后面需要利用该头指针进行内存释放
+    /* search for line segments */
+    for(; list_p_temp != NULL; list_p_temp = list_p_temp->next )
+        if( used->data[ list_p_temp->x + list_p_temp->y * used->xsize ] == NOTUSED &&
+           angles->data[ list_p_temp->x + list_p_temp->y * angles->xsize ] != NOTDEF )
+            /* there is no risk of double comparison problems here
+             because we are only interested in the exact NOTDEF value */
+            {
+                /* find the region of connected point2i and ~equal angle */
+                //reg是长度为imgN*imgM的一维point2i型数组，有足够大的空间存储生长的区域，reg_size是里面存储了数据的数量，记录的是区域的point2i
+                //reg_angle是该区域的主方向的double型变量，存的角度是弧度制
+                seed_cnt ++;
+                region_grow( list_p_temp->x, list_p_temp->y, angles, reg, &reg_size,&reg_angle, used, prec );
 
-        /* reject small regions */
-        if( reg_size < min_reg_size ) 
-        {
-          reg_size_toosmall_cnt++;
-          continue;
-        }
+                /* reject small regions */
+                if( reg_size < min_reg_size )
+                {
+                  reg_size_toosmall_cnt++;
+                  continue;
+                }
 
-        /* construct rectangular approximation for the region */
-        //根据生长的区域得到近似外接矩阵的参数，矩形参数包括:起点，终点，方向theta，宽度等
-        region2rect(reg,reg_size,modgrad,reg_angle,prec,p,&main_rect);
-        if( FALSE == isArcSegment(reg,reg_size,&main_rect,angles,used,pol,prec,p,&rect_up,&rect_down))
-          continue;
-        /* Check if the rectangle exceeds the minimal density of
-           region point2is. If not, try to improve the region.
-           The rectangle will be rejected if the final one does
-           not fulfill the minimal density condition.
-           This is an addition to the original LSD algorithm published in
-           "LSD: A Fast Line Segment Detector with a False Detection Control"
-           by R. Grompone von Gioi, J. Jakubowicz, J.M. Morel, and G. Randall.
-           The original algorithm is obtained with density_th = 0.0.
-         */
+                /* construct rectangular approximation for the region */
+                //根据生长的区域得到近似外接矩阵的参数，矩形参数包括:起点，终点，方向theta，宽度等
+                region2rect(reg,reg_size,modgrad,reg_angle,prec,p,&main_rect);
+                if( FALSE == isArcSegment(reg,reg_size,&main_rect,angles,used,pol,prec,p,&rect_up,&rect_down))
+                  continue;
+                /* Check if the rectangle exceeds the minimal density of
+                   region point2is. If not, try to improve the region.
+                   The rectangle will be rejected if the final one does
+                   not fulfill the minimal density condition.
+                   This is an addition to the original LSD algorithm published in
+                   "LSD: A Fast Line Segment Detector with a False Detection Control"
+                   by R. Grompone von Gioi, J. Jakubowicz, J.M. Morel, and G. Randall.
+                   The original algorithm is obtained with density_th = 0.0.
+                 */
 
-        //提纯，通过重新生长区域来达到期望的密度阈值 
-        if( !refine( reg, &reg_size, modgrad, reg_angle,
-                     prec, p, &main_rect, used, angles, density_th ) ) continue;
+                //提纯，通过重新生长区域来达到期望的密度阈值
+                if( !refine( reg, &reg_size, modgrad, reg_angle,
+                             prec, p, &main_rect, used, angles, density_th ) ) continue;
 
-        refine_cnt++;
-        // compute NFA value 
-        log_nfa = rect_improve(&main_rect,angles,logNT,log_eps);//通过改善矩形区域以尝试得到期望的nfa值
-        if( log_nfa <= log_eps ) //错误控制
-          continue;
-        // A New Line Segment was found! 
-        ++ls_count;  // increase line segment counter 
+                refine_cnt++;
+                // compute NFA value
+                log_nfa = rect_improve(&main_rect,angles,logNT,log_eps);//通过改善矩形区域以尝试得到期望的nfa值
+                if( log_nfa <= log_eps ) //错误控制
+                  continue;
+                // A New Line Segment was found!
+                ++ls_count;  // increase line segment counter
 
-        //
-        //  The gradient was computed with a 2x2 mask, its value corresponds to
-        //  point2is with an offset of (0.5,0.5), that should be added to output.
-        //  The coordinates origin is at the center of pixel (0,0).
-        //
-        main_rect.x1 += 0.5; main_rect.y1 += 0.5;
-        main_rect.x2 += 0.5; main_rect.y2 += 0.5;
+                //
+                //  The gradient was computed with a 2x2 mask, its value corresponds to
+                //  point2is with an offset of (0.5,0.5), that should be added to output.
+                //  The coordinates origin is at the center of pixel (0,0).
+                //
+                main_rect.x1 += 0.5; main_rect.y1 += 0.5;
+                main_rect.x2 += 0.5; main_rect.y2 += 0.5;
 
-        // scale the result values if a subsampling was performed */
-        if( scale != 1.0 )
-          {
-            main_rect.x1 /= scale; main_rect.y1 /= scale;
-            main_rect.x2 /= scale; main_rect.y2 /= scale;
-          //  main_rect.width /= scale;
-          }
+                // scale the result values if a subsampling was performed */
+                if( scale != 1.0 )
+                {
+                    main_rect.x1 /= scale; main_rect.y1 /= scale;
+                    main_rect.x2 /= scale; main_rect.y2 /= scale;
+                  //  main_rect.width /= scale;
+                }
 
-        /* add line segment found to output */
-        add_8tuple( out, main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2,main_rect.dx,main_rect.dy,
-        dist(main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2), main_rect.polarity);
+                /* add line segment found to output */
+                add_8tuple( out, main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2,main_rect.dx,main_rect.dy,
+                dist(main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2), main_rect.polarity);
 
     //------------------------------------------------------------------------------------------------- 
     /*
@@ -2346,12 +2318,12 @@ double * LineSegmentDetection( int * n_out,
         file2.close();
       }
       */
-    //-------------------------------------------------------------------------------------------------------
-        /* add region number to 'region' image if needed */ //将检测到的线段序号标到相应的图像格子里，该部分可有可无
-        if( region != NULL )
-          for(i=0; i<reg_size; i++)
-            region->data[ reg[i].x + reg[i].y * region->xsize ] = ls_count;
-      }
+            //-------------------------------------------------------------------------------------------------------
+                /* add region number to 'region' image if needed */ //将检测到的线段序号标到相应的图像格子里，该部分可有可无
+                if( region != NULL )
+                  for(i=0; i<reg_size; i++)
+                    region->data[ reg[i].x + reg[i].y * region->xsize ] = ls_count;
+              }
 
 
   /* free memory */

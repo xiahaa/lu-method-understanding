@@ -10,7 +10,7 @@ function [ellipses, L, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, speci
 % Michel Morel, and Gregory Randall, “Lsd: a fast line
 % segment detector with a false detection control.,” IEEE
 % transactions on pattern analysis and machine intelligence,
-% vol. 32, no. 4, pp. 722–732, 2010.
+% vol. 32, no. 4, pp. 722?C732, 2010.
     angleCoverage = Tac;%default 165°
     Tmin = Tr;%default 0.6 
     unit_dis_tolerance = 2; %max([2, 0.005 * min([size(I, 1), size(I, 2)])]);%内点距离的容忍差小于max(2,0.5%*minsize)
@@ -362,107 +362,8 @@ function [mylabels,labels, ellipses, validCandidates] = subEllipseDetection( lis
         
     end %for
 end%fun
-%% ================================================================================================================================
-%函数4
-%圆的最小二乘法拟合(此处可以改用快速圆拟合方法)
-%输入：
-%points: 联通性分析后的提纯后的内点，设大小为 fpn x 2,格式(xi,yi)
-%输出：
-%a   ：拟合后的圆心横坐标x
-%b   ：拟合后的圆心纵坐标y
-%c   ：拟合后的圆心半径r
-%cnd ：1表示数据代入方程后是奇异的，直接用平均值估计；0表示数据是用最小二乘法拟合的
-function [a, b, r, cnd] = fitCircle(points)
-%{
-    A = [sum(points(:, 1)), sum(points(:, 2)), size(points, 1); sum(points(:, 1) .* points(:, 2)), sum(points(:, 2) .* points(:, 2)), sum(points(:, 2)); sum(points(:, 1) .* points(:, 1)), sum(points(:, 1) .* points(:, 2)), sum(points(:, 1))];
-    %用最小二乘法时，A'A正则矩阵如果接近0，则意味着方程组线性，求平均值即可
-    if (abs(det(A)) < 1e-9)
-        cnd = 1;
-        a = mean(points(:, 1));
-        b = mean(points(:, 2));
-        r = min(max(points) - min(points));
-        return;
-    end
-    cnd = 0;
-    B = [-sum(points(:, 1) .* points(:, 1) + points(:, 2) .* points(:, 2)); -sum(points(:, 1) .* points(:, 1) .* points(:, 2) + points(:, 2) .* points(:, 2) .* points(:, 2)); -sum(points(:, 1) .* points(:, 1) .* points(:, 1) + points(:, 1) .* points(:, 2) .* points(:, 2))];
-    t = A \ B;
-    a = -0.5 * t(1);
-    b = -0.5 * t(2);
-    r = sqrt((t(1) .^ 2 + t(2) .^ 2) / 4 - t(3));
- %}
-    A = [sum(points(:, 1) .* points(:, 1)),sum(points(:, 1) .* points(:, 2)),sum(points(:, 1)); sum(points(:, 1) .* points(:, 2)),sum(points(:, 2) .* points(:, 2)),sum(points(:, 2)); sum(points(:, 1)),sum(points(:, 2)),size(points, 1)]; 
-    %用最小二乘法时，A'A正则矩阵如果接近0，则意味着方程组线性，求平均值即可
-    if (abs(det(A)) < 1e-9)
-        cnd = 1;
-        a = mean(points(:, 1));
-        b = mean(points(:, 2));
-        r = min(max(points) - min(points));
-        return;
-    end
-    cnd = 0;
-    B = [sum(-points(:, 1) .* points(:, 1) .* points(:, 1) - points(:, 1) .* points(:, 2) .* points(:, 2));sum(-points(:, 1) .* points(:, 1) .* points(:, 2) - points(:, 2) .* points(:, 2) .* points(:, 2)); sum(-points(:, 1) .* points(:, 1) - points(:, 2) .* points(:, 2))];
-    t = A \ B;
-    a = -0.5 * t(1);
-    b = -0.5 * t(2);
-    r = sqrt((t(1) .^ 2 + t(2) .^ 2) / 4 - t(3));
-end
-%% ================================================================================================================================
-%函数5
-%输入
-%x     : 连通性分析后，满足数量2piRT的提纯后的内点(x,y)，将参与到完整度分析环节.num x 2
-%center: 圆心(x,y)  1 x 2
-%tbins ：分区总数
-%angleCoverage: 需要达到的圆完整度
-%输出
-%result： true or false，表示该圆完整与不完整
-%longest_inliers:
-function [result, longest_inliers] = isComplete(x, center, tbins, angleCoverage)
-    [theta, ~] = cart2pol(x(:, 1) - center(1), x(:, 2) - center(2));%theta为(-pi,pi)的角度，num x 1
-    tmin = -pi; tmax = pi;
-    tt = round((theta - tmin) / (tmax - tmin) * tbins + 0.5);%theta的第i个元素落在第j个bin，则tt第i行标记为j，大小num x 1
-    tt(tt < 1) = 1; tt(tt > tbins) = tbins;
-    h = histc(tt, 1 : tbins);
-    longest_run = 0;
-    start_idx = 1;
-    end_idx = 1;
-    while (start_idx <= tbins)
-        if (h(start_idx) > 0)%找到bin中vote第一个大于0的
-            end_idx = start_idx;
-            while (start_idx <= tbins && h(start_idx) > 0)%直到bin第一个小于0的
-                start_idx = start_idx + 1;
-            end
-            inliers = [end_idx, start_idx - 1];%此区间为连通区域
-            inliers = find(tt >= inliers(1) & tt <= inliers(2));%在tt中找到落在此区间的内点的索引
-            run = max(theta(inliers)) - min(theta(inliers));%角度差
-            if (longest_run < run)%此举是为了找到最大的完整的且连通的跨度
-                longest_run = run;
-                longest_inliers = inliers;
-            end
-        end
-        start_idx = start_idx + 1;
-    end
-    if (h(1) > 0 && h(tbins) > 0)%如果第一个bin和最后一个bin都大于0，有可能最大连通区域是头尾相连的这种情况
-        start_idx = 1;
-        while (start_idx < tbins && h(start_idx) > 0)%找到bin中vote第一个大于0的
-            start_idx = start_idx + 1;
-        end
-        end_idx = tbins;%end_idx直接从最尾部开始往回找
-        while (end_idx > 1 && end_idx > start_idx && h(end_idx) > 0)
-            end_idx = end_idx - 1;
-        end
-        inliers = [start_idx - 1, end_idx + 1];
-        run = max(theta(tt <= inliers(1)) + 2 * pi) - min(theta(tt >= inliers(2)));
-        inliers = find(tt <= inliers(1) | tt >= inliers(2));
-        if (longest_run < run)
-            longest_run = run;
-            longest_inliers = inliers;
-        end
-    end
-    %最大的连通的跨度大于了angleCoverage，或者虽然最大连通跨度小于，但完整度足够了
-    longest_run_deg = radtodeg(longest_run);
-    h_greatthanzero_num = sum(h>0);
-    result =  longest_run_deg >= angleCoverage || h_greatthanzero_num * (360 / tbins) >= min([360, 1.2*angleCoverage]);  %1.2 * angleCoverage
-end
+
+
 function [completeness] = calcuCompleteness(x, center, tbins)
     [theta, ~] = cart2pol(x(:, 1) - center(1), x(:, 2) - center(2));%theta为(-pi,pi)的角度，num x 1
     tmin = -pi; tmax = pi;
