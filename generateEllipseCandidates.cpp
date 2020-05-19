@@ -7,7 +7,7 @@
 #include <float.h>
 #include <iostream>
 #include "lapack.h"  //matlab 
-//#include "include/lapacke_config.h"  //lapackÊÖ¶¯£¬Î´³É¹¦
+//#include "include/lapacke_config.h"  //lapackæ‰‹åŠ¨ï¼ŒæœªæˆåŠŸ
 //#include "include/lapacke.h"
 #include "opencv2/core/core.hpp" 
 #include "opencv2/features2d/features2d.hpp"
@@ -41,12 +41,12 @@ using namespace cv;
 #define M_3_8_PI 1.178097245
 #define M_5_8_PI 1.963495408
 #define M_7_8_PI 2.748893572
-#define M_4_9_PI 1.396263401595464  //80¡ã
-#define M_1_9_PI  0.34906585  //20¡ã
-#define M_1_10_PI 0.314159265358979323846   //18¡ã
-#define M_1_12_PI 0.261799387   //15¡ã
-#define M_1_15_PI 0.20943951    //12¡ã
-#define M_1_18_PI 0.174532925   //10¡ã
+#define M_4_9_PI 1.396263401595464  //80Â°
+#define M_1_9_PI  0.34906585  //20Â°
+#define M_1_10_PI 0.314159265358979323846   //18Â°
+#define M_1_12_PI 0.261799387   //15Â°
+#define M_1_15_PI 0.20943951    //12Â°
+#define M_1_18_PI 0.174532925   //10Â°
 /** 3/2 pi */
 #define M_3_2_PI 4.71238898038
 /** 2 pi */
@@ -57,43 +57,43 @@ using namespace cv;
 
 struct point2i //(or pixel).
 {
-	int x,y;
+  int x,y;
 };
 
 struct point2d
 {
-	double x,y;
+  double x,y;
 };
 
 struct point1d1i
 {
-	double data;
-	int cnt;
+  double data;
+  int cnt;
 };
 
 struct point3d
 {
-	double x,y;
-	double r;
+  double x,y;
+  double r;
 };
 
 struct point3i
 {
-	int x,y;
-	int z;
+  int x,y;
+  int z;
 };
 
 struct point2d1i
 {
-	double x,y;
-	int z;
+  double x,y;
+  int z;
 };
 
 struct  point5d
 {
-	double x,y;
-	double a,b;
-	double phi;
+  double x,y;
+  double a,b;
+  double phi;
 };
 
 /*----------------------------------------------------------------------------*/
@@ -130,11 +130,11 @@ typedef struct image_double_s
 //=============================miscellaneous functions==============================================
 inline double min(double v1,double v2)
 {
-	return (v1<v2?v1:v2);
+  return (v1<v2?v1:v2);
 }
 inline double max(double v1,double v2)
 {
-	return (v1>v2?v1:v2);
+  return (v1>v2?v1:v2);
 }
 /** Compare doubles by relative error.
 
@@ -172,7 +172,7 @@ int double_equal(double a, double b)
 /*----------------------------------------------------------------------------*/
 /** Absolute value angle difference.
  */
-//µÃµ½2¸ö»¡¶ÈÖÆ½Ç¶ÈµÄ¼Ğ½ÇµÄ¾ø¶ÔÖµ
+//å¾—åˆ°2ä¸ªå¼§åº¦åˆ¶è§’åº¦çš„å¤¹è§’çš„ç»å¯¹å€¼
 double angle_diff(double a, double b)
 {
   a -= b;
@@ -209,10 +209,10 @@ double dist(double x1, double y1, double x2, double y2)
   return sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
 }
 
-//ÏòÁ¿ÄÚ»ı
+//å‘é‡å†…ç§¯
 double dotProduct(point2d vec1, point2d vec2)
 {
-	return (vec1.x*vec2.x+vec1.y*vec2.y);
+  return (vec1.x*vec2.x+vec1.y*vec2.y);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -398,7 +398,7 @@ rect_iter * ri_ini(struct rect * r)
 
   /* build list of rectangle corners ordered
      in a circular way around the rectangle */
-  //´ÓÏß¶ÎµÄÆğµã(x1,y1)´¦µÄÒ»¶Ë¿ªÊ¼°´ÕÕÄæÊ±ÕëÖØ¹¹³ö¾ØĞÎµÄËÄ¸ö¶¨µã
+  //ä»çº¿æ®µçš„èµ·ç‚¹(x1,y1)å¤„çš„ä¸€ç«¯å¼€å§‹æŒ‰ç…§é€†æ—¶é’ˆé‡æ„å‡ºçŸ©å½¢çš„å››ä¸ªå®šç‚¹
   vx[0] = r->x1 - r->dy * r->width / 2.0;
   vy[0] = r->y1 + r->dx * r->width / 2.0;
   vx[1] = r->x2 - r->dy * r->width / 2.0;
@@ -526,7 +526,7 @@ image_double new_image_double_ptr( int xsize,
 /** Label for pixels already used in detection. */
 #define USED    1
 
-//¶ÔÓÚ¹¹³ÉÔ²»¡µÄÏñËØ±ê¼Ç¼«ĞÔ£¬Èç¹ûÌİ¶ÈµÄ·½ÏòºÍ»¡µÄ·½ÏòÖ¸ÏòÒ»ÖÂ£¬ÔòÎªSAME_POLE,·ñÔòÎªOPP_POLE,¸Ã±ê¼Ç³õÊ¼ÊÇÎª0
+//å¯¹äºæ„æˆåœ†å¼§çš„åƒç´ æ ‡è®°ææ€§ï¼Œå¦‚æœæ¢¯åº¦çš„æ–¹å‘å’Œå¼§çš„æ–¹å‘æŒ‡å‘ä¸€è‡´ï¼Œåˆ™ä¸ºSAME_POLE,å¦åˆ™ä¸ºOPP_POLE,è¯¥æ ‡è®°åˆå§‹æ˜¯ä¸º0
 #define NOTDEF_POL 0
 #define SAME_POL 1
 #define OPP_POL  -1
@@ -869,7 +869,7 @@ static image_double gaussian_sampler( image_double in, double scale,
   if( in->xsize * scale > (double) UINT_MAX ||
       in->ysize * scale > (double) UINT_MAX )
     error("gaussian_sampler: the output image size exceeds the handled size.");
-  N = (unsigned int) ceil( in->xsize * scale );//ÉÏÈ¡Õû
+  N = (unsigned int) ceil( in->xsize * scale );//ä¸Šå–æ•´
   M = (unsigned int) ceil( in->ysize * scale );
   aux = new_image_double(N,in->ysize);
   out = new_image_double(N,M);
@@ -884,7 +884,7 @@ static image_double gaussian_sampler( image_double in, double scale,
      Then,
        x = sigma * sqrt( 2 * prec * ln(10) ).
    */
-  prec = 3.0;//¸ßË¹ºËµÄ×îÍâÎ§½µµ½10^(-3)
+  prec = 3.0;//é«˜æ–¯æ ¸çš„æœ€å¤–å›´é™åˆ°10^(-3)
   h = (unsigned int) ceil( sigma * sqrt( 2.0 * prec * log(10.0) ) );
   n = 1+2*h; /* kernel size */
   kernel = new_ntuple_list(n);
@@ -990,8 +990,8 @@ static image_double gaussian_sampler( image_double in, double scale,
     - a point2ier 'mem_p' to the memory used by 'list_p' to be able to
       free the memory when it is not used anymore.
  */
-//·µ»ØÒ»ÕÅÌİ¶È½Ç¶ÈË³Ê±ÕëĞı×ª90¡ãºóµÄalign½Ç¶ÈÍ¼angles£¬Èç¹ûÌİ¶È½Ç¶ÈÊÇ(gx,gy)->(-gy,gx)£¬
-//ºÍÌİ¶ÈµÄÄ£µÄÍ¼modgrad,È»ºó°´ÕÕn_bins½øĞĞÎ±ÅÅĞò·µ»ØÁ´±íµÄÍ·Ö¸Õëlist_p,ÀïÃæ´æµÄÊÇ×ø±ê
+//è¿”å›ä¸€å¼ æ¢¯åº¦è§’åº¦é¡ºæ—¶é’ˆæ—‹è½¬90Â°åçš„alignè§’åº¦å›¾anglesï¼Œå¦‚æœæ¢¯åº¦è§’åº¦æ˜¯(gx,gy)->(-gy,gx)ï¼Œ
+//å’Œæ¢¯åº¦çš„æ¨¡çš„å›¾modgrad,ç„¶åæŒ‰ç…§n_binsè¿›è¡Œä¼ªæ’åºè¿”å›é“¾è¡¨çš„å¤´æŒ‡é’ˆlist_p,é‡Œé¢å­˜çš„æ˜¯åæ ‡
 static image_double ll_angle( image_double in, double threshold,
                               struct coorlist ** list_p,
                               image_double * modgrad, unsigned int n_bins )
@@ -1004,8 +1004,8 @@ static image_double ll_angle( image_double in, double threshold,
   int list_count = 0;
   //struct coorlist * list;
   struct coorlist *temp;
-  struct coorlist ** range_l_s; /* array of point2iers to start of bin list,±íÊ¾1024¸öbinµÄÍ·Ö¸ÕëµÄÖ¸ÕëÊı×é */
-  struct coorlist ** range_l_e; /* array of point2iers to end of bin list£¬±íÊ¾1024¸öbinµÄÎ²Ö¸ÕëµÄÖ¸ÕëÊı×é*/
+  struct coorlist ** range_l_s; /* array of point2iers to start of bin list,è¡¨ç¤º1024ä¸ªbinçš„å¤´æŒ‡é’ˆçš„æŒ‡é’ˆæ•°ç»„ */
+  struct coorlist ** range_l_e; /* array of point2iers to end of bin listï¼Œè¡¨ç¤º1024ä¸ªbinçš„å°¾æŒ‡é’ˆçš„æŒ‡é’ˆæ•°ç»„*/
   struct coorlist * start;
   struct coorlist * end;
   double max_grad = 0.0;
@@ -1088,24 +1088,24 @@ static image_double ll_angle( image_double in, double threshold,
   for(x=0;x<p-1;x++)
     for(y=0;y<n-1;y++)
       {
-		temp = new coorlist();
-		if(temp == NULL)
-		{
-			printf("not enough memory");
-			system("pause");
-		}
+    temp = new coorlist();
+    if(temp == NULL)
+    {
+      printf("not enough memory");
+      system("pause");
+    }
         norm = (*modgrad)->data[y*p+x];
         /* store the point2i in the right bin according to its norm */
         i = (unsigned int) (norm * (double) n_bins / max_grad);
         if( i >= n_bins ) i = n_bins-1;
         if( range_l_e[i] == NULL )
-          range_l_s[i] = range_l_e[i] = temp;//¼ÇÂ¼µÚi¸öÇøÓòµÄÍ·Ö¸Õëµ½range_l_s[i]
+          range_l_s[i] = range_l_e[i] = temp;//è®°å½•ç¬¬iä¸ªåŒºåŸŸçš„å¤´æŒ‡é’ˆåˆ°range_l_s[i]
         else
           {
-            range_l_e[i]->next = temp;//µÚi¸öÇøÓòÓÉÎ²Ö¸Õërange_l_e[i]Íê³É¹´Á´
+            range_l_e[i]->next = temp;//ç¬¬iä¸ªåŒºåŸŸç”±å°¾æŒ‡é’ˆrange_l_e[i]å®Œæˆå‹¾é“¾
             range_l_e[i] = temp;
           }
-        range_l_e[i]->x = (int) x;//½«×ø±ê(x,y)¼ÇÂ¼µ½µÚi¸ö·ÖÇø
+        range_l_e[i]->x = (int) x;//å°†åæ ‡(x,y)è®°å½•åˆ°ç¬¬iä¸ªåˆ†åŒº
         range_l_e[i]->y = (int) y;
         range_l_e[i]->next = NULL;
       }
@@ -1115,7 +1115,7 @@ static image_double ll_angle( image_double in, double threshold,
      pixels with the highest gradient value. Pixels would be ordered
      by norm value, up to a precision given by max_grad/n_bins.
    */
-  for(i=n_bins-1; i>0 && range_l_s[i]==NULL; i--);//ÕÒµ½µÚÒ»¸ö²»Îª¿ÕµÄ·ÖÇøbin
+  for(i=n_bins-1; i>0 && range_l_s[i]==NULL; i--);//æ‰¾åˆ°ç¬¬ä¸€ä¸ªä¸ä¸ºç©ºçš„åˆ†åŒºbin
   start = range_l_s[i];
   end = range_l_e[i];
   if( start != NULL )
@@ -1167,17 +1167,17 @@ static int isaligned( int x, int y, image_double angles, double theta,
   if( theta < 0.0 ) theta = -theta;
   if( theta > M_3_2_PI )
     {
-	//--------------------------------------
-	//origin code
+  //--------------------------------------
+  //origin code
      /* theta -= M_2__PI;
       if( theta < 0.0 ) theta = -theta;*/
-	//--------------------------------------
-	  //-------------------------------------
-	  //mycode
-	  theta = M_2__PI-theta;
-	  if(theta < 0.0) 
-		 theta = -theta; 
-	  //--------------------------------------
+  //--------------------------------------
+    //-------------------------------------
+    //mycode
+    theta = M_2__PI-theta;
+    if(theta < 0.0) 
+     theta = -theta; 
+    //--------------------------------------
     }
 
   return theta <= prec;
@@ -1505,7 +1505,7 @@ static double get_theta( point2i * reg, int reg_size, double x, double y,
       Iyy += ( (double) reg[i].x - x ) * ( (double) reg[i].x - x ) * weight;
       Ixy -= ( (double) reg[i].x - x ) * ( (double) reg[i].y - y ) * weight;
     }
-  if( double_equal(Ixx,0.0) && double_equal(Iyy,0.0) && double_equal(Ixy,0.0) )//ÅĞ¶ÏIxx¡¢Iyy¡¢IxyÓë0ÊÇ·ñ·Ç³£½Ó½ü£¬ÓÉÓÚËüÃÇÎªdoubleÀàĞÍ£¬¹ÊĞèÒª×¨ÃÅµÄº¯ÊıÅĞ¶Ï
+  if( double_equal(Ixx,0.0) && double_equal(Iyy,0.0) && double_equal(Ixy,0.0) )//åˆ¤æ–­Ixxã€Iyyã€Ixyä¸0æ˜¯å¦éå¸¸æ¥è¿‘ï¼Œç”±äºå®ƒä»¬ä¸ºdoubleç±»å‹ï¼Œæ•…éœ€è¦ä¸“é—¨çš„å‡½æ•°åˆ¤æ–­
     error("get_theta: null inertia matrix.");
 
   /* compute smallest eigenvalue */
@@ -1516,37 +1516,37 @@ static double get_theta( point2i * reg, int reg_size, double x, double y,
   /* The previous procedure doesn't cares about orientation,
      so it could be wrong by 180 degrees. Here is corrected if necessary. */
   temp1 = angle_diff(theta,reg_angle);
-  if( temp1 > prec )//ÕâÊÇÓÉÓÚÓÃ¹ßĞÔ¾ØÕóËã³öµÄÁ½¸öÕı½»ÖáµÄ½ÏĞ¡ÌØÕ÷Öµ¶ÔÓ¦µÄ½Ç¶ÈºÍ¸ÃÇøÓòµÄ½Ç¶È¿ÉÄÜÏà²î180¡ã
+  if( temp1 > prec )//è¿™æ˜¯ç”±äºç”¨æƒ¯æ€§çŸ©é˜µç®—å‡ºçš„ä¸¤ä¸ªæ­£äº¤è½´çš„è¾ƒå°ç‰¹å¾å€¼å¯¹åº”çš„è§’åº¦å’Œè¯¥åŒºåŸŸçš„è§’åº¦å¯èƒ½ç›¸å·®180Â°
   {
-	  //------------------------------------------
-	  //theta += M_PI;   //origin code
-	  //------------------------------------------
-	  //------------------------------------------
-	  //my code,Ôö¼Ó¸Ã¶Î´úÂë£¬ÏŞÖÆthetaÔÚ (-pi,pi)Ö®¼ä
-	  //int flag = 0;
-	  temp2 = angle_diff(theta+M_PI,reg_angle);
-	  if(temp2 < prec)
-	  {
-		  theta += M_PI;
-		if(theta > M_PI)
-		{
-		   theta -= M_2__PI;
-		   //flag = 1;
-		   //if(angle_diff(theta,reg_angle) > prec)
-		   //{
-		   //	  //flag = 2;
-		   //	  theta = reg_angle;
-		   // }
-		}
-	  }
-	  else
-	  {
-		  theta = (temp2 <= temp1) ? (theta+M_PI) : theta;
-		  while( theta <= -M_PI ) theta += M_2__PI;
+    //------------------------------------------
+    //theta += M_PI;   //origin code
+    //------------------------------------------
+    //------------------------------------------
+    //my code,å¢åŠ è¯¥æ®µä»£ç ï¼Œé™åˆ¶thetaåœ¨ (-pi,pi)ä¹‹é—´
+    //int flag = 0;
+    temp2 = angle_diff(theta+M_PI,reg_angle);// add xiaohu, been solved in elsd
+    if(temp2 < prec)
+    {
+      theta += M_PI;
+      if(theta > M_PI)
+      {
+         theta -= M_2__PI;
+         //flag = 1;
+         //if(angle_diff(theta,reg_angle) > prec)
+         //{
+         //   //flag = 2;
+         //   theta = reg_angle;
+         // }
+      }
+    }
+    else
+    {
+      theta = (temp2 <= temp1) ? (theta+M_PI) : theta;
+      while( theta <= -M_PI ) theta += M_2__PI;
           while( theta >   M_PI ) theta -= M_2__PI;
-	  }
-	  
-	  //--------------------------------------------
+    }
+    
+    //--------------------------------------------
   }
   return theta;
 }
@@ -1555,7 +1555,7 @@ static double get_theta( point2i * reg, int reg_size, double x, double y,
 /** Computes a rectangle that covers a region of point2is.
  */
 static void region2rect( point2i * reg, int reg_size,
-						image_double modgrad, double reg_angle,
+            image_double modgrad, double reg_angle,
                          double prec, double p, struct rect * rec )
 {
   double x,y,dx,dy,l,w,theta,weight,sum,l_min,l_max,w_min,w_max;
@@ -1578,7 +1578,7 @@ static void region2rect( point2i * reg, int reg_size,
      where G(i) is the norm of the gradient of pixel i
      and x_i,y_i are its coordinates.
    */
-  //»ñµÃÖÊĞÄ x,y
+  //è·å¾—è´¨å¿ƒ x,y
   x = y = sum = 0.0;
   for(i=0; i<reg_size; i++)
     {
@@ -1592,7 +1592,7 @@ static void region2rect( point2i * reg, int reg_size,
   y /= sum;
 
   /* theta */
-  //ÔËÓÃ¹ßĞÔ¾ØÕó»ñµÃ¸üÎª¾«È·µÄ½Ç¶È¹À¼Æ
+  //è¿ç”¨æƒ¯æ€§çŸ©é˜µè·å¾—æ›´ä¸ºç²¾ç¡®çš„è§’åº¦ä¼°è®¡
   theta = get_theta(reg,reg_size,x,y,modgrad,reg_angle,prec);
   dx = cos(theta);
   dy = sin(theta);
@@ -1609,7 +1609,7 @@ static void region2rect( point2i * reg, int reg_size,
      w_min and w_max are the minimum and maximum of w for the pixels
      in the region.
    */
-  //ÒòÎªÇøÓòµÄ·½ÏòÏòÁ¿Îª (dx,dy) 
+  //å› ä¸ºåŒºåŸŸçš„æ–¹å‘å‘é‡ä¸º (dx,dy) 
   /*
   ------------------->x
   |\
@@ -1618,10 +1618,10 @@ static void region2rect( point2i * reg, int reg_size,
   |   
  \|/
   y
-  Òò´ËË³Ê±ÕëĞı×ª90¡ãÊÇ (-dy,dx)
+  å› æ­¤é¡ºæ—¶é’ˆæ—‹è½¬90Â°æ˜¯ (-dy,dx)
   */
   l_min = l_max = w_min = w_max = 0.0;
-  for(i=0; i<reg_size; i++)//ÓÃÏòÁ¿ÄÚ»ıÇóÔÚÏß¶Î·½ÏòºÍÓëÏß¶Î·½Ïò´¹Ö±·½ÏòµÄÍ¶Ó°Çól,w
+  for(i=0; i<reg_size; i++)//ç”¨å‘é‡å†…ç§¯æ±‚åœ¨çº¿æ®µæ–¹å‘å’Œä¸çº¿æ®µæ–¹å‘å‚ç›´æ–¹å‘çš„æŠ•å½±æ±‚l,w
     {
       l =  ( (double) reg[i].x - x) * dx + ( (double) reg[i].y - y) * dy;
       w = -( (double) reg[i].x - x) * dy + ( (double) reg[i].y - y) * dx;
@@ -1654,12 +1654,12 @@ static void region2rect( point2i * reg, int reg_size,
      the image.
    */
   if( rec->width < 1.0 ) 
-	  rec->width = 1.0;
+    rec->width = 1.0;
 }
 
-//ÇøÓòÖÊĞÄºÍ½Ç¶ÈÒÑ¾­¼ÆËãºÃÁË£¬Òò´ËÖ»½øĞĞ¾ØĞÎ½üËÆ¡£¶øregion2rect´ËÍâ»¹½øĞĞÁËÖÊĞÄºÍ½Ç¶È¼ÆËã¡£
+//åŒºåŸŸè´¨å¿ƒå’Œè§’åº¦å·²ç»è®¡ç®—å¥½äº†ï¼Œå› æ­¤åªè¿›è¡ŒçŸ©å½¢è¿‘ä¼¼ã€‚è€Œregion2rectæ­¤å¤–è¿˜è¿›è¡Œäº†è´¨å¿ƒå’Œè§’åº¦è®¡ç®—ã€‚
 static void region2rect2(point2i * reg, int reg_size,double reg_center_x,double reg_center_y,
-					double reg_theta,double prec, double p, struct rect * rec )
+          double reg_theta,double prec, double p, struct rect * rec )
 {
   double dx,dy,l,w,l_min,l_max,w_min,w_max;
   int i;
@@ -1668,11 +1668,11 @@ static void region2rect2(point2i * reg, int reg_size,double reg_center_x,double 
   if( reg_size <= 1 ) error("region2rect: region size <= 1.");
   if( rec == NULL ) error("region2rect: invalid 'rec'.");
 
-  //»ñµÃÇøÓòµÄ·½ÏòÏòÁ¿(dx,dy)
+  //è·å¾—åŒºåŸŸçš„æ–¹å‘å‘é‡(dx,dy)
   dx = cos(reg_theta);
   dy = sin(reg_theta);
   l_min = l_max = w_min = w_max = 0.0;
-  for(i=0; i<reg_size; i++)//ÓÃÏòÁ¿ÄÚ»ıÇóÔÚÏß¶Î·½ÏòºÍÓëÏß¶Î·½Ïò´¹Ö±·½ÏòµÄÍ¶Ó°Çól,w
+  for(i=0; i<reg_size; i++)//ç”¨å‘é‡å†…ç§¯æ±‚åœ¨çº¿æ®µæ–¹å‘å’Œä¸çº¿æ®µæ–¹å‘å‚ç›´æ–¹å‘çš„æŠ•å½±æ±‚l,w
     {
       l =  ( (double) reg[i].x - reg_center_x) * dx + ( (double) reg[i].y - reg_center_y) * dy;
       w = -( (double) reg[i].x - reg_center_x) * dy + ( (double) reg[i].y - reg_center_y) * dx;
@@ -1705,7 +1705,7 @@ static void region2rect2(point2i * reg, int reg_size,double reg_center_x,double 
      the image.
    */
   if( rec->width < 1.0 ) 
-	 rec->width = 1.0;
+   rec->width = 1.0;
 }
 /*----------------------------------------------------------------------------*/
 /** Build a region of pixels that share the same angle, up to a
@@ -1896,7 +1896,7 @@ static int reduce_region_radius( struct point2i * reg, int * reg_size,
   if( angles == NULL || angles->data == NULL )
     error("reduce_region_radius: invalid image 'angles'.");
 
-  /* compute region point2is density */ //¸ÃÃÜ¶ÈÅĞ¶ÏÒÑ¾­ÔÚº¯ÊıÍâÅĞ¶Ï¹ı£¬Ó¦¸Ã¿ÉÒÔ²»ÓÃÔÚÅĞ¶ÏÁË°É
+  /* compute region point2is density */ //è¯¥å¯†åº¦åˆ¤æ–­å·²ç»åœ¨å‡½æ•°å¤–åˆ¤æ–­è¿‡ï¼Œåº”è¯¥å¯ä»¥ä¸ç”¨åœ¨åˆ¤æ–­äº†å§
   density = (double) *reg_size /
                          ( dist(rec->x1,rec->y1,rec->x2,rec->y2) * rec->width );
 
@@ -1994,15 +1994,15 @@ static int refine( struct point2i * reg, int * reg_size, image_double modgrad,
         {
           angle = angles->data[ reg[i].x + reg[i].y * angles->xsize ];
           ang_d = angle_diff_signed(angle,ang_c);
-          sum += ang_d;//¼ÓÉÏ½Ç¶È²î
-          s_sum += ang_d * ang_d;//¼ÓÉÏ½Ç¶È²îµÄÆ½·½
+          sum += ang_d;//åŠ ä¸Šè§’åº¦å·®
+          s_sum += ang_d * ang_d;//åŠ ä¸Šè§’åº¦å·®çš„å¹³æ–¹
           ++n;
         }
     }
   mean_angle = sum / (double) n;
-  //ÒÔ2±¶±ê×¼²î×÷ÎªĞÂµÄ½Ç¶ÈÈİÈÌ¶È£¬×î¿ªÊ¼Îª22.5¡ã*pi/180
+  //ä»¥2å€æ ‡å‡†å·®ä½œä¸ºæ–°çš„è§’åº¦å®¹å¿åº¦ï¼Œæœ€å¼€å§‹ä¸º22.5Â°*pi/180
   tau = 2.0 * sqrt( (s_sum - 2.0 * mean_angle * sum) / (double) n  +  mean_angle*mean_angle ); /* 2 * standard deviation */
-  //ÒÔĞÂµÄ½Ç¶ÈÈİÈÌ¶ÈÖØĞÂ½øĞĞÇøÓòÉú³¤
+  //ä»¥æ–°çš„è§’åº¦å®¹å¿åº¦é‡æ–°è¿›è¡ŒåŒºåŸŸç”Ÿé•¿
   /* find a new region from the same starting point2i and new angle tolerance */
   region_grow(reg[0].x,reg[0].y,angles,reg,reg_size,&reg_angle,used,tau);
 
@@ -2025,136 +2025,136 @@ static int refine( struct point2i * reg, int * reg_size, image_double modgrad,
   return TRUE;
 }
 //--------------------------------------------------------
-//my code
+//my code, read this, check the paper. add xiaohu
 bool isArcSegment(point2i * reg, int reg_size, struct rect * main_rect, image_double ll_angles,image_char used,image_char pol,
                          double prec, double p, rect * rect_up, rect * rect_down)
 {
-	point2i * reg_up = (point2i*)malloc(reg_size*sizeof(point2i));
-	point2i * reg_down = (point2i*)malloc(reg_size*sizeof(point2i));
-	int   reg_up_size,reg_down_size;
-	double reg_up_theta,reg_down_theta, main_theta;
-	double reg_up_sin_s,reg_up_cos_s,reg_down_sin_s,reg_down_cos_s;
-	double reg_up_x,reg_up_y,reg_down_x,reg_down_y;
-	//double weight,sum;
-	double temp1,temp2;
-	int same_pol_cnt,opp_pol_cnt;
-	int i;
+  point2i * reg_up = (point2i*)malloc(reg_size*sizeof(point2i));
+  point2i * reg_down = (point2i*)malloc(reg_size*sizeof(point2i));
+  int   reg_up_size,reg_down_size;
+  double reg_up_theta,reg_down_theta, main_theta;
+  double reg_up_sin_s,reg_up_cos_s,reg_down_sin_s,reg_down_cos_s;
+  double reg_up_x,reg_up_y,reg_down_x,reg_down_y;
+  //double weight,sum;
+  double temp1,temp2;
+  int same_pol_cnt,opp_pol_cnt;
+  int i;
 
-	same_pol_cnt = opp_pol_cnt = 0;
-	reg_up_size = reg_down_size = 0;
+  same_pol_cnt = opp_pol_cnt = 0;
+  reg_up_size = reg_down_size = 0;
 
-	for ( i = 0; i < reg_size; i++)
-	{
-		switch(pol->data[reg[i].y*pol->xsize+reg[i].x])
-		{
-			case SAME_POL: same_pol_cnt++;break;//Í³¼ÆÍ¬¼«ĞÔµÄpixelÊıÁ¿
-			case OPP_POL : opp_pol_cnt++; break;//Í³¼Æ·´¼«ĞÔµÄpixelÊıÁ¿
-			default:break;
-		}
-	 //Ñ¡Óëtheta½Ç¶ÈÎª·¨Ïß·½Ïò£¬¹ıÖÊĞÄµÄÖ±Ïß·½³ÌÎª dx*(x-xi)+dy*(y-yi)=0,ÔòÓë·½ÏòÏàÍ¬µÄµã´úÈë·½³ÌµÃµ½¾àÀëd,d>=0¹éÈëreg_up,d<0¹éÈëreg_down
-	  if( main_rect->dx*( reg[i].x - main_rect->x ) + main_rect->dy*( reg[i].y - main_rect->y ) >= 0)
-		  reg_up[reg_up_size++] = reg[i];
-	  else
-		  reg_down[reg_down_size++] = reg[i];
-	}
-	//¶ÔÓÚÒÑ¾­±»±ê¼Ç¹ı¼«ĞÔµÄÇøÓò£¬ÎÒÃÇÃ»±ØÒªÔÙ½øĞĞ¼«ĞÔ·ÖÎö
-	if( (same_pol_cnt + opp_pol_cnt) > reg_size/2)
-	{
-		if(same_pol_cnt > opp_pol_cnt )
-		{
-			main_rect->polarity = 1;
-		    rect_up->polarity = 1;
-	        rect_down->polarity = 1;
-		}
-		else
-		{
-			main_rect->polarity = -1;
-		    rect_up->polarity = -1;
-	        rect_down->polarity = -1;
-		}
-		return TRUE;
-	}
-	//¼ÆËãÓëÖ÷·½ÏòÏàÍ¬µÄÉÏ°ë²¿·ÖÇøÓòÖÊĞÄ
-	reg_up_x = reg_up_y = 0;
-	//sum = 0;
-	reg_up_sin_s = reg_up_cos_s = 0;
-	for ( i = 0; i< reg_up_size; i++)
-	{
-		//weight = modgrad->data[ reg_up[i].x + reg_up[i].y * modgrad->xsize ];
-		//reg_up_x += (double)weight*reg_up[i].x;
-		//reg_up_y += (double)weight*reg_up[i].y;
-		//sum += weight;
-		reg_up_sin_s += sin(ll_angles->data[ reg_up[i].x + reg_up[i].y * ll_angles->xsize ]);
-		reg_up_cos_s += cos(ll_angles->data[ reg_up[i].x + reg_up[i].y * ll_angles->xsize ]);
-	}
-	//reg_up_x /= sum;
-	//reg_up_y /= sum;
-	reg_up_theta = atan2(reg_up_sin_s,reg_up_cos_s);
-	//¼ÆËãÖ÷·½ÏòÉÏµÄÏÂ°ë²¿·ÖÇøÓòÖÊĞÄ
-	reg_down_x = reg_down_y = 0;
-	//sum = 0;
-	reg_down_sin_s = reg_down_cos_s = 0;
-	for ( i = 0; i< reg_down_size; i++)
-	{
-		//weight = modgrad->data[ reg_down[i].x + reg_down[i].y * modgrad->xsize ];
-		//reg_down_x += (double)weight*reg_down[i].x;
-		//reg_down_y += (double)weight*reg_down[i].y;
-		//sum += weight;
-		reg_down_sin_s += sin(ll_angles->data[ reg_down[i].x + reg_down[i].y * ll_angles->xsize ]);
-		reg_down_cos_s += cos(ll_angles->data[ reg_down[i].x + reg_down[i].y * ll_angles->xsize ]);
-	}
-	//reg_down_x /= sum;
-	//reg_down_y /= sum;
-	reg_down_theta = atan2(reg_down_sin_s,reg_down_cos_s);
-	main_theta  = atan2(reg_up_sin_s+reg_down_sin_s,reg_up_cos_s+reg_down_cos_s);
-	//¹À¼ÆÁ½¸öÇøÓò·½Ïò
-	//reg_up_theta = get_theta(reg_up,reg_up_size,reg_up_x,reg_up_y,modgrad,main_rect->theta,prec);
-	//reg_down_theta = get_theta(reg_down,reg_down_size,reg_down_x,reg_down_y,modgrad,main_rect->theta,prec);
-	//Ğı×ªµ½0¡ã½øĞĞ±È½Ïtheta,reg_up_theta,reg_down_theta
-	temp1 = angle_diff_signed(reg_up_theta,main_theta);
-	temp2 = angle_diff_signed(reg_down_theta,main_theta);
-	/*if(temp1>= M_PI/2 || temp1 <= -M_PI/2)
-		temp1 += 0;
-	if(temp2>= M_PI/2 || temp2 <= -M_PI/2)
-		temp2 += 0;*/
-	//if(temp1 >= prec/10 && temp2 <= -prec/10)//Ë³Ê±Õë,±ßÔµµÄÌİ¶È·½ÏòÓë»¡µÄÖ¸ÏòÔ²ĞÄ·½ÏòÏà·´£¬polarity = -1
-	if(temp1 >= M_1_8_PI/10 && temp2 <= -M_1_8_PI/10)//ÊµÑéÖ¤Ã÷È¡¶¨ÖµĞ§¹û¸üºÃ
-	{
-		main_rect->polarity = -1;
-		rect_up->polarity = -1;
-	    rect_down->polarity = -1;
-		//±ê¼Ç¼«ĞÔ
-	    for ( i = 0; i < reg_size; i++)
-	    {
-			pol->data[reg[i].y*pol->xsize+reg[i].x] = OPP_POL;//-1
-	    }
-	}
-	//else if(temp1 <= -prec/10 && temp2 >= prec/10)//ÄæÊ±Õë£¬±ßÔµµÄÌİ¶È·½ÏòÓë»¡µÄÖ¸ÏòÔ²ĞÄ·½ÏòÏàÍ¬£¬polarity = 1
-	else if(temp1 <= -M_1_8_PI/10 && temp2 >= M_1_8_PI/10)//ÊµÑéÖ¤Ã÷È¡¶¨ÖµĞ§¹û¸üºÃ
-	{
-		main_rect->polarity = 1;
-		rect_up->polarity = 1;
-	    rect_down->polarity = 1;
-		//±ê¼Ç¼«ĞÔ
-	    for ( i = 0; i < reg_size; i++)
-	    {
-			pol->data[reg[i].y*pol->xsize+reg[i].x] = SAME_POL;//1
-	    }
-	}
-	else
-	{
-		//ÔÚregion_growÖĞÒÑ¾­ÖÃÎªUSEDÁË
-		//for ( i = 0; i< reg_size; i++)
-		//	used->data[reg[i].y*used->xsize+reg[i].x] = USED;
-		return FALSE;
-	}
-	
-	//region2rect2(reg_up,reg_up_size,reg_up_x,reg_up_y,reg_up_theta,prec,p,rect_up);
-	//region2rect2(reg_down,reg_down_size,reg_down_x,reg_down_y,reg_down_theta,prec,p,rect_down);
+  for ( i = 0; i < reg_size; i++)
+  {
+    switch(pol->data[reg[i].y*pol->xsize+reg[i].x])
+    {
+      case SAME_POL: same_pol_cnt++;break;//ç»Ÿè®¡åŒææ€§çš„pixelæ•°é‡
+      case OPP_POL : opp_pol_cnt++; break;//ç»Ÿè®¡åææ€§çš„pixelæ•°é‡
+      default:break;
+    }
+   //é€‰ä¸thetaè§’åº¦ä¸ºæ³•çº¿æ–¹å‘ï¼Œè¿‡è´¨å¿ƒçš„ç›´çº¿æ–¹ç¨‹ä¸º dx*(x-xi)+dy*(y-yi)=0,åˆ™ä¸æ–¹å‘ç›¸åŒçš„ç‚¹ä»£å…¥æ–¹ç¨‹å¾—åˆ°è·ç¦»d,d>=0å½’å…¥reg_up,d<0å½’å…¥reg_down
+    if( main_rect->dx*( reg[i].x - main_rect->x ) + main_rect->dy*( reg[i].y - main_rect->y ) >= 0)
+      reg_up[reg_up_size++] = reg[i];
+    else
+      reg_down[reg_down_size++] = reg[i];
+  }
+  //å¯¹äºå·²ç»è¢«æ ‡è®°è¿‡ææ€§çš„åŒºåŸŸï¼Œæˆ‘ä»¬æ²¡å¿…è¦å†è¿›è¡Œææ€§åˆ†æ
+  if( (same_pol_cnt + opp_pol_cnt) > reg_size/2)
+  {
+    if(same_pol_cnt > opp_pol_cnt )
+    {
+      main_rect->polarity = 1;
+        rect_up->polarity = 1;
+          rect_down->polarity = 1;
+    }
+    else
+    {
+      main_rect->polarity = -1;
+        rect_up->polarity = -1;
+          rect_down->polarity = -1;
+    }
+    return TRUE;
+  }
+  //è®¡ç®—ä¸ä¸»æ–¹å‘ç›¸åŒçš„ä¸ŠåŠéƒ¨åˆ†åŒºåŸŸè´¨å¿ƒ
+  reg_up_x = reg_up_y = 0;
+  //sum = 0;
+  reg_up_sin_s = reg_up_cos_s = 0;
+  for ( i = 0; i< reg_up_size; i++)
+  {
+    //weight = modgrad->data[ reg_up[i].x + reg_up[i].y * modgrad->xsize ];
+    //reg_up_x += (double)weight*reg_up[i].x;
+    //reg_up_y += (double)weight*reg_up[i].y;
+    //sum += weight;
+    reg_up_sin_s += sin(ll_angles->data[ reg_up[i].x + reg_up[i].y * ll_angles->xsize ]);
+    reg_up_cos_s += cos(ll_angles->data[ reg_up[i].x + reg_up[i].y * ll_angles->xsize ]);
+  }
+  //reg_up_x /= sum;
+  //reg_up_y /= sum;
+  reg_up_theta = atan2(reg_up_sin_s,reg_up_cos_s);
+  //è®¡ç®—ä¸»æ–¹å‘ä¸Šçš„ä¸‹åŠéƒ¨åˆ†åŒºåŸŸè´¨å¿ƒ
+  reg_down_x = reg_down_y = 0;
+  //sum = 0;
+  reg_down_sin_s = reg_down_cos_s = 0;
+  for ( i = 0; i< reg_down_size; i++)
+  {
+    //weight = modgrad->data[ reg_down[i].x + reg_down[i].y * modgrad->xsize ];
+    //reg_down_x += (double)weight*reg_down[i].x;
+    //reg_down_y += (double)weight*reg_down[i].y;
+    //sum += weight;
+    reg_down_sin_s += sin(ll_angles->data[ reg_down[i].x + reg_down[i].y * ll_angles->xsize ]);
+    reg_down_cos_s += cos(ll_angles->data[ reg_down[i].x + reg_down[i].y * ll_angles->xsize ]);
+  }
+  //reg_down_x /= sum;
+  //reg_down_y /= sum;
+  reg_down_theta = atan2(reg_down_sin_s,reg_down_cos_s);
+  main_theta  = atan2(reg_up_sin_s+reg_down_sin_s,reg_up_cos_s+reg_down_cos_s);
+  //ä¼°è®¡ä¸¤ä¸ªåŒºåŸŸæ–¹å‘
+  //reg_up_theta = get_theta(reg_up,reg_up_size,reg_up_x,reg_up_y,modgrad,main_rect->theta,prec);
+  //reg_down_theta = get_theta(reg_down,reg_down_size,reg_down_x,reg_down_y,modgrad,main_rect->theta,prec);
+  //æ—‹è½¬åˆ°0Â°è¿›è¡Œæ¯”è¾ƒtheta,reg_up_theta,reg_down_theta
+  temp1 = angle_diff_signed(reg_up_theta,main_theta);
+  temp2 = angle_diff_signed(reg_down_theta,main_theta);
+  /*if(temp1>= M_PI/2 || temp1 <= -M_PI/2)
+    temp1 += 0;
+  if(temp2>= M_PI/2 || temp2 <= -M_PI/2)
+    temp2 += 0;*/
+  //if(temp1 >= prec/10 && temp2 <= -prec/10)//é¡ºæ—¶é’ˆ,è¾¹ç¼˜çš„æ¢¯åº¦æ–¹å‘ä¸å¼§çš„æŒ‡å‘åœ†å¿ƒæ–¹å‘ç›¸åï¼Œpolarity = -1
+  if(temp1 >= M_1_8_PI/10 && temp2 <= -M_1_8_PI/10)//å®éªŒè¯æ˜å–å®šå€¼æ•ˆæœæ›´å¥½
+  {
+    main_rect->polarity = -1;
+    rect_up->polarity = -1;
+      rect_down->polarity = -1;
+    //æ ‡è®°ææ€§
+      for ( i = 0; i < reg_size; i++)
+      {
+      pol->data[reg[i].y*pol->xsize+reg[i].x] = OPP_POL;//-1
+      }
+  }
+  //else if(temp1 <= -prec/10 && temp2 >= prec/10)//é€†æ—¶é’ˆï¼Œè¾¹ç¼˜çš„æ¢¯åº¦æ–¹å‘ä¸å¼§çš„æŒ‡å‘åœ†å¿ƒæ–¹å‘ç›¸åŒï¼Œpolarity = 1
+  else if(temp1 <= -M_1_8_PI/10 && temp2 >= M_1_8_PI/10)//å®éªŒè¯æ˜å–å®šå€¼æ•ˆæœæ›´å¥½
+  {
+    main_rect->polarity = 1;
+    rect_up->polarity = 1;
+      rect_down->polarity = 1;
+    //æ ‡è®°ææ€§
+      for ( i = 0; i < reg_size; i++)
+      {
+      pol->data[reg[i].y*pol->xsize+reg[i].x] = SAME_POL;//1
+      }
+  }
+  else
+  {
+    //åœ¨region_growä¸­å·²ç»ç½®ä¸ºUSEDäº†
+    //for ( i = 0; i< reg_size; i++)
+    //  used->data[reg[i].y*used->xsize+reg[i].x] = USED;
+    return FALSE;
+  }
+  
+  //region2rect2(reg_up,reg_up_size,reg_up_x,reg_up_y,reg_up_theta,prec,p,rect_up);
+  //region2rect2(reg_down,reg_down_size,reg_down_x,reg_down_y,reg_down_theta,prec,p,rect_down);
 
-	free(reg_up);
-	free(reg_down);
-	return TRUE;
+  free(reg_up);
+  free(reg_down);
+  return TRUE;
 }
 
 /*----------------------------------------------------------------------------*/
@@ -2176,7 +2176,7 @@ double * LineSegmentDetection( int * n_out,
   double * return_value;
   image_double scaled_image,angles,modgrad;
   image_char used;
-  image_char pol;  //¶ÔÓÚ¹¹³ÉÔ²»¡µÄÏñËØ±ê¼Ç¼«ĞÔ£¬Èç¹ûÌİ¶ÈµÄ·½ÏòºÍ»¡µÄ·½ÏòÖ¸ÏòÒ»ÖÂ£¬ÔòÎªSAME_POLE,·ñÔòÎªOPP_POLE,¸Ã±ê¼Ç³õÊ¼ÊÇÎª0
+  image_char pol;  //å¯¹äºæ„æˆåœ†å¼§çš„åƒç´ æ ‡è®°ææ€§ï¼Œå¦‚æœæ¢¯åº¦çš„æ–¹å‘å’Œå¼§çš„æ–¹å‘æŒ‡å‘ä¸€è‡´ï¼Œåˆ™ä¸ºSAME_POLE,å¦åˆ™ä¸ºOPP_POLE,è¯¥æ ‡è®°åˆå§‹æ˜¯ä¸º0
   image_int region = NULL;
   struct coorlist * list_p;
   struct coorlist * list_p_temp;
@@ -2217,17 +2217,17 @@ double * LineSegmentDetection( int * n_out,
   image = new_image_double_ptr( (unsigned int) X, (unsigned int) Y, img );
   if( scale != 1.0 )
     {
-	  //°´ÕÕscale½øĞĞ¸ßË¹½µ²ÉÑùµÄÍ¼Ïñ£¬×¢Òâ¿í¸ßÊÇÉÏÈ¡Õû£¬Éè²ÉÑùºó¸ß¿íÎªimgN*imgM
+    //æŒ‰ç…§scaleè¿›è¡Œé«˜æ–¯é™é‡‡æ ·çš„å›¾åƒï¼Œæ³¨æ„å®½é«˜æ˜¯ä¸Šå–æ•´ï¼Œè®¾é‡‡æ ·åé«˜å®½ä¸ºimgN*imgM
       scaled_image = gaussian_sampler( image, scale, sigma_scale );
-	  //·µ»ØÒ»ÕÅÌİ¶È½Ç¶ÈË³Ê±ÕëĞı×ª90¡ãºóµÄalign½Ç¶ÈÍ¼angles£¬Èç¹ûÌİ¶È½Ç¶ÈÊÇ(gx,gy)->(-gy,gx)£¬
-	  //ºÍÌİ¶ÈµÄÄ£µÄÍ¼modgrad,È»ºó°´ÕÕn_bins½øĞĞÎ±ÅÅĞò·µ»ØÁ´±íµÄÍ·Ö¸Õëlist_p,ÀïÃæ´æµÄÊÇ×ø±ê
-	  angles = ll_angle( scaled_image, rho, &list_p,&modgrad, (unsigned int) n_bins );
+    //è¿”å›ä¸€å¼ æ¢¯åº¦è§’åº¦é¡ºæ—¶é’ˆæ—‹è½¬90Â°åçš„alignè§’åº¦å›¾anglesï¼Œå¦‚æœæ¢¯åº¦è§’åº¦æ˜¯(gx,gy)->(-gy,gx)ï¼Œ
+    //å’Œæ¢¯åº¦çš„æ¨¡çš„å›¾modgrad,ç„¶åæŒ‰ç…§n_binsè¿›è¡Œä¼ªæ’åºè¿”å›é“¾è¡¨çš„å¤´æŒ‡é’ˆlist_p,é‡Œé¢å­˜çš„æ˜¯åæ ‡
+    angles = ll_angle( scaled_image, rho, &list_p,&modgrad, (unsigned int) n_bins );
       free_image_double(scaled_image);
     }
   else
     angles = ll_angle( image, rho, &list_p,&modgrad,(unsigned int) n_bins );
-  xsize = angles->xsize;//½µ²ÉÑùºóµÄÍ¼ÏñµÄx size£¬¿í¶ÈimgM
-  ysize = angles->ysize;//½µ²ÉÑùºóµÄÍ¼ÏñµÄy size£¬¸ß¶ÈimgN
+  xsize = angles->xsize;//é™é‡‡æ ·åçš„å›¾åƒçš„x sizeï¼Œå®½åº¦imgM
+  ysize = angles->ysize;//é™é‡‡æ ·åçš„å›¾åƒçš„y sizeï¼Œé«˜åº¦imgN
 
   /* Number of Tests - NT
 
@@ -2244,16 +2244,16 @@ double * LineSegmentDetection( int * n_out,
   */
   logNT = 5.0 * ( log10( (double) xsize ) + log10( (double) ysize ) ) / 2.0
           + log10(11.0);
-  min_reg_size = (int) (-logNT/log10(p)); /* minimal number of point2is in region that can give a meaningful event£¬Ã¿¸ö¾ØĞÎÇøÓòÄÚalign point2i×îĞ¡ÊıÁ¿*/
+  min_reg_size = (int) (-logNT/log10(p)); /* minimal number of point2is in region that can give a meaningful eventï¼Œæ¯ä¸ªçŸ©å½¢åŒºåŸŸå†…align point2iæœ€å°æ•°é‡*/
   /* initialize some structures */
   if( reg_img != NULL && reg_x != NULL && reg_y != NULL ) /* save region data */
-    region = new_image_int_ini(angles->xsize,angles->ysize,0);//ÉêÇëÓë½µ²ÉÑùºóÍ¼ÏñÒ»Ñù´óĞ¡µÄintÀàĞÍµÄÄÚ´æ£¬¸ÃÄÚ´æµÄ×÷ÓÃÊÇ½«¼ì²âµ½µÄÏß¶ÎĞòºÅ±êµ½ÏàÓ¦µÄÍ¼Ïñ¸ñ×ÓÀï£¬¸Ã²¿·Ö¿ÉÓĞ¿ÉÎŞ
-  used = new_image_char_ini(xsize,ysize,NOTUSED);//ÉêÇëÓë½µ²ÉÑùºóÍ¼ÏñÒ»Ñù´óĞ¡µÄcharÀàĞÍµÄÄÚ´æ
-  pol  = new_image_char_ini(xsize,ysize,NOTDEF_POL);//ÏñËØµã´¦µÄÌİ¶ÈºÍ»¡Ö¸ÏòµÄ·½ÏòµÄ¼«ĞÔ±ê¼Ç
+    region = new_image_int_ini(angles->xsize,angles->ysize,0);//ç”³è¯·ä¸é™é‡‡æ ·åå›¾åƒä¸€æ ·å¤§å°çš„intç±»å‹çš„å†…å­˜ï¼Œè¯¥å†…å­˜çš„ä½œç”¨æ˜¯å°†æ£€æµ‹åˆ°çš„çº¿æ®µåºå·æ ‡åˆ°ç›¸åº”çš„å›¾åƒæ ¼å­é‡Œï¼Œè¯¥éƒ¨åˆ†å¯æœ‰å¯æ— 
+  used = new_image_char_ini(xsize,ysize,NOTUSED);//ç”³è¯·ä¸é™é‡‡æ ·åå›¾åƒä¸€æ ·å¤§å°çš„charç±»å‹çš„å†…å­˜
+  pol  = new_image_char_ini(xsize,ysize,NOTDEF_POL);//åƒç´ ç‚¹å¤„çš„æ¢¯åº¦å’Œå¼§æŒ‡å‘çš„æ–¹å‘çš„ææ€§æ ‡è®°
   reg = (struct point2i *) calloc( (size_t) (xsize*ysize), sizeof(struct point2i) );
   if( reg == NULL ) error("not enough memory!");
 
-  list_p_temp = list_p;//¼ÇÂ¼Í·Á´±íµÄÍ·Ö¸Õë£¬ºóÃæĞèÒªÀûÓÃ¸ÃÍ·Ö¸Õë½øĞĞÄÚ´æÊÍ·Å
+  list_p_temp = list_p;//è®°å½•å¤´é“¾è¡¨çš„å¤´æŒ‡é’ˆï¼Œåé¢éœ€è¦åˆ©ç”¨è¯¥å¤´æŒ‡é’ˆè¿›è¡Œå†…å­˜é‡Šæ”¾
   /* search for line segments */
   for(; list_p_temp != NULL; list_p_temp = list_p_temp->next )
     if( used->data[ list_p_temp->x + list_p_temp->y * used->xsize ] == NOTUSED &&
@@ -2262,23 +2262,23 @@ double * LineSegmentDetection( int * n_out,
           because we are only interested in the exact NOTDEF value */
       {
         /* find the region of connected point2i and ~equal angle */
-		//regÊÇ³¤¶ÈÎªimgN*imgMµÄÒ»Î¬point2iĞÍÊı×é£¬ÓĞ×ã¹»´óµÄ¿Õ¼ä´æ´¢Éú³¤µÄÇøÓò£¬reg_sizeÊÇÀïÃæ´æ´¢ÁËÊı¾İµÄÊıÁ¿£¬¼ÇÂ¼µÄÊÇÇøÓòµÄpoint2i
-		//reg_angleÊÇ¸ÃÇøÓòµÄÖ÷·½ÏòµÄdoubleĞÍ±äÁ¿£¬´æµÄ½Ç¶ÈÊÇ»¡¶ÈÖÆ
-		  seed_cnt ++;
+        //regæ˜¯é•¿åº¦ä¸ºimgN*imgMçš„ä¸€ç»´point2iå‹æ•°ç»„ï¼Œæœ‰è¶³å¤Ÿå¤§çš„ç©ºé—´å­˜å‚¨ç”Ÿé•¿çš„åŒºåŸŸï¼Œreg_sizeæ˜¯é‡Œé¢å­˜å‚¨äº†æ•°æ®çš„æ•°é‡ï¼Œè®°å½•çš„æ˜¯åŒºåŸŸçš„point2i
+        //reg_angleæ˜¯è¯¥åŒºåŸŸçš„ä¸»æ–¹å‘çš„doubleå‹å˜é‡ï¼Œå­˜çš„è§’åº¦æ˜¯å¼§åº¦åˆ¶
+        seed_cnt ++;
         region_grow( list_p_temp->x, list_p_temp->y, angles, reg, &reg_size,&reg_angle, used, prec );
 
         /* reject small regions */
         if( reg_size < min_reg_size ) 
-		{
-			reg_size_toosmall_cnt++;
-			continue;
-		}
+        {
+          reg_size_toosmall_cnt++;
+          continue;
+        }
 
         /* construct rectangular approximation for the region */
-		//¸ù¾İÉú³¤µÄÇøÓòµÃµ½½üËÆÍâ½Ó¾ØÕóµÄ²ÎÊı£¬¾ØĞÎ²ÎÊı°üÀ¨:Æğµã£¬ÖÕµã£¬·½Ïòtheta£¬¿í¶ÈµÈ
+        //æ ¹æ®ç”Ÿé•¿çš„åŒºåŸŸå¾—åˆ°è¿‘ä¼¼å¤–æ¥çŸ©é˜µçš„å‚æ•°ï¼ŒçŸ©å½¢å‚æ•°åŒ…æ‹¬:èµ·ç‚¹ï¼Œç»ˆç‚¹ï¼Œæ–¹å‘thetaï¼Œå®½åº¦ç­‰
         region2rect(reg,reg_size,modgrad,reg_angle,prec,p,&main_rect);
-		if( FALSE == isArcSegment(reg,reg_size,&main_rect,angles,used,pol,prec,p,&rect_up,&rect_down))
-			continue;
+        if( FALSE == isArcSegment(reg,reg_size,&main_rect,angles,used,pol,prec,p,&rect_up,&rect_down))
+          continue;
         /* Check if the rectangle exceeds the minimal density of
            region point2is. If not, try to improve the region.
            The rectangle will be rejected if the final one does
@@ -2289,15 +2289,15 @@ double * LineSegmentDetection( int * n_out,
            The original algorithm is obtained with density_th = 0.0.
          */
 
-        //Ìá´¿£¬Í¨¹ıÖØĞÂÉú³¤ÇøÓòÀ´´ïµ½ÆÚÍûµÄÃÜ¶ÈãĞÖµ 
+        //æçº¯ï¼Œé€šè¿‡é‡æ–°ç”Ÿé•¿åŒºåŸŸæ¥è¾¾åˆ°æœŸæœ›çš„å¯†åº¦é˜ˆå€¼ 
         if( !refine( reg, &reg_size, modgrad, reg_angle,
                      prec, p, &main_rect, used, angles, density_th ) ) continue;
 
-		refine_cnt++;
+        refine_cnt++;
         // compute NFA value 
-        log_nfa = rect_improve(&main_rect,angles,logNT,log_eps);//Í¨¹ı¸ÄÉÆ¾ØĞÎÇøÓòÒÔ³¢ÊÔµÃµ½ÆÚÍûµÄnfaÖµ
-        if( log_nfa <= log_eps ) //´íÎó¿ØÖÆ
-			continue;
+        log_nfa = rect_improve(&main_rect,angles,logNT,log_eps);//é€šè¿‡æ”¹å–„çŸ©å½¢åŒºåŸŸä»¥å°è¯•å¾—åˆ°æœŸæœ›çš„nfaå€¼
+        if( log_nfa <= log_eps ) //é”™è¯¯æ§åˆ¶
+          continue;
         // A New Line Segment was found! 
         ++ls_count;  // increase line segment counter 
 
@@ -2318,36 +2318,36 @@ double * LineSegmentDetection( int * n_out,
           }
 
         /* add line segment found to output */
-		add_8tuple( out, main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2,main_rect.dx,main_rect.dy,
-			dist(main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2), main_rect.polarity);
+        add_8tuple( out, main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2,main_rect.dx,main_rect.dy,
+        dist(main_rect.x1, main_rect.y1, main_rect.x2, main_rect.y2), main_rect.polarity);
 
-		//------------------------------------------------------------------------------------------------- 
-		/*
-		cout<<ls_count<<'\t'<<main_rect.theta<<'\t'<<main_rect.theta*180/M_PI<<"\t polarity:"<<main_rect.polarity<<endl;//´òÓ¡theta
-		
-			fstream file1,file2;
-			if(ls_count == 1)//Çå¿ÕÄÚÈİ
-			{
-				file1.open("D:\\Graduate Design\\picture\\sp\\coor.txt",ios::out | ios::trunc);
-				file1.close();
-				file2.open("D:\\Graduate Design\\picture\\sp\\reg.txt",ios::out | ios::trunc);
-				file2.close();
-			}
-			
-			file1.open("D:\\Graduate Design\\picture\\sp\\coor.txt",ios::app);
-			file1<<main_rect.x1<<'\t'<<main_rect.y1<<'\t'<<main_rect.x2<<'\t'<<main_rect.y2<<'\t'<<(main_rect.theta*180/M_PI)<<endl;
-			file1.close();
-			
-			if(ls_count == 1)//±£³ÖµÚ1¸ùÏß¶ÎµÄÇøÓò
-			{
-				file2.open("D:\\Graduate Design\\picture\\sp\\reg.txt",ios::app);
-				for(i=0; i<reg_size; i++)
-					file2<<angles->data[ reg[i].x + reg[i].y * angles->xsize ]*180/M_PI<<endl;
-				file2.close();
-			}
-			*/
-		//-------------------------------------------------------------------------------------------------------
-        /* add region number to 'region' image if needed */ //½«¼ì²âµ½µÄÏß¶ÎĞòºÅ±êµ½ÏàÓ¦µÄÍ¼Ïñ¸ñ×ÓÀï£¬¸Ã²¿·Ö¿ÉÓĞ¿ÉÎŞ
+    //------------------------------------------------------------------------------------------------- 
+    /*
+    cout<<ls_count<<'\t'<<main_rect.theta<<'\t'<<main_rect.theta*180/M_PI<<"\t polarity:"<<main_rect.polarity<<endl;//æ‰“å°theta
+    
+      fstream file1,file2;
+      if(ls_count == 1)//æ¸…ç©ºå†…å®¹
+      {
+        file1.open("D:\\Graduate Design\\picture\\sp\\coor.txt",ios::out | ios::trunc);
+        file1.close();
+        file2.open("D:\\Graduate Design\\picture\\sp\\reg.txt",ios::out | ios::trunc);
+        file2.close();
+      }
+      
+      file1.open("D:\\Graduate Design\\picture\\sp\\coor.txt",ios::app);
+      file1<<main_rect.x1<<'\t'<<main_rect.y1<<'\t'<<main_rect.x2<<'\t'<<main_rect.y2<<'\t'<<(main_rect.theta*180/M_PI)<<endl;
+      file1.close();
+      
+      if(ls_count == 1)//ä¿æŒç¬¬1æ ¹çº¿æ®µçš„åŒºåŸŸ
+      {
+        file2.open("D:\\Graduate Design\\picture\\sp\\reg.txt",ios::app);
+        for(i=0; i<reg_size; i++)
+          file2<<angles->data[ reg[i].x + reg[i].y * angles->xsize ]*180/M_PI<<endl;
+        file2.close();
+      }
+      */
+    //-------------------------------------------------------------------------------------------------------
+        /* add region number to 'region' image if needed */ //å°†æ£€æµ‹åˆ°çš„çº¿æ®µåºå·æ ‡åˆ°ç›¸åº”çš„å›¾åƒæ ¼å­é‡Œï¼Œè¯¥éƒ¨åˆ†å¯æœ‰å¯æ— 
         if( region != NULL )
           for(i=0; i<reg_size; i++)
             region->data[ reg[i].x + reg[i].y * region->xsize ] = ls_count;
@@ -2364,14 +2364,14 @@ double * LineSegmentDetection( int * n_out,
   free_image_char(pol);
   free( (void *) reg );
 //  free( (void *) mem_p );
-  //ÊÍ·Å·Ö³É1024ÇøµÄ´æ´¢Ìİ¶È´Ó´óµ½Ğ¡µÄÁ´±í,mycode
+  //é‡Šæ”¾åˆ†æˆ1024åŒºçš„å­˜å‚¨æ¢¯åº¦ä»å¤§åˆ°å°çš„é“¾è¡¨,mycode
   //---------------------------------------
   list_p_temp = list_p->next;
   while(list_p_temp != NULL)
   {
-	  free(list_p);
-	  list_p = list_p_temp;
-	  list_p_temp = list_p->next;
+    free(list_p);
+    list_p = list_p_temp;
+    list_p_temp = list_p->next;
   }
   free(list_p);
 
@@ -2409,20 +2409,20 @@ double * LineSegmentDetection( int * n_out,
 /*------------------------------------------------------------------------------------------------*/
 /**
 my code,Alan Lu
-ÊäÈë
-img  : ÊäÈëÍ¼ÏñµÄÒ»Î¬doubleĞÍÊı×é,´óĞ¡ÎªY*X£¬°´ÕÕĞĞÓÅÏÈ´æ´¢£¬´«ÈëÇ°ĞèÒªÓµÓĞÄÚ´æ
-X    : ÊäÈëÍ¼ÏñµÄcolumns
-Y    £ºÊäÈëÍ¼ÏñµÄrows
-Êä³ö
-n_out: lsdËã·¨¼ì²âµÃµ½µÄÏß¶ÎµÄÊıÁ¿n£¬returnµÄ·µ»ØÖµÊÇnÌõÏß¶Î£¬ÎªÒ»Î¬doubleĞÍÊı×é£¬³¤¶ÈÎª8*n£¬Ã¿8¸öÎªÒ»×é£¬´æ×Åx1,y1,x2,y2,dx,dy,width,polarity
-reg_img: Êä³ö±ê¼ÇÇøÓò£¬ÊÇÒ»Î¬µÄintĞÍÊı×é£¬´óĞ¡reg_y*reg_x,ÔÚÏàÓ¦µÄÏñËØÎ»ÖÃ±ê¼Ç×ÅËüÊôÓÚµÄÏß¶Î(1,2,3,...n),Èç¹ûÖµÎª0±íÊ¾²»ÊôÓÚÈÎºÎÏß¶Î.
-         ¼ÙÈçÍâ²¿ÊÇint * region_img,ÔòÖ»ĞèÒª &region_img,¾Í¿ÉÒÔµÃµ½±ê¼ÇÇøÓòµÄ·µ»Ø£¬²»ĞèÒªÊ±Ö±½ÓNULL´«Èë
-reg_x  : Êä³ö±ê¼ÇÇøÓòµÄcolumns,²»ĞèÒªÊ±Ö±½ÓNULL´«Èë
-reg_y  : Êä³ö±ê¼ÇÇøÓòµÄrows,²»ĞèÒªÊ±Ö±½ÓNULL´«Èë
+è¾“å…¥
+img  : è¾“å…¥å›¾åƒçš„ä¸€ç»´doubleå‹æ•°ç»„,å¤§å°ä¸ºY*Xï¼ŒæŒ‰ç…§è¡Œä¼˜å…ˆå­˜å‚¨ï¼Œä¼ å…¥å‰éœ€è¦æ‹¥æœ‰å†…å­˜
+X    : è¾“å…¥å›¾åƒçš„columns
+Y    ï¼šè¾“å…¥å›¾åƒçš„rows
+è¾“å‡º
+n_out: lsdç®—æ³•æ£€æµ‹å¾—åˆ°çš„çº¿æ®µçš„æ•°é‡nï¼Œreturnçš„è¿”å›å€¼æ˜¯næ¡çº¿æ®µï¼Œä¸ºä¸€ç»´doubleå‹æ•°ç»„ï¼Œé•¿åº¦ä¸º8*nï¼Œæ¯8ä¸ªä¸ºä¸€ç»„ï¼Œå­˜ç€x1,y1,x2,y2,dx,dy,width,polarity
+reg_img: è¾“å‡ºæ ‡è®°åŒºåŸŸï¼Œæ˜¯ä¸€ç»´çš„intå‹æ•°ç»„ï¼Œå¤§å°reg_y*reg_x,åœ¨ç›¸åº”çš„åƒç´ ä½ç½®æ ‡è®°ç€å®ƒå±äºçš„çº¿æ®µ(1,2,3,...n),å¦‚æœå€¼ä¸º0è¡¨ç¤ºä¸å±äºä»»ä½•çº¿æ®µ.
+         å‡å¦‚å¤–éƒ¨æ˜¯int * region_img,åˆ™åªéœ€è¦ &region_img,å°±å¯ä»¥å¾—åˆ°æ ‡è®°åŒºåŸŸçš„è¿”å›ï¼Œä¸éœ€è¦æ—¶ç›´æ¥NULLä¼ å…¥
+reg_x  : è¾“å‡ºæ ‡è®°åŒºåŸŸçš„columns,ä¸éœ€è¦æ—¶ç›´æ¥NULLä¼ å…¥
+reg_y  : è¾“å‡ºæ ‡è®°åŒºåŸŸçš„rows,ä¸éœ€è¦æ—¶ç›´æ¥NULLä¼ å…¥
 */
 double * mylsd(int * n_out, double * img, int X, int Y, int ** reg_img, int * reg_x, int * reg_y)
 {
-	 /* LSD parameters */
+   /* LSD parameters */
   double scale = 0.8;       /* Scale the image by Gaussian filter to 'scale'. */
   double sigma_scale = 0.6; /* Sigma for Gaussian filter is computed as
                                 sigma = sigma_scale/scale.                    */
@@ -2438,351 +2438,352 @@ double * mylsd(int * n_out, double * img, int X, int Y, int ** reg_img, int * re
                                ang_th, log_eps, density_th, n_bins,
                                reg_img, reg_x, reg_y );
 }
-//lines: ÊäÈëµÄlines_numÌõÏß¶Î£¬Ã¿ÌõÏß¶Î8¸öÖµ£¬´æ×Åx1,y1,x2,y2,dx,dy,width,polarity
+//lines: è¾“å…¥çš„lines_numæ¡çº¿æ®µï¼Œæ¯æ¡çº¿æ®µ8ä¸ªå€¼ï¼Œå­˜ç€x1,y1,x2,y2,dx,dy,width,polarity
 //lines_num:
-//new_lines_num: ¾Ü¾ø¶ÌÏß¶ÎºóµÄnew_lines_numÌõÏß¶Î£¬´æÔÚlinesµÄÇ°Ãæ£¬¶ø¶ÌµÄÏß¶Î»á·Åµ½Î²°Í´¦
-//´Ë´¦³¤¶ÈÏŞÖÆ²ÎÊıºÜÖØÒª£ºÄ¿Ç°È¡8^2, 14^2
+//new_lines_num: æ‹’ç»çŸ­çº¿æ®µåçš„new_lines_numæ¡çº¿æ®µï¼Œå­˜åœ¨linesçš„å‰é¢ï¼Œè€ŒçŸ­çš„çº¿æ®µä¼šæ”¾åˆ°å°¾å·´å¤„
+//æ­¤å¤„é•¿åº¦é™åˆ¶å‚æ•°å¾ˆé‡è¦ï¼šç›®å‰å–8^2, 14^2
 void     rejectShortLines(double * lines, int lines_num, int * new_lines_num )
 {
-	int    new_num = 0;
-	int    shor_lines_num = 0;
-	double temp;
-	new_num = lines_num - shor_lines_num;
-	for ( int i = 0; i< new_num; i++)
-	{
-		if( lines[i*8+6] < 10)//reject short lines, the length threshold is important: 8,14 ×îºóĞèÒªµ÷½Ú
-		{
-			for ( int j = 0; j<8; j++)
-			{
-				temp = lines[i*8+j];
-				lines[i*8+j] = lines[(new_num-1)*8+j];
-				lines[(new_num-1)*8+j] = temp;
-			}
-			i--; //µ÷»»ºóĞèÒª¼ì²éµ÷»»À´µÄÏß¶Î³¤¶È£¬ĞèÒª»ØÍË
-			shor_lines_num++;
-			new_num = lines_num - shor_lines_num;
-		}
-	}
-	*new_lines_num = new_num;
+  int    new_num = 0;
+  int    shor_lines_num = 0;
+  double temp;
+  new_num = lines_num - shor_lines_num;
+  for ( int i = 0; i< new_num; i++)
+  {
+    if( lines[i*8+6] < 10)//reject short lines, the length threshold is important: 8,14 æœ€åéœ€è¦è°ƒèŠ‚
+    {
+      for ( int j = 0; j<8; j++)
+      {
+        temp = lines[i*8+j];
+        lines[i*8+j] = lines[(new_num-1)*8+j];
+        lines[(new_num-1)*8+j] = temp;
+      }
+      i--; //è°ƒæ¢åéœ€è¦æ£€æŸ¥è°ƒæ¢æ¥çš„çº¿æ®µé•¿åº¦ï¼Œéœ€è¦å›é€€
+      shor_lines_num++;
+      new_num = lines_num - shor_lines_num;
+    }
+  }
+  *new_lines_num = new_num;
 }
 
 /*----------------------------------------------------------------------------*/
-//ÊäÈë£º
-//start_angle,end_angle, ½Ç¶È·½Î»ÊÇ(-pi,pi).  
+//è¾“å…¥ï¼š
+//start_angle,end_angle, è§’åº¦æ–¹ä½æ˜¯(-pi,pi).  
 //  pi    ------->x  0
 //        |
 //        |
 //       y\/ pi/2
-//polarity: µ±polarityÎª1Ê±£¬±íÊ¾µÄÊÇ´Óstart_angle°´ÕÕÄæÊ±Õë·½ÏòĞı×ªµ½end_angleµÄ½Ç¶È;µ±polarityÎª-1Ê±£¬±íÊ¾µÄÊÇ´Óstart_angle°´ÕÕË³Ê±Õë·½ÏòĞı×ªµ½end_angleµÄ½Ç¶È;
-//·µ»ØÖµ£º Ğı×ª½Ç¶Ècoverage
+//polarity: å½“polarityä¸º1æ—¶ï¼Œè¡¨ç¤ºçš„æ˜¯ä»start_angleæŒ‰ç…§é€†æ—¶é’ˆæ–¹å‘æ—‹è½¬åˆ°end_angleçš„è§’åº¦;å½“polarityä¸º-1æ—¶ï¼Œè¡¨ç¤ºçš„æ˜¯ä»start_angleæŒ‰ç…§é¡ºæ—¶é’ˆæ–¹å‘æ—‹è½¬åˆ°end_angleçš„è§’åº¦;
+//è¿”å›å€¼ï¼š æ—‹è½¬è§’åº¦coverage
 inline double rotateAngle(double start_angle, double end_angle, int polarity)
 {
-	double coverage;
-	//Ê×ÏÈĞèÒª½«angle1ºÍangle2×ª»»µ½ 0 ~ 2pi
-	if(start_angle < 0) start_angle += M_2__PI;//ÏŞÖÆ½Ç¶ÈÔÚ0~2piÖ®¼ä
-	if(end_angle < 0 ) end_angle += M_2__PI;
-	if(polarity == 1)//¼«ĞÔÎª1
-	{
-		coverage = start_angle - end_angle;
-	}
-	else //¼«ĞÔÎª-1
-	{ 
-		coverage = end_angle - start_angle;
-	}
-	if(coverage < 0) coverage += M_2__PI;
-	return coverage;
+  double coverage;
+  //é¦–å…ˆéœ€è¦å°†angle1å’Œangle2è½¬æ¢åˆ° 0 ~ 2pi
+  if(start_angle < 0) start_angle += M_2__PI;//é™åˆ¶è§’åº¦åœ¨0~2piä¹‹é—´
+  if(end_angle < 0 ) end_angle += M_2__PI;
+  if(polarity == 1)//ææ€§ä¸º1
+  {
+    coverage = start_angle - end_angle;
+  }
+  else //ææ€§ä¸º-1
+  { 
+    coverage = end_angle - start_angle;
+  }
+  if(coverage < 0) coverage += M_2__PI;
+  return coverage;
 }
-//¶ÔÏß¶Î°´ÕÕÍ¹ĞÔºÍ¾àÀë½øĞĞ·Ö×é
-//lines: ÊäÈëµÄlines_numÌõÏß¶Î£¬Ã¿ÌõÏß¶Î8¸öÖµ£¬´æ×Åx1,y1,x2,y2,dx,dy,length,polarity
+//å¯¹çº¿æ®µæŒ‰ç…§å‡¸æ€§å’Œè·ç¦»è¿›è¡Œåˆ†ç»„
+//lines: è¾“å…¥çš„lines_numæ¡çº¿æ®µï¼Œæ¯æ¡çº¿æ®µ8ä¸ªå€¼ï¼Œå­˜ç€x1,y1,x2,y2,dx,dy,length,polarity
 //lines_num:
-//Êä³ö·Ö×égroups. Ã¿¸ö×éÊÇÒ»¸övector<int>
-//×¢Òâ£ºÇĞ¼ÇÓÃÍêregion,ĞèÒªÔÚº¯ÊıÍâÃæÊÖ¶¯ÊÍ·Åregion
+//è¾“å‡ºåˆ†ç»„groups. æ¯ä¸ªç»„æ˜¯ä¸€ä¸ªvector<int>
+//æ³¨æ„ï¼šåˆ‡è®°ç”¨å®Œregion,éœ€è¦åœ¨å‡½æ•°å¤–é¢æ‰‹åŠ¨é‡Šæ”¾region
+// todo, read this and check paper
 void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std::vector<std::vector<int>> * groups)
 {
-	if(line_num == 0)
-	{
-		groups = NULL;
-		return;
-	}
-	unsigned char isEnd = 0;//ÊÇ·ñ»¹¿ÉÒÔ¼ÌĞøËÑÑ°
-	int currentLine; //µ±Ç°Ïß¶Î
-	char * label = (char*)calloc(line_num, sizeof(char));
-	memset(label,0,sizeof(char)*line_num); //init the label all to be zero
-	int * group_up = (int*)malloc(sizeof(int)*line_num);//ÉêÇë×ã¹»ÄÚ´æ£¬´æ´¢ÑÓÏß¶Î·½ÏòµÃµ½µÄ·Ö×éµÄÏß¶Î
-	int * group_down = (int*)malloc(sizeof(int)*line_num);//´æ´¢Ïß¶Î·´·½Ïò·Ö×éµÄÏß¶Î
-	int group_up_cnt,group_down_cnt;
-	//coorlist * head,*tail;
-	std::vector<int> group_temp;
-	point2d dir_vec1,dir_vec2;
-	point2i *votebin = (point2i*)calloc(line_num,sizeof(point2i));//ÉêÇë×ã¹»ÄÚ´æ£¬ÓÃÀ´Í¶Æ±. x¼ÇÂ¼Ïß¶ÎË÷Òı£¬y¼ÇÂ¼Æ±Êı
-	int bincnt = 0;
-	int xx,yy,temp;
-	double start_angle,end_angle,angle_delta;
-	for ( int i = 0; i<line_num; i++)
-	{
-		if( label[i] == 0)//Î´±»·Ö×é¹ı
-		{
-			group_up_cnt = group_down_cnt = 0;//Ã¿¿ªÊ¼Ñ°ÕÒÒ»×é£¬ĞèÒªÖÃÁã
-			//ÏÈ´ÓµÚiÌõÏß¶ÎµÄÍ·²¿¿ªÊ¼ËÑË÷£¬½øĞĞ·Ö×é,½á¹û´æÔÚgroup_upÀïÃæ
-			group_up[group_up_cnt++] = i;//¼ÇÂ¼Ïß¶Îi,×¢ÒâÏß¶ÎÊÇ0~line_num-1
-			isEnd = 0;//ÖÃÁã£¬±íÊ¾»¹¿ÉÒÔ´Óµ±Ç°Ïß¶Î¿ªÊ¼ËÑË÷£¬»¹Î´½áÊø
-	     	currentLine = i;
-			while(isEnd == 0)
-			{
-				label[currentLine] = 1; //±ê¼Ç¸ÃÏß¶ÎÒÑ¾­±»·Ö×é
-				//head = tail = NULL;
-		        bincnt = 0;
-				dir_vec1.x = lines[currentLine*8+4];
-				dir_vec1.y = lines[currentLine*8+5];
-				if ( lines[currentLine*8+7] == 1)//¼«ĞÔÎªÕı
-				{
-					//½«dir_vec1ÄæÊ±ÕëĞı×ª45¡ã
-					dir_vec2.x = (dir_vec1.x + dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
-				    dir_vec2.y = (-dir_vec1.x + dir_vec1.y)*0.707106781186548;
-				}
-				else
-				{
-					//½«dir_vec1Ë³Ê±ÕëĞı×ª45¡ã
-					dir_vec2.x = (dir_vec1.x - dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
-				    dir_vec2.y = (dir_vec1.x + dir_vec1.y)*0.707106781186548;
-				}
-				for ( int j = 1; j<=4; j++)
-					for ( int k = 1; k<=4; k++)//ÔÚ4x4ÁÚÓòÄÚËÑË÷
-					{
-						xx = (int)(lines[currentLine*8+2]*0.8+j*dir_vec1.x+k*dir_vec2.x);
-						yy = (int)(lines[currentLine*8+3]*0.8+j*dir_vec1.y+k*dir_vec2.y);
-						if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//Ô½½ç
-							continue;
-						temp = region[yy*imgx+xx];
-						if(temp>0)//±íÊ¾ÓĞÏß¶ÎµÄÖ§³ÖÇøÓò£¬ÔÚ1~line_num
-						{
-							region[yy*imgx+xx] = -temp;//È¡¸ºÊı±ê¼Ç
-							for (xx = 0; xx<bincnt; xx++)
-							{
-								if(votebin[xx].x == temp - 1)//Èç¹ûÒÔÇ°Í¶Æ±¹ı£¬Ö±½ÓÔÚÏàÓ¦µÄbinµÄÆ±ÊıÉÏ¼Ó1
-								{
-									votebin[xx].y++;
-									break;
-								}
-							}
-							if(xx == bincnt)//Èç¹ûÒÔÇ°Ã»ÓĞÍ¶Æ±¹ı£¬Ôö¼Ó¸ÃÏß¶Î£¬²¢¼ÇÂ¼Æ±ÊıÎª1
-							{
-								if(bincnt == line_num)
-									error("group ls error1");
-								votebin[bincnt].x = temp - 1;
-								votebin[bincnt].y = 1;
-								bincnt++; //binµÄ×ÜÊı¼Ó1
-							}
-						}
-					}
-			    //Ñ°ÕÒÍ¶Æ±×î¶àµÄÏß¶Î£¬²¢ÇÒĞèÒªÂú×ãÊıÁ¿´óÓÚÒ»¶¨Öµ
-			    temp = 0;
-				for ( int j = 0; j<bincnt; j++)
-				{
-					if(votebin[j].y>temp)
-					{
-						temp = votebin[j].y;
-						xx = votebin[j].x;//½èÓÃxx±äÁ¿
-					}
-				}
-				if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7] )//´ıÊµÑéµ÷Õû²ÎÊıÖµ
-				{
-					if(group_up_cnt == line_num)
-					   error("group ls error2");
-					yy = group_up_cnt-1;//½èÓÃyy±äÁ¿
-					start_angle = atan2(lines[8*group_up[yy]+5],lines[8*group_up[yy]+4]);
-					end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
-					angle_delta = rotateAngle(start_angle,end_angle,(int)lines[8*i+7]);
-					if(angle_delta <= M_3_8_PI)//ÏàÁÚÁ½Ïß¶ÎµÄĞı×ª¼Ğ½ÇÒ²ĞèÒªÂú×ãÔÚpi/4ÄÚ
-					{
-						group_up[group_up_cnt++] = xx;//Ñ¹ÈëÏß¶Î
-						currentLine = xx; //¸üĞÂµ±Ç°ËÑË÷Ïß¶Î
-					}
-					else
-						isEnd = 1;
-				}
-				else
-					isEnd = 1;//½áÊø£¬ÒÑ¾­ÕÒ²»µ½¿ÉÒÔ·Ö×éµÄÏß¶ÎÁË
-			}
-			//ÏÈ´ÓµÚiÌõÏß¶ÎµÄÎ²²¿¿ªÊ¼ËÑË÷£¬½øĞĞ·Ö×é,½á¹û´æÔÚgroup_downÀïÃæ¡£¼Ç×¡£¬µÚiÌõÏß¶ÎÔÚgroup_upºÍgroup_downÖĞµÄ0Ë÷Òı´¦¶¼´¢´æÁË
-			group_down[group_down_cnt++] = i; 
-			isEnd = 0;//ÖÃÁã£¬±íÊ¾»¹¿ÉÒÔ´Óµ±Ç°Ïß¶Î¿ªÊ¼ËÑË÷£¬»¹Î´½áÊø
-	     	currentLine = i;
-			while(isEnd == 0)
-			{
-				label[currentLine] = 1; //±ê¼Ç¸ÃÏß¶ÎÒÑ¾­±»·Ö×é
-				//head = tail = NULL;
-		        bincnt = 0;
-				dir_vec1.x = -lines[currentLine*8+4];
-				dir_vec1.y = -lines[currentLine*8+5];
-				if ( lines[currentLine*8+7] == 1)//¼«ĞÔÏàÍ¬
-				{
-					//½«dir_vec1Ë³Ê±ÕëĞı×ª45¡ã
-					dir_vec2.x = (dir_vec1.x - dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
-				    dir_vec2.y = (dir_vec1.x + dir_vec1.y)*0.707106781186548;
-				}
-				else
-				{
-					//½«dir_vec1Ë³Ê±ÕëĞı×ª45¡ã
-					dir_vec2.x = (dir_vec1.x + dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
-				    dir_vec2.y = (-dir_vec1.x + dir_vec1.y)*0.707106781186548;
-				}
-				for ( int j = 1; j<=4; j++)
-					for ( int k = 1; k<=4; k++)//ÔÚ4x4ÁÚÓòÄÚËÑË÷
-					{
-						xx = (int)(lines[currentLine*8+0]*0.8+j*dir_vec1.x+k*dir_vec2.x);
-						yy = (int)(lines[currentLine*8+1]*0.8+j*dir_vec1.y+k*dir_vec2.y);
-						if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//Ô½½ç
-							continue;
-						temp = region[yy*imgx+xx];
-						if(temp>0)//±íÊ¾ÓĞÏß¶ÎµÄÖ§³ÖÇøÓò£¬ÔÚ1~line_num
-						{
-							region[yy*imgx+xx] = -temp;//È¡¸ºÊı±ê¼Ç
-							for (xx = 0; xx<bincnt; xx++)
-							{
-								if(votebin[xx].x == temp - 1)//Èç¹ûÒÔÇ°Í¶Æ±¹ı£¬Ö±½ÓÔÚÏàÓ¦µÄbinµÄÆ±ÊıÉÏ¼Ó1
-								{
-									votebin[xx].y++;
-									break;
-								}
-							}
-							if(xx == bincnt)//Èç¹ûÒÔÇ°Ã»ÓĞÍ¶Æ±¹ı£¬Ôö¼Ó¸ÃÏß¶Î£¬²¢¼ÇÂ¼Æ±ÊıÎª1
-							{
-								if(bincnt == line_num)
-									error("group ls error3");
-								votebin[bincnt].x = temp - 1;
-								votebin[bincnt].y = 1;
-								bincnt++; //binµÄ×ÜÊı¼Ó1
-							}
-						}
-					}
-			    //Ñ°ÕÒÍ¶Æ±×î¶àµÄÏß¶Î£¬²¢ÇÒĞèÒªÂú×ãÊıÁ¿´óÓÚÒ»¶¨Öµ
-			    temp = 0;
-				for ( int j = 0; j<bincnt; j++)
-				{
-					if(votebin[j].y>temp)
-					{
-						temp = votebin[j].y;
-						xx = votebin[j].x;//½èÓÃxx±äÁ¿
-					}
-				}
-				if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7])//´ıÊµÑéµ÷Õû²ÎÊıÖµ
-				{
-					if(group_down_cnt == line_num)
-					   error("group ls error2");
-					yy = group_down_cnt-1;//½èÓÃyy±äÁ¿
-					start_angle = atan2(lines[8*group_down[yy]+5],lines[8*group_down[yy]+4]);
-					end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
-					angle_delta = rotateAngle(end_angle,start_angle,(int)lines[8*i+7]);//×¢Òâ´ËÊ±ĞèÒªµ÷»»Ò»ÏÂ£¬ÒòÎªÊÇ´ÓÎ²²¿¿ªÊ¼ËÑË÷
-					if(angle_delta < M_3_8_PI)//ÏàÁÚÁ½Ïß¶ÎµÄĞı×ª¼Ğ½ÇÒ²ĞèÒªÂú×ãÔÚpi/4ÄÚ,pi*3/8 = 66.5¡ã
-					{
-						group_down[group_down_cnt++] = xx; //Ñ¹ÈëÏß¶Î
-						currentLine = xx; //¸üĞÂµ±Ç°ËÑË÷Ïß¶Î
-					}
-					else
-						isEnd = 1;
-				}
-				else
-					isEnd = 1;//½áÊø£¬ÒÑ¾­ÕÒ²»µ½¿ÉÒÔ·Ö×éµÄÏß¶ÎÁË
-			}
-			(*groups).push_back(group_temp); //Ìí¼ÓÏß¶Î·Ö×é
-			temp = (*groups).size()-1;
-			for (int j = group_down_cnt-1; j>= 0; j--)
-			{
-				(*groups)[temp].push_back(group_down[j]);
-			}
-			for (int j = 1; j<group_up_cnt; j++)//ÓÉÓÚµÚiÌõÏß¶ÎÔÚgroup_upºÍgroup_down¶¼´¢´æÁË£¬ËùÒÔ¾Í´ÓË÷Òı1¿ªÊ¼
-			{
-				(*groups)[temp].push_back(group_up[j]);
-			}
-		}
-	}
-	free(label);
-	free(group_up);
-	free(group_down);
-	free(votebin);
+  if(line_num == 0)
+  {
+    groups = NULL;
+    return;
+  }
+  unsigned char isEnd = 0;//æ˜¯å¦è¿˜å¯ä»¥ç»§ç»­æœå¯»
+  int currentLine; //å½“å‰çº¿æ®µ
+  char * label = (char*)calloc(line_num, sizeof(char));
+  memset(label,0,sizeof(char)*line_num); //init the label all to be zero
+  int * group_up = (int*)malloc(sizeof(int)*line_num);//ç”³è¯·è¶³å¤Ÿå†…å­˜ï¼Œå­˜å‚¨å»¶çº¿æ®µæ–¹å‘å¾—åˆ°çš„åˆ†ç»„çš„çº¿æ®µ
+  int * group_down = (int*)malloc(sizeof(int)*line_num);//å­˜å‚¨çº¿æ®µåæ–¹å‘åˆ†ç»„çš„çº¿æ®µ
+  int group_up_cnt,group_down_cnt;
+  //coorlist * head,*tail;
+  std::vector<int> group_temp;
+  point2d dir_vec1,dir_vec2;
+  point2i *votebin = (point2i*)calloc(line_num,sizeof(point2i));//ç”³è¯·è¶³å¤Ÿå†…å­˜ï¼Œç”¨æ¥æŠ•ç¥¨. xè®°å½•çº¿æ®µç´¢å¼•ï¼Œyè®°å½•ç¥¨æ•°
+  int bincnt = 0;
+  int xx,yy,temp;
+  double start_angle,end_angle,angle_delta;
+  for ( int i = 0; i<line_num; i++)
+  {
+    if( label[i] == 0)//æœªè¢«åˆ†ç»„è¿‡
+    {
+      group_up_cnt = group_down_cnt = 0;//æ¯å¼€å§‹å¯»æ‰¾ä¸€ç»„ï¼Œéœ€è¦ç½®é›¶
+      //å…ˆä»ç¬¬iæ¡çº¿æ®µçš„å¤´éƒ¨å¼€å§‹æœç´¢ï¼Œè¿›è¡Œåˆ†ç»„,ç»“æœå­˜åœ¨group_upé‡Œé¢
+      group_up[group_up_cnt++] = i;//è®°å½•çº¿æ®µi,æ³¨æ„çº¿æ®µæ˜¯0~line_num-1
+      isEnd = 0;//ç½®é›¶ï¼Œè¡¨ç¤ºè¿˜å¯ä»¥ä»å½“å‰çº¿æ®µå¼€å§‹æœç´¢ï¼Œè¿˜æœªç»“æŸ
+        currentLine = i;
+      while(isEnd == 0)
+      {
+        label[currentLine] = 1; //æ ‡è®°è¯¥çº¿æ®µå·²ç»è¢«åˆ†ç»„
+        //head = tail = NULL;
+            bincnt = 0;
+        dir_vec1.x = lines[currentLine*8+4];
+        dir_vec1.y = lines[currentLine*8+5];
+        if ( lines[currentLine*8+7] == 1)//ææ€§ä¸ºæ­£
+        {
+            //å°†dir_vec1é€†æ—¶é’ˆæ—‹è½¬45Â°
+            dir_vec2.x = (dir_vec1.x + dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
+            dir_vec2.y = (-dir_vec1.x + dir_vec1.y)*0.707106781186548;
+        }
+        else
+        {
+            //å°†dir_vec1é¡ºæ—¶é’ˆæ—‹è½¬45Â°
+            dir_vec2.x = (dir_vec1.x - dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
+            dir_vec2.y = (dir_vec1.x + dir_vec1.y)*0.707106781186548;
+        }
+        for ( int j = 1; j<=4; j++)
+          for ( int k = 1; k<=4; k++)//åœ¨4x4é‚»åŸŸå†…æœç´¢
+          {
+            xx = (int)(lines[currentLine*8+2]*0.8+j*dir_vec1.x+k*dir_vec2.x);
+            yy = (int)(lines[currentLine*8+3]*0.8+j*dir_vec1.y+k*dir_vec2.y);
+            if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//è¶Šç•Œ
+              continue;
+            temp = region[yy*imgx+xx];
+            if(temp>0)//è¡¨ç¤ºæœ‰çº¿æ®µçš„æ”¯æŒåŒºåŸŸï¼Œåœ¨1~line_num
+            {
+              region[yy*imgx+xx] = -temp;//å–è´Ÿæ•°æ ‡è®°
+              for (xx = 0; xx<bincnt; xx++)
+              {
+                if(votebin[xx].x == temp - 1)//å¦‚æœä»¥å‰æŠ•ç¥¨è¿‡ï¼Œç›´æ¥åœ¨ç›¸åº”çš„binçš„ç¥¨æ•°ä¸ŠåŠ 1
+                {
+                  votebin[xx].y++;
+                  break;
+                }
+              }
+              if(xx == bincnt)//å¦‚æœä»¥å‰æ²¡æœ‰æŠ•ç¥¨è¿‡ï¼Œå¢åŠ è¯¥çº¿æ®µï¼Œå¹¶è®°å½•ç¥¨æ•°ä¸º1
+              {
+                if(bincnt == line_num)
+                  error("group ls error1");
+                votebin[bincnt].x = temp - 1;
+                votebin[bincnt].y = 1;
+                bincnt++; //binçš„æ€»æ•°åŠ 1
+              }
+            }
+          }
+          //å¯»æ‰¾æŠ•ç¥¨æœ€å¤šçš„çº¿æ®µï¼Œå¹¶ä¸”éœ€è¦æ»¡è¶³æ•°é‡å¤§äºä¸€å®šå€¼
+          temp = 0;
+          for ( int j = 0; j<bincnt; j++)
+          {
+            if(votebin[j].y>temp)
+            {
+              temp = votebin[j].y;
+              xx = votebin[j].x;//å€Ÿç”¨xxå˜é‡
+            }
+          }
+          if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7] )//å¾…å®éªŒè°ƒæ•´å‚æ•°å€¼
+         {
+            if(group_up_cnt == line_num)
+             error("group ls error2");
+            yy = group_up_cnt-1;//å€Ÿç”¨yyå˜é‡
+            start_angle = atan2(lines[8*group_up[yy]+5],lines[8*group_up[yy]+4]);
+            end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
+            angle_delta = rotateAngle(start_angle,end_angle,(int)lines[8*i+7]);
+            if(angle_delta <= M_3_8_PI)//ç›¸é‚»ä¸¤çº¿æ®µçš„æ—‹è½¬å¤¹è§’ä¹Ÿéœ€è¦æ»¡è¶³åœ¨pi/4å†…
+            {
+              group_up[group_up_cnt++] = xx;//å‹å…¥çº¿æ®µ
+              currentLine = xx; //æ›´æ–°å½“å‰æœç´¢çº¿æ®µ
+            }
+            else
+              isEnd = 1;
+          }
+          else
+            isEnd = 1;//ç»“æŸï¼Œå·²ç»æ‰¾ä¸åˆ°å¯ä»¥åˆ†ç»„çš„çº¿æ®µäº†
+        }
+      //å…ˆä»ç¬¬iæ¡çº¿æ®µçš„å°¾éƒ¨å¼€å§‹æœç´¢ï¼Œè¿›è¡Œåˆ†ç»„,ç»“æœå­˜åœ¨group_downé‡Œé¢ã€‚è®°ä½ï¼Œç¬¬iæ¡çº¿æ®µåœ¨group_upå’Œgroup_downä¸­çš„0ç´¢å¼•å¤„éƒ½å‚¨å­˜äº†
+      group_down[group_down_cnt++] = i; 
+      isEnd = 0;//ç½®é›¶ï¼Œè¡¨ç¤ºè¿˜å¯ä»¥ä»å½“å‰çº¿æ®µå¼€å§‹æœç´¢ï¼Œè¿˜æœªç»“æŸ
+        currentLine = i;
+      while(isEnd == 0)
+      {
+        label[currentLine] = 1; //æ ‡è®°è¯¥çº¿æ®µå·²ç»è¢«åˆ†ç»„
+        //head = tail = NULL;
+            bincnt = 0;
+        dir_vec1.x = -lines[currentLine*8+4];
+        dir_vec1.y = -lines[currentLine*8+5];
+        if ( lines[currentLine*8+7] == 1)//ææ€§ç›¸åŒ
+        {
+          //å°†dir_vec1é¡ºæ—¶é’ˆæ—‹è½¬45Â°
+          dir_vec2.x = (dir_vec1.x - dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
+            dir_vec2.y = (dir_vec1.x + dir_vec1.y)*0.707106781186548;
+        }
+        else
+        {
+          //å°†dir_vec1é¡ºæ—¶é’ˆæ—‹è½¬45Â°
+          dir_vec2.x = (dir_vec1.x + dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
+            dir_vec2.y = (-dir_vec1.x + dir_vec1.y)*0.707106781186548;
+        }
+        for ( int j = 1; j<=4; j++)
+          for ( int k = 1; k<=4; k++)//åœ¨4x4é‚»åŸŸå†…æœç´¢
+          {
+            xx = (int)(lines[currentLine*8+0]*0.8+j*dir_vec1.x+k*dir_vec2.x);
+            yy = (int)(lines[currentLine*8+1]*0.8+j*dir_vec1.y+k*dir_vec2.y);
+            if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//è¶Šç•Œ
+              continue;
+            temp = region[yy*imgx+xx];
+            if(temp>0)//è¡¨ç¤ºæœ‰çº¿æ®µçš„æ”¯æŒåŒºåŸŸï¼Œåœ¨1~line_num
+            {
+              region[yy*imgx+xx] = -temp;//å–è´Ÿæ•°æ ‡è®°
+              for (xx = 0; xx<bincnt; xx++)
+              {
+                if(votebin[xx].x == temp - 1)//å¦‚æœä»¥å‰æŠ•ç¥¨è¿‡ï¼Œç›´æ¥åœ¨ç›¸åº”çš„binçš„ç¥¨æ•°ä¸ŠåŠ 1
+                {
+                  votebin[xx].y++;
+                  break;
+                }
+              }
+              if(xx == bincnt)//å¦‚æœä»¥å‰æ²¡æœ‰æŠ•ç¥¨è¿‡ï¼Œå¢åŠ è¯¥çº¿æ®µï¼Œå¹¶è®°å½•ç¥¨æ•°ä¸º1
+              {
+                if(bincnt == line_num)
+                  error("group ls error3");
+                votebin[bincnt].x = temp - 1;
+                votebin[bincnt].y = 1;
+                bincnt++; //binçš„æ€»æ•°åŠ 1
+              }
+            }
+          }
+          //å¯»æ‰¾æŠ•ç¥¨æœ€å¤šçš„çº¿æ®µï¼Œå¹¶ä¸”éœ€è¦æ»¡è¶³æ•°é‡å¤§äºä¸€å®šå€¼
+          temp = 0;
+        for ( int j = 0; j<bincnt; j++)
+        {
+          if(votebin[j].y>temp)
+          {
+            temp = votebin[j].y;
+            xx = votebin[j].x;//å€Ÿç”¨xxå˜é‡
+          }
+        }
+        if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7])//å¾…å®éªŒè°ƒæ•´å‚æ•°å€¼
+        {
+          if(group_down_cnt == line_num)
+             error("group ls error2");
+          yy = group_down_cnt-1;//å€Ÿç”¨yyå˜é‡
+          start_angle = atan2(lines[8*group_down[yy]+5],lines[8*group_down[yy]+4]);
+          end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
+          angle_delta = rotateAngle(end_angle,start_angle,(int)lines[8*i+7]);//æ³¨æ„æ­¤æ—¶éœ€è¦è°ƒæ¢ä¸€ä¸‹ï¼Œå› ä¸ºæ˜¯ä»å°¾éƒ¨å¼€å§‹æœç´¢
+          if(angle_delta < M_3_8_PI)//ç›¸é‚»ä¸¤çº¿æ®µçš„æ—‹è½¬å¤¹è§’ä¹Ÿéœ€è¦æ»¡è¶³åœ¨pi/4å†…,pi*3/8 = 66.5Â°
+          {
+            group_down[group_down_cnt++] = xx; //å‹å…¥çº¿æ®µ
+            currentLine = xx; //æ›´æ–°å½“å‰æœç´¢çº¿æ®µ
+          }
+          else
+            isEnd = 1;
+        }
+        else
+          isEnd = 1;//ç»“æŸï¼Œå·²ç»æ‰¾ä¸åˆ°å¯ä»¥åˆ†ç»„çš„çº¿æ®µäº†
+      }
+      (*groups).push_back(group_temp); //æ·»åŠ çº¿æ®µåˆ†ç»„
+      temp = (*groups).size()-1;
+      for (int j = group_down_cnt-1; j>= 0; j--)
+      {
+        (*groups)[temp].push_back(group_down[j]);
+      }
+      for (int j = 1; j<group_up_cnt; j++)//ç”±äºç¬¬iæ¡çº¿æ®µåœ¨group_upå’Œgroup_downéƒ½å‚¨å­˜äº†ï¼Œæ‰€ä»¥å°±ä»ç´¢å¼•1å¼€å§‹
+      {
+        (*groups)[temp].push_back(group_up[j]);
+      }
+    }
+  }
+  free(label);
+  free(group_up);
+  free(group_down);
+  free(votebin);
 }
-//¼ÆËãgroupsÖĞÃ¿¸ö×éµÄ¿ç¶È
-//ÊäÈë£º
-//lines: ÊäÈëµÄlines_numÌõÏß¶Î£¬Ã¿ÌõÏß¶Î8¸öÖµ£¬´æ×Åx1,y1,x2,y2,dx,dy,length,polarity
+//è®¡ç®—groupsä¸­æ¯ä¸ªç»„çš„è·¨åº¦
+//è¾“å…¥ï¼š
+//lines: è¾“å…¥çš„lines_numæ¡çº¿æ®µï¼Œæ¯æ¡çº¿æ®µ8ä¸ªå€¼ï¼Œå­˜ç€x1,y1,x2,y2,dx,dy,length,polarity
 //lines_num:
-//groups: ·Ö×é£¬Ã¿¸ö·Ö×é¶¼´æ×ÅÏß¶ÎµÄË÷Òı
-//Êä³ö:
-//coverages: Ã¿¸ö×éµÄ¿ç¶È£¬µ±×éÄÚÏß¶ÎÖ»ÓĞ1ÌõÊ±£¬¿ç¶ÈÎª0. coveragesµÄ³¤¶ÈµÈÓÚ×éµÄÊıÁ¿ = groups.size()
-//×¢Òâ£¬coveragesÓÃÇ°²»ĞèÒªÉêÇëÄÚ´æ£¬coveragesÓÃÍêºó£¬ĞèÒªÔÚº¯ÊıÍâÊÖ¶¯ÊÍ·ÅÄÚ´æ£¬³¤¶ÈµÈÓÚ·Ö×éÊıÁ¿
+//groups: åˆ†ç»„ï¼Œæ¯ä¸ªåˆ†ç»„éƒ½å­˜ç€çº¿æ®µçš„ç´¢å¼•
+//è¾“å‡º:
+//coverages: æ¯ä¸ªç»„çš„è·¨åº¦ï¼Œå½“ç»„å†…çº¿æ®µåªæœ‰1æ¡æ—¶ï¼Œè·¨åº¦ä¸º0. coveragesçš„é•¿åº¦ç­‰äºç»„çš„æ•°é‡ = groups.size()
+//æ³¨æ„ï¼Œcoveragesç”¨å‰ä¸éœ€è¦ç”³è¯·å†…å­˜ï¼Œcoveragesç”¨å®Œåï¼Œéœ€è¦åœ¨å‡½æ•°å¤–æ‰‹åŠ¨é‡Šæ”¾å†…å­˜ï¼Œé•¿åº¦ç­‰äºåˆ†ç»„æ•°é‡
 void calcuGroupCoverage(double * lines, int line_num, std::vector<std::vector<int>> groups, double * &coverages)
 {
-	int groups_num = groups.size();
-	int temp;
-	double start_angle,end_angle;
-	coverages = (double*)malloc(sizeof(double)*groups_num);
-	for ( int i = 0; i<groups_num; i++)
-	{
-		temp = groups[i].size()-1;
-		if(groups[i].size() == 0)//µÚi¸ö·Ö×éÖ»ÓĞ1ÌõÏß¶Î£¬Ôò¿ç¶ÈÎª0
-		{
-			coverages[i] = 0;
-		}
-		else
-		{
-			start_angle = atan2(lines[8*groups[i][0]+5],lines[8*groups[i][0]+4]);
-			end_angle = atan2(lines[8*groups[i][temp]+5],lines[8*groups[i][temp]+4]);
-			coverages[i] = rotateAngle(start_angle,end_angle,(int)lines[8*groups[i][0]+7]);
-		}
-	}
+  int groups_num = groups.size();
+  int temp;
+  double start_angle,end_angle;
+  coverages = (double*)malloc(sizeof(double)*groups_num);
+  for ( int i = 0; i<groups_num; i++)
+  {
+    temp = groups[i].size()-1;
+    if(groups[i].size() == 0)//ç¬¬iä¸ªåˆ†ç»„åªæœ‰1æ¡çº¿æ®µï¼Œåˆ™è·¨åº¦ä¸º0
+    {
+      coverages[i] = 0;
+    }
+    else
+    {
+      start_angle = atan2(lines[8*groups[i][0]+5],lines[8*groups[i][0]+4]);
+      end_angle = atan2(lines[8*groups[i][temp]+5],lines[8*groups[i][temp]+4]);
+      coverages[i] = rotateAngle(start_angle,end_angle,(int)lines[8*groups[i][0]+7]);
+    }
+  }
 }
 
 //==============================================================================
 //====================================================================================================
 //================================clustering==========================================================
-//¾ÛÀà
-//ÇópointsÖĞµÚiĞĞÓëinitializationsÖĞµÚjĞĞÀïÃ¿¸öÔªËØµÄÆ½·½²î×ÜºÍ,Ã¿ĞĞÎ¬¶È¶¼ÎªnDims
+//èšç±»
+//æ±‚pointsä¸­ç¬¬iè¡Œä¸initializationsä¸­ç¬¬jè¡Œé‡Œæ¯ä¸ªå…ƒç´ çš„å¹³æ–¹å·®æ€»å’Œ,æ¯è¡Œç»´åº¦éƒ½ä¸ºnDims
 inline double squaredDifference(int & nDims, double *& points, int & i, double *& initializations, int & j)
 {
     double result = 0;
     for (int k = 0; k < nDims; ++k)
-		result += pow(points[i*nDims+k] - initializations[j*nDims+k], 2);
+    result += pow(points[i*nDims+k] - initializations[j*nDims+k], 2);
     return result;
 }
 /**
- *ÊäÈë
- *points: ´ı¾ùÖµÆ¯ÒÆµÄµã¼¯£¬×Ü¹²ÓĞnPoints¸öµã£¬Ã¿¸öµãÓĞnDimsÎ¬¶È£¬ÊÇÒ»Î¬Êı×é
- *initPoints: ¾ùÖµÆ¯ÒÆ³õÊ¼»¯Î»ÖÃ£¬ÔÚnxd¿Õ¼äÖĞÕÒ¾ùÖµÆ¯ÒÆ³õÊ¼Ê±¿ªÊ¼ËÑË÷µÄÎ»ÖÃ£¬×Ü¹²ÓĞinitLength¸öµã£¬Ã¿¸öµãÓĞnDimsÎ¬¶È
+ *è¾“å…¥
+ *points: å¾…å‡å€¼æ¼‚ç§»çš„ç‚¹é›†ï¼Œæ€»å…±æœ‰nPointsä¸ªç‚¹ï¼Œæ¯ä¸ªç‚¹æœ‰nDimsç»´åº¦ï¼Œæ˜¯ä¸€ç»´æ•°ç»„
+ *initPoints: å‡å€¼æ¼‚ç§»åˆå§‹åŒ–ä½ç½®ï¼Œåœ¨nxdç©ºé—´ä¸­æ‰¾å‡å€¼æ¼‚ç§»åˆå§‹æ—¶å¼€å§‹æœç´¢çš„ä½ç½®ï¼Œæ€»å…±æœ‰initLengthä¸ªç‚¹ï¼Œæ¯ä¸ªç‚¹æœ‰nDimsç»´åº¦
  *sigma = 1
- *window_size: window parameter = distance_tolerance»òÕßwindow parameter = distance_tolerance/2
- *accuracy_tolerance: ÊÕÁ²ÈİÈÌÎó²î1e-6
- *iter_times: µü´ú´ÎÊı50
- *Êä³ö
- *ÊÕÁ²µÄÎ»ÖÃ£¬Î»ÖÃ¸öÊıÓë³õÊ¼»¯ËÑË÷Î»ÖÃ¸öÊıÒ»Ñù,ÎÒÃÇ½«½á¹û¸üĞÂµ½initPoints,Ò²¾ÍÊÇËü¼ÈÊÇÊäÈë²ÎÊı£¬Ò²ÊÇÊä³ö²ÎÊı£¬½ÚÊ¡ÄÚ´æ
+ *window_size: window parameter = distance_toleranceæˆ–è€…window parameter = distance_tolerance/2
+ *accuracy_tolerance: æ”¶æ•›å®¹å¿è¯¯å·®1e-6
+ *iter_times: è¿­ä»£æ¬¡æ•°50
+ *è¾“å‡º
+ *æ”¶æ•›çš„ä½ç½®ï¼Œä½ç½®ä¸ªæ•°ä¸åˆå§‹åŒ–æœç´¢ä½ç½®ä¸ªæ•°ä¸€æ ·,æˆ‘ä»¬å°†ç»“æœæ›´æ–°åˆ°initPoints,ä¹Ÿå°±æ˜¯å®ƒæ—¢æ˜¯è¾“å…¥å‚æ•°ï¼Œä¹Ÿæ˜¯è¾“å‡ºå‚æ•°ï¼ŒèŠ‚çœå†…å­˜
  */
 void meanShift( double * points, int nPoints, int nDims, double * & initPoints, int initLength, double sigma, double window_size, double accuracy_tolerance, int iter_times )
 {
-//	for (int i = 0; i<initLength; i++)
-//		cout<<initPoints[2*i]<<'\t'<<initPoints[2*i+1]<<endl;
+//  for (int i = 0; i<initLength; i++)
+//    cout<<initPoints[2*i]<<'\t'<<initPoints[2*i+1]<<endl;
     int nQuerries = initLength;
     double * initializations = (double*)malloc(nQuerries * nDims * sizeof(double));
     memcpy(initializations, initPoints , nQuerries * nDims * sizeof(double));//copy
 
-    double sigma2 = sigma*sigma;//sigmaÆ½·½
-    double radius2 = window_size *window_size;//Æ½·½
+    double sigma2 = sigma*sigma;//sigmaå¹³æ–¹
+    double radius2 = window_size *window_size;//å¹³æ–¹
     double tolerance = accuracy_tolerance;
-    int iters, maxiters = iter_times;//×î´óµü´ú´ÎÊı
-   //·µ»ØÓë³õÊ¼ËÑË÷µã¼¯Ò»Ñù´óĞ¡µÄ×îÖÕ¶¨Î»µã¼¯
-    double * finals = (double*)malloc(nQuerries * nDims * sizeof(double));;//×îÖÕ¶¨Î»µã¼¯µÄÖ¸Õë
+    int iters, maxiters = iter_times;//æœ€å¤§è¿­ä»£æ¬¡æ•°
+   //è¿”å›ä¸åˆå§‹æœç´¢ç‚¹é›†ä¸€æ ·å¤§å°çš„æœ€ç»ˆå®šä½ç‚¹é›†
+    double * finals = (double*)malloc(nQuerries * nDims * sizeof(double));;//æœ€ç»ˆå®šä½ç‚¹é›†çš„æŒ‡é’ˆ
     memcpy(finals, initializations, nQuerries * nDims * sizeof(double));
-	double * distances = (double*)malloc(nPoints*sizeof(double));
-    //printf("meanShift: nPoints:%d \tnDims: %d \tnQuerries:%d \n",nPoints,nDims,nQuerries);//´òÓ¡
+    double * distances = (double*)malloc(nPoints*sizeof(double));
+    //printf("meanShift: nPoints:%d \tnDims: %d \tnQuerries:%d \n",nPoints,nDims,nQuerries);//æ‰“å°
     for (int loop = 0; loop < nQuerries; ++loop)
     {
         iters = 0;
         while (iters < maxiters)
         {
             bool flag = false;
-            double denominator = 0;//·ÖÄ¸
-            for (int i = 0; i < nPoints; ++i)//¶ÔËùÓĞµÄµã¼¯½øĞĞ±éÀú£¬ÕÒµ½ÂäÔÚËÑË÷Ô²ÓòÄÚµÄµã
+            double denominator = 0;//åˆ†æ¯
+            for (int i = 0; i < nPoints; ++i)//å¯¹æ‰€æœ‰çš„ç‚¹é›†è¿›è¡Œéå†ï¼Œæ‰¾åˆ°è½åœ¨æœç´¢åœ†åŸŸå†…çš„ç‚¹
             {
-                distances[i] = squaredDifference(nDims, points, i, initializations, loop);//Çó¾àÀëµÄÆ½·½
-                if (distances[i] <= radius2)//ÔÚµÚloop¸öËÑË÷ÖĞĞÄµÄÒÔsqrt(radius2)Îª°ë¾¶µÄÔ²ÓòÄÚ
+                distances[i] = squaredDifference(nDims, points, i, initializations, loop);//æ±‚è·ç¦»çš„å¹³æ–¹
+                if (distances[i] <= radius2)//åœ¨ç¬¬loopä¸ªæœç´¢ä¸­å¿ƒçš„ä»¥sqrt(radius2)ä¸ºåŠå¾„çš„åœ†åŸŸå†…
                 {
                     flag = true;
                     denominator += exp(-distances[i] / sigma2);
@@ -2791,599 +2792,599 @@ void meanShift( double * points, int nPoints, int nDims, double * & initPoints, 
             if (!flag)
                 break;
             for (int j = 0; j < nDims; ++j)
-				finals[loop*nDims+j] = 0;//¶Ô×îÖÕ¶¨Î»µã¼¯ÖĞµÄµÚloop¸öµãµÄÏòÁ¿¸³ÖµÎª0
+              finals[loop*nDims+j] = 0;//å¯¹æœ€ç»ˆå®šä½ç‚¹é›†ä¸­çš„ç¬¬loopä¸ªç‚¹çš„å‘é‡èµ‹å€¼ä¸º0
             for (int i = 0; i < nPoints; ++i)
-                if (distances[i] <= radius2)
-                {
-                    for (int j = 0; j < nDims; ++j)//Ã¿¸öÄÚµãÏòÁ¿µÄÒÔÒ»¶¨È¨ÖµÀÛ¼Ó
-						finals[loop*nDims+j] += exp(-distances[i] / sigma2) * points[i*nDims+j];
-                }
-            for (int j = 0; j < nDims; ++j)//È¨Öµ¹éÒ»»¯
-				finals[loop*nDims+j] /= denominator;
-            if (sqrt(squaredDifference(nDims, finals, loop, initializations, loop)) < tolerance)//Ïà¼ÌÁ½´ÎµÄµü´úÖĞĞÄÔÚÎó²îÄÚÁË£¬ÔòÈÏÎªÒÑ¾­ÊÕÁ²£¬Ã»±ØÒªÔÙ¼ÌĞøµü´ú
+              if (distances[i] <= radius2)
+              {
+                for (int j = 0; j < nDims; ++j)//æ¯ä¸ªå†…ç‚¹å‘é‡çš„ä»¥ä¸€å®šæƒå€¼ç´¯åŠ 
+                finals[loop*nDims+j] += exp(-distances[i] / sigma2) * points[i*nDims+j];
+              }
+            for (int j = 0; j < nDims; ++j)//æƒå€¼å½’ä¸€åŒ–
+              finals[loop*nDims+j] /= denominator;
+            if (sqrt(squaredDifference(nDims, finals, loop, initializations, loop)) < tolerance)//ç›¸ç»§ä¸¤æ¬¡çš„è¿­ä»£ä¸­å¿ƒåœ¨è¯¯å·®å†…äº†ï¼Œåˆ™è®¤ä¸ºå·²ç»æ”¶æ•›ï¼Œæ²¡å¿…è¦å†ç»§ç»­è¿­ä»£
                 break;
             iters = iters + 1;
-            for (int j = 0; j < nDims; ++j)//¸üĞÂµü´úµÄËÑË÷ÖĞĞÄ
-				initializations[loop*nDims+j] = finals[loop*nDims+j];
+            for (int j = 0; j < nDims; ++j)//æ›´æ–°è¿­ä»£çš„æœç´¢ä¸­å¿ƒ
+              initializations[loop*nDims+j] = finals[loop*nDims+j];
         }
     }
-	memcpy(initPoints, finals, nQuerries * nDims * sizeof(double));
+    memcpy(initPoints, finals, nQuerries * nDims * sizeof(double));
     free(distances);
     free(initializations);
-	free(finals);
+    free(finals);
 }
 
 /***
- *ÊäÈë
- *points,´ı¾ÛÀàµÄµã¼¯,ÎªÒ»Î¬Êı×é,nPoints¸öµã£¬Ã¿¸öµãÎ¬¶ÈÊÇnDims
- *distance_threshold ¾ö¶¨¾ÛÀàµÄ¾àÀëãĞÖµ
- *Êä³ö outPoints
- *¾ÛÀàºóµÄµã¼¯ nOutPoints x nDims 
- *¸Ãº¯ÊıÒªÇ§Íò×¢Òâ£¬µ±±»µ÷ÓÃºó£¬º¯ÊıÄÚ²¿»á¶àÉêÇënOutPoints¸ödoubleĞÍµÄÊı×éÄÚ´æ£¬ÔÚÍâ±ßÊ¹ÓÃÍê±Ïºó£¬ÇĞ¼Çfree(outPoints).
+ *è¾“å…¥
+ *points,å¾…èšç±»çš„ç‚¹é›†,ä¸ºä¸€ç»´æ•°ç»„,nPointsä¸ªç‚¹ï¼Œæ¯ä¸ªç‚¹ç»´åº¦æ˜¯nDims
+ *distance_threshold å†³å®šèšç±»çš„è·ç¦»é˜ˆå€¼
+ *è¾“å‡º outPoints
+ *èšç±»åçš„ç‚¹é›† nOutPoints x nDims 
+ *è¯¥å‡½æ•°è¦åƒä¸‡æ³¨æ„ï¼Œå½“è¢«è°ƒç”¨åï¼Œå‡½æ•°å†…éƒ¨ä¼šå¤šç”³è¯·nOutPointsä¸ªdoubleå‹çš„æ•°ç»„å†…å­˜ï¼Œåœ¨å¤–è¾¹ä½¿ç”¨å®Œæ¯•åï¼Œåˆ‡è®°free(outPoints).
  */
 void clusterByDistance(double * points, int nPoints, int nDims, double distance_threshold,int number_control, double * & outPoints, int * nOutPoints)
 { 
-	double threshold2 = distance_threshold*distance_threshold;
+  double threshold2 = distance_threshold*distance_threshold;
     std::vector<double*> centers;
     std::vector<int> counts;
     centers.clear();
     counts.clear();
-	char * labeled = (char*)malloc(sizeof(char)*nPoints);
-    memset(labeled, 0, nPoints * sizeof(char));//³õÊ¼»¯boolĞÍ±êÇ©Îª0
-	if(nPoints == 1)
-	{
-		centers.push_back((double*)malloc(sizeof(double)*nDims));
-		for (int k = 0; k < nDims; ++k)
-			centers[centers.size() - 1][k] = points[k];
+  char * labeled = (char*)malloc(sizeof(char)*nPoints);
+    memset(labeled, 0, nPoints * sizeof(char));//åˆå§‹åŒ–boolå‹æ ‡ç­¾ä¸º0
+  if(nPoints == 1)
+  {
+    centers.push_back((double*)malloc(sizeof(double)*nDims));
+    for (int k = 0; k < nDims; ++k)
+      centers[centers.size() - 1][k] = points[k];
         counts.push_back(1);
-	}
-	else
-	{
-		for (int i = 0; i < nPoints; ++i)
-		{
-		    if (!labeled[i])
-			{
-		        labeled[i] = 1;
-				centers.push_back((double*)malloc(sizeof(double)*nDims));
-		        counts.push_back(1);
-		        for (int k = 0; k < nDims; ++k)
-				{
-				   centers[centers.size() - 1][k] = points[i*nDims+k];  
-				}
-		        for (int j = i+1; j < nPoints; ++j)
-		        {
-		            if (!labeled[j])
-		            {
-		                double d = 0;
-		                for (int k = 0; k < nDims; ++k)
-				            d += pow(centers[centers.size() - 1][k] / counts[centers.size() - 1] - points[j*nDims+k], 2);
-		                if (d <= threshold2)
-		                {
-		                    ++counts[centers.size() - 1];
-		                    for (int k = 0; k < nDims; ++k)
-								centers[centers.size() - 1][k] += points[j*nDims+k];
-		                    labeled[j] = 1;
-							if(counts[centers.size() - 1] >= number_control)//¾ÛÀàÊıÁ¿¿ØÖÆ£¬·ÀÖ¹¾ùÖµÖĞĞÄÆ¯µÄÌ«Ô¶  Ô²ĞÄ¾ÛÀàÊ±20  °ë¾¶¾ÛÀàÊ±10
-								break;
-		                }
-		            }
-		        }
-		    }
-		}
-	}
+  }
+  else
+  {
+    for (int i = 0; i < nPoints; ++i)
+    {
+        if (!labeled[i])
+      {
+            labeled[i] = 1;
+        centers.push_back((double*)malloc(sizeof(double)*nDims));
+            counts.push_back(1);
+            for (int k = 0; k < nDims; ++k)
+        {
+           centers[centers.size() - 1][k] = points[i*nDims+k];  
+        }
+            for (int j = i+1; j < nPoints; ++j)
+            {
+                if (!labeled[j])
+                {
+                    double d = 0;
+                    for (int k = 0; k < nDims; ++k)
+                    d += pow(centers[centers.size() - 1][k] / counts[centers.size() - 1] - points[j*nDims+k], 2);
+                    if (d <= threshold2)
+                    {
+                        ++counts[centers.size() - 1];
+                        for (int k = 0; k < nDims; ++k)
+                centers[centers.size() - 1][k] += points[j*nDims+k];
+                        labeled[j] = 1;
+              if(counts[centers.size() - 1] >= number_control)//èšç±»æ•°é‡æ§åˆ¶ï¼Œé˜²æ­¢å‡å€¼ä¸­å¿ƒæ¼‚çš„å¤ªè¿œ  åœ†å¿ƒèšç±»æ—¶20  åŠå¾„èšç±»æ—¶10
+                break;
+                    }
+                }
+            }
+        }
+    }
+  }
     free(labeled);
     centers.shrink_to_fit();
     counts.shrink_to_fit();
     int m = (int) centers.size();
     outPoints = (double*)malloc(sizeof(double)*m*nDims);
-	(*nOutPoints) = m;
+  (*nOutPoints) = m;
     for (unsigned int i = 0; i < centers.size(); ++i)
     {
         for (int j = 0; j < nDims; ++j)
-		{
-			outPoints[i*nDims+j] = centers[i][j] / counts[i];
-//			cout<<out[i*nDims+j]<<'\t';
-		}
-//		cout<<endl;
+    {
+      outPoints[i*nDims+j] = centers[i][j] / counts[i];
+//      cout<<out[i*nDims+j]<<'\t';
+    }
+//    cout<<endl;
         free(centers[i]);
     }
     centers.resize(0);
     counts.resize(0);
-//	vector<double*>().swap(centers);//ÊÍ·Å»ØÊÕvectorÄÚ´æ
-//	vector<int>().swap(counts);
+//  vector<double*>().swap(centers);//é‡Šæ”¾å›æ”¶vectorå†…å­˜
+//  vector<int>().swap(counts);
 }
 
-//¾ÛÀàËã·¨£¬¾ùÖµÆ¯ÒÆ
-//Èı¸ö²½Öè£¬Ò»ÊÇÑ¡È¡³õÊ¼µü´úµã£¬¶şÊÇ¾ùÖµÆ¯ÒÆ£¬ÈıÊÇÈ¥³ıÖØ¸´µã£¬´Ó¶øµÃµ½¾ÛÀàÖĞĞÄ
-//»ñµÃºòÑ¡Ô²ĞÄµÄ¾ÛÀàÖĞĞÄ(xi,yi)
-//ÊäÈë£º
-//points£¬Ò»Î¬µãÊı¾İ,³¤¶ÈÎªpoints_num x 2
-//distance_tolerance,Êı¾İµã¾ÛÀàµÄ°ë¾¶
-//Êä³ö£º
-//¶şÎ¬Êı¾İµãµÄ¾ÛÀàÖĞĞÄ centersÊÇÒ»Î¬doubleÊı×é£¬ ´óĞ¡Îª centers_num x 2
-//ÕıÈ··µ»ØÖµÎª1£¬³öÏÖ´íÎóÎª0. ÀıÈçpointsÎª¿Õ
-//ÇĞ¼ÇÇĞ¼Ç£¡£¡£¡ centersÎªº¯ÊıÄÚ²¿ÉêÇëµÄÄÚ´æ£¬ÓÃÀ´·µ»Øcenters_num¸öµãµÄ¾ÛÀàÖĞĞÄ£¬Ê¹ÓÃÍêºóÒ»¶¨ÒªÊÍ·Å£¬¼Ç×¡free(centers)£¡£¡£¡
+//èšç±»ç®—æ³•ï¼Œå‡å€¼æ¼‚ç§»
+//ä¸‰ä¸ªæ­¥éª¤ï¼Œä¸€æ˜¯é€‰å–åˆå§‹è¿­ä»£ç‚¹ï¼ŒäºŒæ˜¯å‡å€¼æ¼‚ç§»ï¼Œä¸‰æ˜¯å»é™¤é‡å¤ç‚¹ï¼Œä»è€Œå¾—åˆ°èšç±»ä¸­å¿ƒ
+//è·å¾—å€™é€‰åœ†å¿ƒçš„èšç±»ä¸­å¿ƒ(xi,yi)
+//è¾“å…¥ï¼š
+//pointsï¼Œä¸€ç»´ç‚¹æ•°æ®,é•¿åº¦ä¸ºpoints_num x 2
+//distance_tolerance,æ•°æ®ç‚¹èšç±»çš„åŠå¾„
+//è¾“å‡ºï¼š
+//äºŒç»´æ•°æ®ç‚¹çš„èšç±»ä¸­å¿ƒ centersæ˜¯ä¸€ç»´doubleæ•°ç»„ï¼Œ å¤§å°ä¸º centers_num x 2
+//æ­£ç¡®è¿”å›å€¼ä¸º1ï¼Œå‡ºç°é”™è¯¯ä¸º0. ä¾‹å¦‚pointsä¸ºç©º
+//åˆ‡è®°åˆ‡è®°ï¼ï¼ï¼ centersä¸ºå‡½æ•°å†…éƒ¨ç”³è¯·çš„å†…å­˜ï¼Œç”¨æ¥è¿”å›centers_numä¸ªç‚¹çš„èšç±»ä¸­å¿ƒï¼Œä½¿ç”¨å®Œåä¸€å®šè¦é‡Šæ”¾ï¼Œè®°ä½free(centers)ï¼ï¼ï¼
 int  cluster2DPoints( double * points, int points_num, double distance_tolerance, double * & centers, int * centers_num)
 {
-	double xmax,xmin,ymax,ymin,xdelta,ydelta;
-	int nbins_x,nbins_y;
-	int x,y;
-	int i;
-	unsigned int addr,addr2;
-	xmax = ymax = 0;
-	xmin = ymin = DBL_MAX;
-	for( i = 0; i< points_num; i++ )
-	{
-		addr = 2*i;
-		if( points[addr] > xmax)
-			xmax = points[addr];
-		if( points[addr] < xmin)
-			xmin = points[addr];
-		if( points[addr+1] > ymax)
-			ymax = points[addr+1];
-		if( points[addr+1] < ymin)
-			ymin = points[addr+1];
-	}
-	xmax += xmax*0.02;//±ÜÃâxdelta¡¢ydeltaÎª0
-	xmin -= xmin*0.02;
-	ymax += ymax*0.02;
-	ymin -= ymin*0.02;
-	xdelta = (xmax-xmin);
-	ydelta = (ymax-ymin);//ÓĞÎÊÌâ£¬¼ÙÉèËùÓĞÊı¾İÒ»Ñù´ó£¬´Ë´¦Îª0
-	nbins_x = (int)ceil(xdelta/distance_tolerance);
-	nbins_y = (int)ceil(ydelta/distance_tolerance);
-	if(nbins_x <= 0 )
-	{
-		nbins_x = 1;//ÖÁÉÙ±£Áô1¸öbin
-		//error("generateCircleCandidates,nbins_x,nbins_y error");
-	}
-	if(nbins_y <= 0)
-	{
-		nbins_y = 1;
-	}
-	point2d1i * center_bins;
-	center_bins = (point2d1i *)calloc(nbins_y*nbins_x, sizeof(point2d1i));//(x,y,z),xÓÃÀ´¼Çsum(xi),yÓÃÀ´¼Çsum(yi),zÓÃÀ´¼ÇÂäÔÚ¸ñ×ÓÀïµÄÊıÁ¿
-	memset(center_bins,0,sizeof(point2d1i)*nbins_y*nbins_x);
-	if(center_bins == NULL)
-		error("cluster2DPoints, not enough memory");
-//	cout<<"2DÔ­Ê¼Êı¾İ:"<<points_num<<endl;
-	for ( i = 0; i< points_num; i++ )//½«Ô²ĞÄ¼ÇÂ¼µ½¸ñ×ÓÀïÃæ£¬Í¬Ê±ÂäÔÚÏàÓ¦¸ñ×ÓÀïÃæµÄÊıÁ¿++
-	{
-		addr = 2*i;
+  double xmax,xmin,ymax,ymin,xdelta,ydelta;
+  int nbins_x,nbins_y;
+  int x,y;
+  int i;
+  unsigned int addr,addr2;
+  xmax = ymax = 0;
+  xmin = ymin = DBL_MAX;
+  for( i = 0; i< points_num; i++ )
+  {
+    addr = 2*i;
+    if( points[addr] > xmax)
+      xmax = points[addr];
+    if( points[addr] < xmin)
+      xmin = points[addr];
+    if( points[addr+1] > ymax)
+      ymax = points[addr+1];
+    if( points[addr+1] < ymin)
+      ymin = points[addr+1];
+  }
+  xmax += xmax*0.02;//é¿å…xdeltaã€ydeltaä¸º0
+  xmin -= xmin*0.02;
+  ymax += ymax*0.02;
+  ymin -= ymin*0.02;
+  xdelta = (xmax-xmin);
+  ydelta = (ymax-ymin);//æœ‰é—®é¢˜ï¼Œå‡è®¾æ‰€æœ‰æ•°æ®ä¸€æ ·å¤§ï¼Œæ­¤å¤„ä¸º0
+  nbins_x = (int)ceil(xdelta/distance_tolerance);
+  nbins_y = (int)ceil(ydelta/distance_tolerance);
+  if(nbins_x <= 0 )
+  {
+    nbins_x = 1;//è‡³å°‘ä¿ç•™1ä¸ªbin
+    //error("generateCircleCandidates,nbins_x,nbins_y error");
+  }
+  if(nbins_y <= 0)
+  {
+    nbins_y = 1;
+  }
+  point2d1i * center_bins;
+  center_bins = (point2d1i *)calloc(nbins_y*nbins_x, sizeof(point2d1i));//(x,y,z),xç”¨æ¥è®°sum(xi),yç”¨æ¥è®°sum(yi),zç”¨æ¥è®°è½åœ¨æ ¼å­é‡Œçš„æ•°é‡
+  memset(center_bins,0,sizeof(point2d1i)*nbins_y*nbins_x);
+  if(center_bins == NULL)
+    error("cluster2DPoints, not enough memory");
+//  cout<<"2DåŸå§‹æ•°æ®:"<<points_num<<endl;
+  for ( i = 0; i< points_num; i++ )//å°†åœ†å¿ƒè®°å½•åˆ°æ ¼å­é‡Œé¢ï¼ŒåŒæ—¶è½åœ¨ç›¸åº”æ ¼å­é‡Œé¢çš„æ•°é‡++
+  {
+    addr = 2*i;
 
-//		cout<<points[addr]<<'\t'<<points[addr+1]<<endl;
+//    cout<<points[addr]<<'\t'<<points[addr+1]<<endl;
 
-		x = (int)((points[addr]   - xmin)/xdelta*nbins_x+0.5);//ËÄÉáÎåÈë
-		y = (int)((points[addr+1] - ymin)/ydelta*nbins_y+0.5);
-		if( x >= nbins_x)
-			x = nbins_x-1;
-		if( y >= nbins_y)
-			y = nbins_y-1;
-		addr2 = y*nbins_x+x;
-		center_bins[addr2].x += points[addr];
-		center_bins[addr2].y += points[addr+1];
-		center_bins[addr2].z ++;
-	}
-	int initCentersLength = 0;
-	for ( y = 0; y<nbins_y; y++)//½«voteºó·Ç0µÄ¸ñ×ÓÀïÃæµÄpointÈ¡¾ùÖµ£¬²¢°´ÕÕË³ĞòÖØĞ´µ½center_binsÀïÃæ£¬ÎŞÄÚ´æÏûºÄ
-		for ( x = 0; x<nbins_x; x++)
-		{
-			addr = y*nbins_x+x;
-			if(center_bins[addr].z > 0)
-			{
-				center_bins[initCentersLength].x = center_bins[addr].x/center_bins[addr].z;
-				center_bins[initCentersLength].y = center_bins[addr].y/center_bins[addr].z;
-				initCentersLength++;
-			}
-		}
-	if(initCentersLength == 0)
-	{
-		(*centers_num) = 0;
-		centers = NULL;
-		//cout<<"cluster2DPoints,points number:"<<points_num<<endl;
-		//cout<<"cluster2DPoints,initCentersLength equals 0"<<endl;
-		return 0;
-		//error("generateCircleCandidates,initCentersLength equals 0");
-	}
-	double * initCenters; //initCentersLength x 2
-	initCenters = (double*)malloc(sizeof(double)*initCentersLength*2); 
-	//½«¼ÇÂ¼ÔÚÁ´±íÀïÃæµÄ·ÖÇøºóµÄÔ²ĞÄ¾ùÖµ¼ÇÂ¼µ½Êı×éÀï£¬±ãÓÚ×÷Îª³õÊ¼µã½øĞĞ¾ùÖµÆ¯ÒÆ
-	for ( i = 0; i<initCentersLength; i++ )// initCenters ´óĞ¡ÊÇ initCentersLength*2
-	{
-		int addr = 2*i;
-		initCenters[addr]   = center_bins[i].x;
-		initCenters[addr+1] = center_bins[i].y;
-	}
-	free((void*)center_bins);//¸Ï½ôÊÍ·Å¸ÃÄÚ´æ
+    x = (int)((points[addr]   - xmin)/xdelta*nbins_x+0.5);//å››èˆäº”å…¥
+    y = (int)((points[addr+1] - ymin)/ydelta*nbins_y+0.5);
+    if( x >= nbins_x)
+      x = nbins_x-1;
+    if( y >= nbins_y)
+      y = nbins_y-1;
+    addr2 = y*nbins_x+x;
+    center_bins[addr2].x += points[addr];
+    center_bins[addr2].y += points[addr+1];
+    center_bins[addr2].z ++;
+  }
+  int initCentersLength = 0;
+  for ( y = 0; y<nbins_y; y++)//å°†voteåé0çš„æ ¼å­é‡Œé¢çš„pointå–å‡å€¼ï¼Œå¹¶æŒ‰ç…§é¡ºåºé‡å†™åˆ°center_binsé‡Œé¢ï¼Œæ— å†…å­˜æ¶ˆè€—
+    for ( x = 0; x<nbins_x; x++)
+    {
+      addr = y*nbins_x+x;
+      if(center_bins[addr].z > 0)
+      {
+        center_bins[initCentersLength].x = center_bins[addr].x/center_bins[addr].z;
+        center_bins[initCentersLength].y = center_bins[addr].y/center_bins[addr].z;
+        initCentersLength++;
+      }
+    }
+  if(initCentersLength == 0)
+  {
+    (*centers_num) = 0;
+    centers = NULL;
+    //cout<<"cluster2DPoints,points number:"<<points_num<<endl;
+    //cout<<"cluster2DPoints,initCentersLength equals 0"<<endl;
+    return 0;
+    //error("generateCircleCandidates,initCentersLength equals 0");
+  }
+  double * initCenters; //initCentersLength x 2
+  initCenters = (double*)malloc(sizeof(double)*initCentersLength*2); 
+  //å°†è®°å½•åœ¨é“¾è¡¨é‡Œé¢çš„åˆ†åŒºåçš„åœ†å¿ƒå‡å€¼è®°å½•åˆ°æ•°ç»„é‡Œï¼Œä¾¿äºä½œä¸ºåˆå§‹ç‚¹è¿›è¡Œå‡å€¼æ¼‚ç§»
+  for ( i = 0; i<initCentersLength; i++ )// initCenters å¤§å°æ˜¯ initCentersLength*2
+  {
+    int addr = 2*i;
+    initCenters[addr]   = center_bins[i].x;
+    initCenters[addr+1] = center_bins[i].y;
+  }
+  free((void*)center_bins);//èµ¶ç´§é‡Šæ”¾è¯¥å†…å­˜
 
-//	cout<<"2D¾ùÖµÆ¯ÒÆÇ°³õÊ¼µü´úµã£º"<<endl;
-//	for (int  i = 0; i<initCentersLength; i++)
-//		cout<<initCenters[2*i]<<'\t'<<initCenters[2*i+1]<<endl;
-	
-	//¾ùÖµÆ¯ÒÆµÄ½á¹û»á¸üĞÂµ½initCentersÀïÃæ
-	meanShift(points,points_num,2,initCenters,initCentersLength,1,distance_tolerance,1e-6,50);//µü´ú20´Î
+//  cout<<"2Då‡å€¼æ¼‚ç§»å‰åˆå§‹è¿­ä»£ç‚¹ï¼š"<<endl;
+//  for (int  i = 0; i<initCentersLength; i++)
+//    cout<<initCenters[2*i]<<'\t'<<initCenters[2*i+1]<<endl;
+  
+  //å‡å€¼æ¼‚ç§»çš„ç»“æœä¼šæ›´æ–°åˆ°initCentersé‡Œé¢
+  meanShift(points,points_num,2,initCenters,initCentersLength,1,distance_tolerance,1e-6,50);//è¿­ä»£20æ¬¡
 
-//	cout<<"2D¾ùÖµÆ¯ÒÆºóµÄ¾ÛÀàÖĞĞÄ:"<<endl;
-//	for (int  i = 0; i<initCentersLength; i++)
-//		cout<<initCenters[2*i]<<'\t'<<initCenters[2*i+1]<<endl;
+//  cout<<"2Då‡å€¼æ¼‚ç§»åçš„èšç±»ä¸­å¿ƒ:"<<endl;
+//  for (int  i = 0; i<initCentersLength; i++)
+//    cout<<initCenters[2*i]<<'\t'<<initCenters[2*i+1]<<endl;
 
-	//¾ÛÀà
-	//Ç§ÍòÒª×¢Òâcenters_numÊÇintĞÍÖ¸Õë£¬++--Ê±Òª(*centers_num).
-	clusterByDistance(initCenters,initCentersLength,2,distance_tolerance/2,40,centers, centers_num);//´Ë´¦¿ØÖÆ²ÎÊıÒª¸Ä£¬Òªµ÷½Ú
+  //èšç±»
+  //åƒä¸‡è¦æ³¨æ„centers_numæ˜¯intå‹æŒ‡é’ˆï¼Œ++--æ—¶è¦(*centers_num).
+  clusterByDistance(initCenters,initCentersLength,2,distance_tolerance/2,40,centers, centers_num);//æ­¤å¤„æ§åˆ¶å‚æ•°è¦æ”¹ï¼Œè¦è°ƒèŠ‚
 
-//	cout<<"2D¾àÀë¾ÛÀà£¬È¥³ıÖØ¸´µãºóµÄµã¼¯:"<<endl;
-//	for (int  i = 0; i<(*centers_num); i++)
-//		cout<<centers[2*i]<<'\t'<<centers[2*i+1]<<endl;
+//  cout<<"2Dè·ç¦»èšç±»ï¼Œå»é™¤é‡å¤ç‚¹åçš„ç‚¹é›†:"<<endl;
+//  for (int  i = 0; i<(*centers_num); i++)
+//    cout<<centers[2*i]<<'\t'<<centers[2*i+1]<<endl;
 
-	if((*centers_num) <= 0)//¿ÉÎŞ
-	{
-		return 0;  //²»¶®ÎªÊ²Ã´£¬¾ÛÀàÖĞĞÄµÄÖÜÎ§È·Ã»ÓĞ×î¿¿½üËüµÄµã
-		//system("pause");
-		//error("cluster2DPoints,(*centers_num)<=0");
-	}
-	free(initCenters);
-	//cout<<"2D¾ÛÀàºóÊıÁ¿:"<<(*centers_num)<<endl;
-	return 1;
+  if((*centers_num) <= 0)//å¯æ— 
+  {
+    return 0;  //ä¸æ‡‚ä¸ºä»€ä¹ˆï¼Œèšç±»ä¸­å¿ƒçš„å‘¨å›´ç¡®æ²¡æœ‰æœ€é è¿‘å®ƒçš„ç‚¹
+    //system("pause");
+    //error("cluster2DPoints,(*centers_num)<=0");
+  }
+  free(initCenters);
+  //cout<<"2Dèšç±»åæ•°é‡:"<<(*centers_num)<<endl;
+  return 1;
 }
 
-//¾ÛÀàËã·¨£¬¾ùÖµÆ¯ÒÆ
-//Èı¸ö²½Öè£¬Ò»ÊÇÑ¡È¡³õÊ¼µü´úµã£¬¶şÊÇ¾ùÖµÆ¯ÒÆ£¬ÈıÊÇÈ¥³ıÖØ¸´µã£¬´Ó¶øµÃµ½¾ÛÀàÖĞĞÄ
-//»ñµÃºòÑ¡Ô²ĞÄµÄ¾ÛÀàÖĞĞÄ(xi,yi)
-//ÊäÈë£º
-//datas£¬Ò»Î¬µãÊı¾İ,³¤¶ÈÎªdatas_num x 1
-//distance_tolerance,Êı¾İµã¾ÛÀàµÄ°ë¾¶
-//Êä³ö£º
-//Ò»Î¬Êı¾İµãµÄ¾ÛÀàÖĞĞÄ centersÊÇÒ»Î¬doubleÊı×é£¬ ´óĞ¡Îª centers_num x 1
-//ÕıÈ··µ»ØÖµÎª1£¬³öÏÖ´íÎóÎª0. ÀıÈçpointsÎª¿Õ
-//ÇĞ¼ÇÇĞ¼Ç£¡£¡£¡ centersÎªº¯ÊıÄÚ²¿ÉêÇëµÄÄÚ´æ£¬ÓÃÀ´·µ»Øcenters_num¸öµãµÄ¾ÛÀàÖĞĞÄ£¬Ê¹ÓÃÍêºóÒ»¶¨ÒªÊÍ·Å£¬¼Ç×¡free(centers)£¡£¡£¡
+//èšç±»ç®—æ³•ï¼Œå‡å€¼æ¼‚ç§»
+//ä¸‰ä¸ªæ­¥éª¤ï¼Œä¸€æ˜¯é€‰å–åˆå§‹è¿­ä»£ç‚¹ï¼ŒäºŒæ˜¯å‡å€¼æ¼‚ç§»ï¼Œä¸‰æ˜¯å»é™¤é‡å¤ç‚¹ï¼Œä»è€Œå¾—åˆ°èšç±»ä¸­å¿ƒ
+//è·å¾—å€™é€‰åœ†å¿ƒçš„èšç±»ä¸­å¿ƒ(xi,yi)
+//è¾“å…¥ï¼š
+//datasï¼Œä¸€ç»´ç‚¹æ•°æ®,é•¿åº¦ä¸ºdatas_num x 1
+//distance_tolerance,æ•°æ®ç‚¹èšç±»çš„åŠå¾„
+//è¾“å‡ºï¼š
+//ä¸€ç»´æ•°æ®ç‚¹çš„èšç±»ä¸­å¿ƒ centersæ˜¯ä¸€ç»´doubleæ•°ç»„ï¼Œ å¤§å°ä¸º centers_num x 1
+//æ­£ç¡®è¿”å›å€¼ä¸º1ï¼Œå‡ºç°é”™è¯¯ä¸º0. ä¾‹å¦‚pointsä¸ºç©º
+//åˆ‡è®°åˆ‡è®°ï¼ï¼ï¼ centersä¸ºå‡½æ•°å†…éƒ¨ç”³è¯·çš„å†…å­˜ï¼Œç”¨æ¥è¿”å›centers_numä¸ªç‚¹çš„èšç±»ä¸­å¿ƒï¼Œä½¿ç”¨å®Œåä¸€å®šè¦é‡Šæ”¾ï¼Œè®°ä½free(centers)ï¼ï¼ï¼
 int  cluster1DDatas( double * datas, int datas_num, double distance_tolerance, double * & centers, int * centers_num)
 {
-	double rmin,rmax,rdelta;
-	int r;
-	int i;
-	rmin = DBL_MAX;
-	rmax = 0;
-	for( i  = 0; i < datas_num; i++)//½«Á´±íÀïµÄr¼¯ºÏ¸´ÖÆµ½Êı×é
-	{
-		if(datas[i] < rmin)//ÔÚÕâÒ»´Î±éÀúÖĞ£¬¼ÇÂ¼×î´ó×îĞ¡Öµ
-			rmin = datas[i];
-		if(datas[i] > rmax)
-			rmax = datas[i];
-	}
-	int nbins_r = 0;
-	point1d1i * center_bins;
-	rmax += rmin*0.02;//±ÜÃârmax-rmin = 0
-	rmin -= rmin*0.02;
-	rdelta = rmax - rmin;
-	nbins_r = (int)ceil((rdelta)/distance_tolerance);
-	if(nbins_r <= 0)//ÖÁÉÙÓĞÒ»¸öbin
-		nbins_r = 1;
-	center_bins = (point1d1i *)malloc(sizeof(point1d1i)*nbins_r);
-	memset(center_bins,0,sizeof(point1d1i)*nbins_r);//³õÊ¼»¯Îª0
-//	cout<<"1DÔ­Ê¼Êı¾İ:"<<datas_num<<endl;
-	for( i = 0; i<datas_num; i++)//¶Ô·ÖÇøvote
-	{
-//		cout<<datas[i]<<endl;
-		r = int((datas[i]-rmin)/rdelta*nbins_r+0.5);
-		if(r>=nbins_r)
-			r = nbins_r-1;
-		center_bins[r].data += datas[i];
-		center_bins[r].cnt  ++;			
-	}
-	int init_r_length = 0;
-	for( i = 0; i<nbins_r; i++)
-	{
-		if(center_bins[i].cnt > 0)//Í³¼Æ·Ç0·ÖÇø,²¢ÇÒ¶ÔÃ¿Ò»¸öbinÈ¡¾ùÖµ£¬°´ÕÕË³ĞòÖØĞ´µ½center_binsÀïÃæ£¬ÎŞÄÚ´æÏûºÄ
-		{
-			center_bins[init_r_length].data = center_bins[i].data/center_bins[i].cnt;
-			init_r_length++;
-		}
-	}
-	if(init_r_length == 0)
-	{
-		(*centers_num) = 0;
-		centers = NULL;
-		//cout<<"cluster1DDatas,points number:"<<datas_num<<endl;
-		//cout<<"cluster2DDatas,init_r_length equals 0"<<endl;
-		return 0;
-		//error("generateCircleCandidates,initCentersLength equals 0");
-	}
-	double * initCenters; //init_r_length x 1
-	initCenters = (double*)malloc(sizeof(double)*init_r_length); 
-	//½«¼ÇÂ¼ÔÚÁ´±íÀïÃæµÄ·ÖÇøºóµÄÔ²ĞÄ¾ùÖµ¼ÇÂ¼µ½Êı×éÀï£¬±ãÓÚ×÷Îª³õÊ¼µã½øĞĞ¾ùÖµÆ¯ÒÆ
-	for ( i = 0; i<init_r_length; i++ )// initCenters ´óĞ¡ÊÇ init_r_length x 1
-	{
-		initCenters[i] = center_bins[i].data;
-	}
-	free(center_bins);//¸Ï½ôÊÍ·Å¸ÃÄÚ´æ
+  double rmin,rmax,rdelta;
+  int r;
+  int i;
+  rmin = DBL_MAX;
+  rmax = 0;
+  for( i  = 0; i < datas_num; i++)//å°†é“¾è¡¨é‡Œçš„ré›†åˆå¤åˆ¶åˆ°æ•°ç»„
+  {
+    if(datas[i] < rmin)//åœ¨è¿™ä¸€æ¬¡éå†ä¸­ï¼Œè®°å½•æœ€å¤§æœ€å°å€¼
+      rmin = datas[i];
+    if(datas[i] > rmax)
+      rmax = datas[i];
+  }
+  int nbins_r = 0;
+  point1d1i * center_bins;
+  rmax += rmin*0.02;//é¿å…rmax-rmin = 0
+  rmin -= rmin*0.02;
+  rdelta = rmax - rmin;
+  nbins_r = (int)ceil((rdelta)/distance_tolerance);
+  if(nbins_r <= 0)//è‡³å°‘æœ‰ä¸€ä¸ªbin
+    nbins_r = 1;
+  center_bins = (point1d1i *)malloc(sizeof(point1d1i)*nbins_r);
+  memset(center_bins,0,sizeof(point1d1i)*nbins_r);//åˆå§‹åŒ–ä¸º0
+//  cout<<"1DåŸå§‹æ•°æ®:"<<datas_num<<endl;
+  for( i = 0; i<datas_num; i++)//å¯¹åˆ†åŒºvote
+  {
+//    cout<<datas[i]<<endl;
+    r = int((datas[i]-rmin)/rdelta*nbins_r+0.5);
+    if(r>=nbins_r)
+      r = nbins_r-1;
+    center_bins[r].data += datas[i];
+    center_bins[r].cnt  ++;     
+  }
+  int init_r_length = 0;
+  for( i = 0; i<nbins_r; i++)
+  {
+    if(center_bins[i].cnt > 0)//ç»Ÿè®¡é0åˆ†åŒº,å¹¶ä¸”å¯¹æ¯ä¸€ä¸ªbinå–å‡å€¼ï¼ŒæŒ‰ç…§é¡ºåºé‡å†™åˆ°center_binsé‡Œé¢ï¼Œæ— å†…å­˜æ¶ˆè€—
+    {
+      center_bins[init_r_length].data = center_bins[i].data/center_bins[i].cnt;
+      init_r_length++;
+    }
+  }
+  if(init_r_length == 0)
+  {
+    (*centers_num) = 0;
+    centers = NULL;
+    //cout<<"cluster1DDatas,points number:"<<datas_num<<endl;
+    //cout<<"cluster2DDatas,init_r_length equals 0"<<endl;
+    return 0;
+    //error("generateCircleCandidates,initCentersLength equals 0");
+  }
+  double * initCenters; //init_r_length x 1
+  initCenters = (double*)malloc(sizeof(double)*init_r_length); 
+  //å°†è®°å½•åœ¨é“¾è¡¨é‡Œé¢çš„åˆ†åŒºåçš„åœ†å¿ƒå‡å€¼è®°å½•åˆ°æ•°ç»„é‡Œï¼Œä¾¿äºä½œä¸ºåˆå§‹ç‚¹è¿›è¡Œå‡å€¼æ¼‚ç§»
+  for ( i = 0; i<init_r_length; i++ )// initCenters å¤§å°æ˜¯ init_r_length x 1
+  {
+    initCenters[i] = center_bins[i].data;
+  }
+  free(center_bins);//èµ¶ç´§é‡Šæ”¾è¯¥å†…å­˜
 
-//	cout<<"1D¾ùÖµÆ¯ÒÆÇ°³õÊ¼µü´úµã£º"<<endl;
-//	for (int  i = 0; i<init_r_length; i++)
-//		cout<<initCenters[i]<<'\t';
-//	cout<<endl;
+//  cout<<"1Då‡å€¼æ¼‚ç§»å‰åˆå§‹è¿­ä»£ç‚¹ï¼š"<<endl;
+//  for (int  i = 0; i<init_r_length; i++)
+//    cout<<initCenters[i]<<'\t';
+//  cout<<endl;
 
-	//ÖÁ´Ë£¬µÃµ½ÁË¾ùÖµÆ¯ÒÆ³õÊ¼µÄinitCenters£¬ÎªÒ»Î¬doubleÊı×é£¬³¤¶ÈÊÇinit_r_length
-	meanShift(datas, datas_num, 1, initCenters, init_r_length, 1, distance_tolerance, 1e-6, 20);//µü´ú20´Î
+  //è‡³æ­¤ï¼Œå¾—åˆ°äº†å‡å€¼æ¼‚ç§»åˆå§‹çš„initCentersï¼Œä¸ºä¸€ç»´doubleæ•°ç»„ï¼Œé•¿åº¦æ˜¯init_r_length
+  meanShift(datas, datas_num, 1, initCenters, init_r_length, 1, distance_tolerance, 1e-6, 20);//è¿­ä»£20æ¬¡
 
-//	cout<<"1D¾ùÖµÆ¯ÒÆºóµÄ¾ÛÀàÖĞĞÄ:"<<endl;
-//	for (int  i = 0; i<init_r_length; i++)
-//		cout<<initCenters[i]<<'\t';
-//	cout<<endl;
+//  cout<<"1Då‡å€¼æ¼‚ç§»åçš„èšç±»ä¸­å¿ƒ:"<<endl;
+//  for (int  i = 0; i<init_r_length; i++)
+//    cout<<initCenters[i]<<'\t';
+//  cout<<endl;
 
-	//¾ÛÀà
-	//Ç§ÍòÒª×¢Òâcenters_numÊÇintĞÍÖ¸Õë£¬++--Ê±Òª(*centers_num).
-	clusterByDistance(initCenters, init_r_length, 1, distance_tolerance/2, 40, centers, centers_num);//¿ØÖÆ²ÎÊı40£¬×î¶à40¸öµãºÏ³É1¸öµã
-	
-//	cout<<"1D¾àÀë¾ÛÀà£¬È¥³ıÖØ¸´µãºóµÄµã¼¯:"<<endl;
-//	for (int  i = 0; i<(*centers_num); i++)
-//		cout<<centers[i]<<'\t';
-//	cout<<endl;
+  //èšç±»
+  //åƒä¸‡è¦æ³¨æ„centers_numæ˜¯intå‹æŒ‡é’ˆï¼Œ++--æ—¶è¦(*centers_num).
+  clusterByDistance(initCenters, init_r_length, 1, distance_tolerance/2, 40, centers, centers_num);//æ§åˆ¶å‚æ•°40ï¼Œæœ€å¤š40ä¸ªç‚¹åˆæˆ1ä¸ªç‚¹
+  
+//  cout<<"1Dè·ç¦»èšç±»ï¼Œå»é™¤é‡å¤ç‚¹åçš„ç‚¹é›†:"<<endl;
+//  for (int  i = 0; i<(*centers_num); i++)
+//    cout<<centers[i]<<'\t';
+//  cout<<endl;
 
-	if((*centers_num) <= 0)//¿ÉÎŞ
-	{
-		return 0;  //²»¶®ÎªÊ²Ã´£¬¾ÛÀàÖĞĞÄµÄÖÜÎ§È·Ã»ÓĞ×î¿¿½üËüµÄµã
-		//system("pause");
-		//error("cluster1DDatas,(*centers_num)<=0");
-	}
+  if((*centers_num) <= 0)//å¯æ— 
+  {
+    return 0;  //ä¸æ‡‚ä¸ºä»€ä¹ˆï¼Œèšç±»ä¸­å¿ƒçš„å‘¨å›´ç¡®æ²¡æœ‰æœ€é è¿‘å®ƒçš„ç‚¹
+    //system("pause");
+    //error("cluster1DDatas,(*centers_num)<=0");
+  }
     free(initCenters);
-//	cout<<"1D¾ÛÀàºóÊıÁ¿::"<<(*centers_num)<<endl;
-	return 1;
+//  cout<<"1Dèšç±»åæ•°é‡::"<<(*centers_num)<<endl;
+  return 1;
 }
 
 //================================Generate Ellipse Candidates=========================================
-//Æ¥Åä×é¶Ô£¬×é¶ÔµÄË÷Òı²ÎÊı£¬ÍÖÔ²²ÎÊı
+//åŒ¹é…ç»„å¯¹ï¼Œç»„å¯¹çš„ç´¢å¼•å‚æ•°ï¼Œæ¤­åœ†å‚æ•°
 typedef struct PairGroup_s
 {
-	point2i pairGroupInd;
-	point2d center;  //(x0,y0)
-	point2d axis;    //(a,b)
-	double  phi;     //angle of orientation  
+  point2i pairGroupInd;
+  point2d center;  //(x0,y0)
+  point2d axis;    //(a,b)
+  double  phi;     //angle of orientation  
 }PairGroup;
 
-//Æ¥Åä×é¶Ô½Úµã
+//åŒ¹é…ç»„å¯¹èŠ‚ç‚¹
 typedef struct PairGroupNode_s
 {
-	point2i pairGroupInd;
-	point2d center;  //(x0,y0)
-	point2d axis;    //(a,b)
-	double  phi;     //angle of orientation  
-	PairGroupNode_s* next;
+  point2i pairGroupInd;
+  point2d center;  //(x0,y0)
+  point2d axis;    //(a,b)
+  double  phi;     //angle of orientation  
+  PairGroupNode_s* next;
 }PairGroupNode;
 
 typedef struct  PairGroupList_s
 {
-	int length;
-	PairGroup * pairGroup;
+  int length;
+  PairGroup * pairGroup;
 }PairGroupList;
 
 typedef struct Point2dNode_s
 {
-	point2d point;
-	Point2dNode_s * next;
+  point2d point;
+  Point2dNode_s * next;
 }Point2dNode;
 
 typedef struct Point3dNode_s
 {
-	point3d point;
-	Point3dNode_s * next;
+  point3d point;
+  Point3dNode_s * next;
 }Point3dNode;
 
 typedef struct Point5dNode_s
 {
-	point2d center;
-	point2d axis;
-	double  phi;
-	Point5dNode_s * next;
+  point2d center;
+  point2d axis;
+  double  phi;
+  Point5dNode_s * next;
 }Point5dNode;
 
 typedef struct Point1dNode_s
 {
-	double data;
-	Point1dNode_s * next;
+  double data;
+  Point1dNode_s * next;
 }Point1dNode;
 
 PairGroupList * pairGroupListInit( int length)
 {
-	if(length <= 0)
-		error("paired groups length less equal than 0");
-	PairGroupList * pairGroupList = (PairGroupList*)malloc(sizeof(PairGroupList));
-	pairGroupList->length = length;
-	pairGroupList->pairGroup = (PairGroup*)malloc(sizeof(PairGroup)*length);
-	if(pairGroupList->pairGroup == NULL)
-		error("pairGroupListInit,not enough memory");
-	return pairGroupList;
+  if(length <= 0)
+    error("paired groups length less equal than 0");
+  PairGroupList * pairGroupList = (PairGroupList*)malloc(sizeof(PairGroupList));
+  pairGroupList->length = length;
+  pairGroupList->pairGroup = (PairGroup*)malloc(sizeof(PairGroup)*length);
+  if(pairGroupList->pairGroup == NULL)
+    error("pairGroupListInit,not enough memory");
+  return pairGroupList;
 }
 
 void freePairGroupList( PairGroupList * list)
 {
-	if(list == NULL || list->pairGroup == NULL)
-		error("freePairGroupList,invalidate free");
-	free(list->pairGroup);
-	free(list);
-	list->pairGroup = NULL;
-	list = NULL;
+  if(list == NULL || list->pairGroup == NULL)
+    error("freePairGroupList,invalidate free");
+  free(list->pairGroup);
+  free(list);
+  list->pairGroup = NULL;
+  list = NULL;
 }
 
-//¼ÆËãÌİ¶È£¬·µ»ØÄ£ºÍ½Ç¶È£¬Í¬Ê±Ä£ÖµÌ«Ğ¡µÄÏñËØµãÖ±½ÓÒÖÖÆµô£¬¸³ÖµÎªNOTDEF
-//mod¡¢anglesÎªÁË´«Öµ£¬ÊÇ¶ş¼¶Ö¸Õë
+//è®¡ç®—æ¢¯åº¦ï¼Œè¿”å›æ¨¡å’Œè§’åº¦ï¼ŒåŒæ—¶æ¨¡å€¼å¤ªå°çš„åƒç´ ç‚¹ç›´æ¥æŠ‘åˆ¶æ‰ï¼Œèµ‹å€¼ä¸ºNOTDEF
+//modã€anglesä¸ºäº†ä¼ å€¼ï¼Œæ˜¯äºŒçº§æŒ‡é’ˆ
 void calculateGradient( double * img_in, unsigned int imgx, unsigned int imgy,image_double * mod, image_double * angles)
 {
-	if(img_in == NULL || imgx == 0 || imgy == 0)
-		error("calculateGradient error!");
-	(*mod) = new_image_double(imgx,imgy);
-	(*angles) = new_image_double(imgx,imgy);
-	double threshold = 2/sin(22.5/180*M_PI);
-	unsigned int x,y,adr;
-	double com1,com2;
-	double gx,gy;
-	double norm,norm_square;
-	double sum = 0;
+  if(img_in == NULL || imgx == 0 || imgy == 0)
+    error("calculateGradient error!");
+  (*mod) = new_image_double(imgx,imgy);
+  (*angles) = new_image_double(imgx,imgy);
+  double threshold = 2/sin(22.5/180*M_PI);
+  unsigned int x,y,adr;
+  double com1,com2;
+  double gx,gy;
+  double norm,norm_square;
+  double sum = 0;
 
-	//double max_grad = 0.0;
-	//±ß½ç³õÊ¼ÎªNOTDEF
-	for ( x = 0; x<imgx; x++) 
-	{
-		//(*angles)->data[x]=NOTDEF;
-		(*angles)->data[(imgy-1)*imgx+x]=NOTDEF;
-		//(*mod)->data[x]=NOTDEF;
-		(*mod)->data[(imgy-1)*imgx+x]=NOTDEF;
-	}
-	for ( y = 0; y<imgy; y++) 
-	{
-		//(*angles)->data[y*imgx] = NOTDEF;
-		(*angles)->data[y*imgx+imgx-1] = NOTDEF;
-		//(*mod)->data[y*imgx] = NOTDEF;
-		(*mod)->data[y*imgx+imgx-1] = NOTDEF;
-	}
-	 /* compute gradient on the remaining pixels */
-	for(x=0;x<imgx-1;x++)
-		for(y=0;y<imgy-1;y++)
-		{
-			adr = y*imgx+x;
-		  /*
-		     Norm 2 computation using 2x2 pixel window:
-		       A B
-		       C D
-		     and
-		       com1 = D-A,  com2 = B-C.
-		     Then
-		       gx = B+D - (A+C)   horizontal difference
-		       gy = C+D - (A+B)   vertical difference
-		     com1 and com2 are just to avoid 2 additions.
-		   */
-		  com1 = img_in[adr+imgx+1] - img_in[adr];
-		  com2 = img_in[adr+1]   - img_in[adr+imgx];
+  //double max_grad = 0.0;
+  //è¾¹ç•Œåˆå§‹ä¸ºNOTDEF
+  for ( x = 0; x<imgx; x++) 
+  {
+    //(*angles)->data[x]=NOTDEF;
+    (*angles)->data[(imgy-1)*imgx+x]=NOTDEF;
+    //(*mod)->data[x]=NOTDEF;
+    (*mod)->data[(imgy-1)*imgx+x]=NOTDEF;
+  }
+  for ( y = 0; y<imgy; y++) 
+  {
+    //(*angles)->data[y*imgx] = NOTDEF;
+    (*angles)->data[y*imgx+imgx-1] = NOTDEF;
+    //(*mod)->data[y*imgx] = NOTDEF;
+    (*mod)->data[y*imgx+imgx-1] = NOTDEF;
+  }
+   /* compute gradient on the remaining pixels */
+  for(x=0;x<imgx-1;x++)
+    for(y=0;y<imgy-1;y++)
+    {
+      adr = y*imgx+x;
+      /*
+         Norm 2 computation using 2x2 pixel window:
+           A B
+           C D
+         and
+           com1 = D-A,  com2 = B-C.
+         Then
+           gx = B+D - (A+C)   horizontal difference
+           gy = C+D - (A+B)   vertical difference
+         com1 and com2 are just to avoid 2 additions.
+       */
+      com1 = img_in[adr+imgx+1] - img_in[adr];
+      com2 = img_in[adr+1]   - img_in[adr+imgx];
 
-		  gx = com1+com2; /* gradient x component */
-		  gy = com1-com2; /* gradient y component */
-		  norm_square = gx*gx+gy*gy;
+      gx = com1+com2; /* gradient x component */
+      gy = com1-com2; /* gradient y component */
+      norm_square = gx*gx+gy*gy;
 
-		  norm = sqrt( norm_square / 4.0 ); /* gradient norm */
+      norm = sqrt( norm_square / 4.0 ); /* gradient norm */
 
-		  (*mod)->data[adr] = norm; /* store gradient norm */
+      (*mod)->data[adr] = norm; /* store gradient norm */
 
-		  if( norm <= threshold ) /* norm too small, gradient no defined */
-		  {
-		    (*angles)->data[adr] = NOTDEF; /* gradient angle not defined */
-			(*mod)->data[adr] = NOTDEF;
-		  }
-		  else
-		    {
-		      /* gradient angle computation */
-		      (*angles)->data[adr] = atan2(gx,-gy);
-		    }
-		}
+      if( norm <= threshold ) /* norm too small, gradient no defined */
+      {
+        (*angles)->data[adr] = NOTDEF; /* gradient angle not defined */
+      (*mod)->data[adr] = NOTDEF;
+      }
+      else
+        {
+          /* gradient angle computation */
+          (*angles)->data[adr] = atan2(gx,-gy);
+        }
+    }
 }
 
 void calculateGradient2( double * img_in, unsigned int imgx, unsigned int imgy, image_double * angles)
 {
-	if(img_in == NULL || imgx == 0 || imgy == 0)
-		error("calculateGradient error!");
-	image_double mod = new_image_double(imgx,imgy);
-	(*angles) = new_image_double(imgx,imgy);
-	unsigned int x,y,adr;
-	double com1,com2;
-	double gx,gy;
-	double norm,norm_square;
-	double threshold;
-	double sum = 0;
-	double value;  
-	//double max_grad = 0.0;
-	//±ß½ç³õÊ¼ÎªNOTDEF
-	for ( x = 0; x<imgx; x++) 
-	{
-		(*angles)->data[x]=NOTDEF;
-		(*angles)->data[(imgy-1)*imgx+x]=NOTDEF;
-		(mod)->data[x]=NOTDEF;
-		(mod)->data[(imgy-1)*imgx+x]=NOTDEF;
-	}
-	for ( y = 0; y<imgy; y++) 
-	{
-		(*angles)->data[y*imgx] = NOTDEF;
-		(*angles)->data[y*imgx+imgx-1] = NOTDEF;
-		(mod)->data[y*imgx] = NOTDEF;
-		(mod)->data[y*imgx+imgx-1] = NOTDEF;
-	}
-	 /* compute gradient on the remaining pixels */
-	for(x=1;x<imgx-1;x++)
-		for(y=1;y<imgy-1;y++)
-		{
-			adr = y*imgx+x;
-		  /*
-		     Norm 2 computation using 2x2 pixel window:
-		       A B C
-		       D E F
-			   G H I
-		     and
-		       com1 = C-G,  com2 = I-A.
-		     Then
-		       gx = C+2F+I - (A+2D+G)=com1+com2+2(F-D)   horizontal difference
-		       gy = G+2H+I - (A+2B+C)=-com1+com2+2(H-B)   vertical difference
-		     com1 and com2 are just to avoid 2 additions.
-		   */
-		  com1 = img_in[adr-imgx+1] - img_in[adr+imgx-1];
-		  com2 = img_in[adr+imgx+1] - img_in[adr-imgx-1];
+  if(img_in == NULL || imgx == 0 || imgy == 0)
+    error("calculateGradient error!");
+  image_double mod = new_image_double(imgx,imgy);
+  (*angles) = new_image_double(imgx,imgy);
+  unsigned int x,y,adr;
+  double com1,com2;
+  double gx,gy;
+  double norm,norm_square;
+  double threshold;
+  double sum = 0;
+  double value;  
+  //double max_grad = 0.0;
+  //è¾¹ç•Œåˆå§‹ä¸ºNOTDEF
+  for ( x = 0; x<imgx; x++) 
+  {
+    (*angles)->data[x]=NOTDEF;
+    (*angles)->data[(imgy-1)*imgx+x]=NOTDEF;
+    (mod)->data[x]=NOTDEF;
+    (mod)->data[(imgy-1)*imgx+x]=NOTDEF;
+  }
+  for ( y = 0; y<imgy; y++) 
+  {
+    (*angles)->data[y*imgx] = NOTDEF;
+    (*angles)->data[y*imgx+imgx-1] = NOTDEF;
+    (mod)->data[y*imgx] = NOTDEF;
+    (mod)->data[y*imgx+imgx-1] = NOTDEF;
+  }
+   /* compute gradient on the remaining pixels */
+  for(x=1;x<imgx-1;x++)
+    for(y=1;y<imgy-1;y++)
+    {
+      adr = y*imgx+x;
+      /*
+         Norm 2 computation using 2x2 pixel window:
+           A B C
+           D E F
+         G H I
+         and
+           com1 = C-G,  com2 = I-A.
+         Then
+           gx = C+2F+I - (A+2D+G)=com1+com2+2(F-D)   horizontal difference
+           gy = G+2H+I - (A+2B+C)=-com1+com2+2(H-B)   vertical difference
+         com1 and com2 are just to avoid 2 additions.
+       */
+      com1 = img_in[adr-imgx+1] - img_in[adr+imgx-1];
+      com2 = img_in[adr+imgx+1] - img_in[adr-imgx-1];
 
-		  gx = (com1+com2+2*(img_in[adr+1] - img_in[adr-1]))/(8.0*255); /* gradient x component */
-		  gy = (-com1+com2+2*(img_in[adr+imgx] - img_in[adr-imgx]))/(8.0*255); /* gradient y component */
-		  norm_square = gx*gx+gy*gy;
-		  sum+=norm_square;
+      gx = (com1+com2+2*(img_in[adr+1] - img_in[adr-1]))/(8.0*255); /* gradient x component */
+      gy = (-com1+com2+2*(img_in[adr+imgx] - img_in[adr-imgx]))/(8.0*255); /* gradient y component */
+      norm_square = gx*gx+gy*gy;
+      sum+=norm_square;
 
-		  norm = sqrt( norm_square); /* gradient norm */
+      norm = sqrt( norm_square); /* gradient norm */
 
-		  (mod)->data[adr] = norm; /* store gradient norm */
-		   /* gradient angle computation */
-	     (*angles)->data[adr] = atan2(gy,gx);
-		}
-	threshold = 2*sqrt(sum/(imgx*imgy));//×Ô¶¯ãĞÖµ
-	//non maximum suppression
-	for(x=1;x<imgx-1;x++)
-		for(y=1;y<imgy-1;y++)
-		{
-			adr = y*imgx+x;
-			value = (*angles)->data[adr];
-			if((mod)->data[adr] < threshold )
-			{
-				(*angles)->data[adr] = NOTDEF;
-				continue;
-			}
-			if( (value > -M_1_8_PI && value<=M_1_8_PI) || (value <= -M_7_8_PI ) || (value > M_7_8_PI))
-			{
-				if((mod)->data[adr] <= (mod)->data[adr+1] || (mod)->data[adr] <= (mod)->data[adr-1])
-					(*angles)->data[adr] = NOTDEF;
-			}
-			else if( (value> M_1_8_PI && value<= M_3_8_PI) || (value> -M_7_8_PI && value<= -M_5_8_PI) )
-			{
-				if((mod)->data[adr] <= (mod)->data[adr-imgx-1] || (mod)->data[adr] <= (mod)->data[adr+imgx+1])
-					(*angles)->data[adr] = NOTDEF;
-			}
-			else if((value> M_3_8_PI && value<= M_5_8_PI) || (value> -M_5_8_PI && value<= -M_3_8_PI))
-			{
-				if((mod)->data[adr] <= (mod)->data[adr-imgx] || (mod)->data[adr] <= (mod)->data[adr+imgx])
-					(*angles)->data[adr] = NOTDEF;
-			}
-			else 
-			{
-				if((mod)->data[adr] <= (mod)->data[adr-imgx+1] || (mod)->data[adr] <= (mod)->data[adr+imgx-1])
-					(*angles)->data[adr] = NOTDEF;
-			}
-		}
-    //Ò²±ê¼Çµ½modÍ¼ÉÏÃæ
-	//for(x=1;x<imgx-1;x++)
-	//	for(y=1;y<imgy-1;y++)
-	//	{
-	//		if((*angles)->data[y*imgx+x] == NOTDEF)
-	//			(mod)->data[y*imgx+x] = NOTDEF;
-	//	}
-		free_image_double(mod);
+      (mod)->data[adr] = norm; /* store gradient norm */
+       /* gradient angle computation */
+       (*angles)->data[adr] = atan2(gy,gx);
+    }
+  threshold = 2*sqrt(sum/(imgx*imgy));//è‡ªåŠ¨é˜ˆå€¼
+  //non maximum suppression
+  for(x=1;x<imgx-1;x++)
+    for(y=1;y<imgy-1;y++)
+    {
+      adr = y*imgx+x;
+      value = (*angles)->data[adr];
+      if((mod)->data[adr] < threshold )
+      {
+        (*angles)->data[adr] = NOTDEF;
+        continue;
+      }
+      if( (value > -M_1_8_PI && value<=M_1_8_PI) || (value <= -M_7_8_PI ) || (value > M_7_8_PI))
+      {
+        if((mod)->data[adr] <= (mod)->data[adr+1] || (mod)->data[adr] <= (mod)->data[adr-1])
+          (*angles)->data[adr] = NOTDEF;
+      }
+      else if( (value> M_1_8_PI && value<= M_3_8_PI) || (value> -M_7_8_PI && value<= -M_5_8_PI) )
+      {
+        if((mod)->data[adr] <= (mod)->data[adr-imgx-1] || (mod)->data[adr] <= (mod)->data[adr+imgx+1])
+          (*angles)->data[adr] = NOTDEF;
+      }
+      else if((value> M_3_8_PI && value<= M_5_8_PI) || (value> -M_5_8_PI && value<= -M_3_8_PI))
+      {
+        if((mod)->data[adr] <= (mod)->data[adr-imgx] || (mod)->data[adr] <= (mod)->data[adr+imgx])
+          (*angles)->data[adr] = NOTDEF;
+      }
+      else 
+      {
+        if((mod)->data[adr] <= (mod)->data[adr-imgx+1] || (mod)->data[adr] <= (mod)->data[adr+imgx-1])
+          (*angles)->data[adr] = NOTDEF;
+      }
+    }
+    //ä¹Ÿæ ‡è®°åˆ°modå›¾ä¸Šé¢
+  //for(x=1;x<imgx-1;x++)
+  //  for(y=1;y<imgy-1;y++)
+  //  {
+  //    if((*angles)->data[y*imgx+x] == NOTDEF)
+  //      (mod)->data[y*imgx+x] = NOTDEF;
+  //  }
+    free_image_double(mod);
 }
 
 //=============================================================================
-//ĞèÒª°üº¬ÈçÏÂÍ·ÎÄ¼ş
+//éœ€è¦åŒ…å«å¦‚ä¸‹å¤´æ–‡ä»¶
 //#include <opencv2\opencv.hpp>
 //using namespace cv;
-void cvCanny3(	const void* srcarr, void* dstarr,
-				void* dxarr, void* dyarr,
+void cvCanny3(  const void* srcarr, void* dstarr,
+        void* dxarr, void* dyarr,
                 int aperture_size )
 {
     //cv::Ptr<CvMat> dx, dy;
@@ -3394,8 +3395,8 @@ void cvCanny3(	const void* srcarr, void* dstarr,
     CvMat srcstub, *src = cvGetMat( srcarr, &srcstub );
     CvMat dststub, *dst = cvGetMat( dstarr, &dststub );
 
-	CvMat dxstub, *dx = cvGetMat( dxarr, &dxstub );
-	CvMat dystub, *dy = cvGetMat( dyarr, &dystub );
+  CvMat dxstub, *dx = cvGetMat( dxarr, &dxstub );
+  CvMat dystub, *dy = cvGetMat( dyarr, &dystub );
 
 
     CvSize size;
@@ -3410,81 +3411,81 @@ void cvCanny3(	const void* srcarr, void* dstarr,
 
     if( CV_MAT_TYPE( src->type ) != CV_8UC1 ||
         CV_MAT_TYPE( dst->type ) != CV_8UC1 ||
-		CV_MAT_TYPE( dx->type  ) != CV_16SC1 ||
-		CV_MAT_TYPE( dy->type  ) != CV_16SC1 )
+    CV_MAT_TYPE( dx->type  ) != CV_16SC1 ||
+    CV_MAT_TYPE( dy->type  ) != CV_16SC1 )
         CV_Error( CV_StsUnsupportedFormat, "" );
 
     if( !CV_ARE_SIZES_EQ( src, dst ))
         CV_Error( CV_StsUnmatchedSizes, "" );
-	
+  
     aperture_size &= INT_MAX;
     if( (aperture_size & 1) == 0 || aperture_size < 3 || aperture_size > 7 )
         CV_Error( CV_StsBadFlag, "" );
 
 
-	size.width = src->cols;
+  size.width = src->cols;
     size.height = src->rows;
 
-	//aperture_size = -1; //SCHARR
+  //aperture_size = -1; //SCHARR
     cvSobel( src, dx, 1, 0, aperture_size );
     cvSobel( src, dy, 0, 1, aperture_size );
 
-	Mat1f magGrad(size.height, size.width, 0.f);
-	float maxGrad(0);
-	float val(0);
-	for(i=0; i<size.height; ++i)
-	{
-		float* _pmag = magGrad.ptr<float>(i);
-		const short* _dx = (short*)(dx->data.ptr + dx->step*i);
+  Mat1f magGrad(size.height, size.width, 0.f);
+  float maxGrad(0);
+  float val(0);
+  for(i=0; i<size.height; ++i)
+  {
+    float* _pmag = magGrad.ptr<float>(i);
+    const short* _dx = (short*)(dx->data.ptr + dx->step*i);
         const short* _dy = (short*)(dy->data.ptr + dy->step*i);
-		for(j=0; j<size.width; ++j)
-		{
-			val = float(abs(_dx[j]) + abs(_dy[j]));
-			_pmag[j] = val;
-			maxGrad = (val > maxGrad) ? val : maxGrad;
-		}
-	}
-	
-	//% Normalize for threshold selection
-	//normalize(magGrad, magGrad, 0.0, 1.0, NORM_MINMAX);
+    for(j=0; j<size.width; ++j)
+    {
+      val = float(abs(_dx[j]) + abs(_dy[j]));
+      _pmag[j] = val;
+      maxGrad = (val > maxGrad) ? val : maxGrad;
+    }
+  }
+  
+  //% Normalize for threshold selection
+  //normalize(magGrad, magGrad, 0.0, 1.0, NORM_MINMAX);
 
-	//% Determine Hysteresis Thresholds
-	
-	//set magic numbers
-	const int NUM_BINS = 64;	
-	const double percent_of_pixels_not_edges = 0.9;
-	const double threshold_ratio = 0.3;
+  //% Determine Hysteresis Thresholds
+  
+  //set magic numbers
+  const int NUM_BINS = 64;  
+  const double percent_of_pixels_not_edges = 0.9;
+  const double threshold_ratio = 0.3;
 
-	//compute histogram
-	int bin_size = cvFloor(maxGrad / float(NUM_BINS) + 0.5f) + 1;
-	if (bin_size < 1) bin_size = 1;
-	int bins[NUM_BINS] = { 0 }; 
-	for (i=0; i<size.height; ++i) 
-	{
-		float *_pmag = magGrad.ptr<float>(i);
-		for(j=0; j<size.width; ++j)
-		{
-			int hgf = int(_pmag[j]);
-			bins[int(_pmag[j]) / bin_size]++;
-		}
-	}	
+  //compute histogram
+  int bin_size = cvFloor(maxGrad / float(NUM_BINS) + 0.5f) + 1;
+  if (bin_size < 1) bin_size = 1;
+  int bins[NUM_BINS] = { 0 }; 
+  for (i=0; i<size.height; ++i) 
+  {
+    float *_pmag = magGrad.ptr<float>(i);
+    for(j=0; j<size.width; ++j)
+    {
+      int hgf = int(_pmag[j]);
+      bins[int(_pmag[j]) / bin_size]++;
+    }
+  } 
 
-	
-	
+  
+  
 
-	//% Select the thresholds
-	float total(0.f);	
-	float target = float(size.height * size.width * percent_of_pixels_not_edges);
-	int low_thresh, high_thresh(0);
-	
-	while(total < target)
-	{
-		total+= bins[high_thresh];
-		high_thresh++;
-	}
-	high_thresh *= bin_size;
-	low_thresh = cvFloor(threshold_ratio * float(high_thresh));
-	
+  //% Select the thresholds
+  float total(0.f); 
+  float target = float(size.height * size.width * percent_of_pixels_not_edges);
+  int low_thresh, high_thresh(0);
+  
+  while(total < target)
+  {
+    total+= bins[high_thresh];
+    high_thresh++;
+  }
+  high_thresh *= bin_size;
+  low_thresh = cvFloor(threshold_ratio * float(high_thresh));
+  
     if( flags & CV_CANNY_L2_GRADIENT )
     {
         Cv32suf ul, uh;
@@ -3501,7 +3502,7 @@ void cvCanny3(	const void* srcarr, void* dstarr,
     }
 
     
-	buffer.allocate( (size.width+2)*(size.height+2) + (size.width+2)*3*sizeof(int) );
+  buffer.allocate( (size.width+2)*(size.height+2) + (size.width+2)*3*sizeof(int) );
     mag_buf[0] = (int*)(char*)buffer;
     mag_buf[1] = mag_buf[0] + size.width + 2;
     mag_buf[2] = mag_buf[1] + size.width + 2;
@@ -3707,63 +3708,63 @@ void cvCanny3(	const void* srcarr, void* dstarr,
         uchar* _dst = dst->data.ptr + dst->step*i;
 
         for( j = 0; j < size.width; j++ )
-		{
+    {
             _dst[j] = (uchar)-(_map[j] >> 1);
-		}
-	}
+    }
+  }
 };
 
-void Canny3(	InputArray image, OutputArray _edges,
-				OutputArray _sobel_x, OutputArray _sobel_y,
+void Canny3(  InputArray image, OutputArray _edges,
+        OutputArray _sobel_x, OutputArray _sobel_y,
                 int apertureSize, bool L2gradient )
 {
     Mat src = image.getMat();
     _edges.create(src.size(), CV_8U);
-	_sobel_x.create(src.size(), CV_16S);
-	_sobel_y.create(src.size(), CV_16S);
+  _sobel_x.create(src.size(), CV_16S);
+  _sobel_y.create(src.size(), CV_16S);
 
 
     CvMat c_src = src, c_dst = _edges.getMat();
-	CvMat c_dx = _sobel_x.getMat();
-	CvMat c_dy = _sobel_y.getMat();
+  CvMat c_dx = _sobel_x.getMat();
+  CvMat c_dy = _sobel_y.getMat();
 
 
-    cvCanny3(	&c_src, &c_dst, 
-				&c_dx, &c_dy,
-				apertureSize + (L2gradient ? CV_CANNY_L2_GRADIENT : 0));
+    cvCanny3( &c_src, &c_dst, 
+        &c_dx, &c_dy,
+        apertureSize + (L2gradient ? CV_CANNY_L2_GRADIENT : 0));
 };
 
 //canny
 void calculateGradient3( double * img_in, unsigned int imgx, unsigned int imgy, image_double * angles)
 {
-	Mat1b edge;
-	Mat1s DX,DY;
-	Mat1b gray = Mat::zeros(imgy,imgx,CV_8UC1);
-	unsigned int x,y,addr;
-	(*angles) = new_image_double(imgx,imgy);
-	//copy to gray image
-	for ( y = 0; y<imgy; y++)
-		for ( x = 0; x<imgx; x++)
-		{
-			addr = y*imgx+x;
-			gray.data[addr] = (uchar)(img_in[addr]);
-		}
-	//canny
+  Mat1b edge;
+  Mat1s DX,DY;
+  Mat1b gray = Mat::zeros(imgy,imgx,CV_8UC1);
+  unsigned int x,y,addr;
+  (*angles) = new_image_double(imgx,imgy);
+  //copy to gray image
+  for ( y = 0; y<imgy; y++)
+    for ( x = 0; x<imgx; x++)
+    {
+      addr = y*imgx+x;
+      gray.data[addr] = (uchar)(img_in[addr]);
+    }
+  //canny
    Canny3(gray,edge,DX,DY,3,false);
    for ( y = 0; y<imgy; y++)
    {
-	    short* _dx = DX.ptr<short>(y);
-		short* _dy = DY.ptr<short>(y);
-		uchar* _e = edge.ptr<uchar>(y);
-		for ( x = 0; x<imgx; x++)
-		{
-			if(_e[x] > 0)//0 or 255
-			{
-				(*angles)->data[y*imgx+x]  = atan2((double)_dy[x],(double)_dx[x]);//calculate gradient 
-			}
-			else
-				(*angles)->data[y*imgx+x] = NOTDEF;
-		}
+      short* _dx = DX.ptr<short>(y);
+    short* _dy = DY.ptr<short>(y);
+    uchar* _e = edge.ptr<uchar>(y);
+    for ( x = 0; x<imgx; x++)
+    {
+      if(_e[x] > 0)//0 or 255
+      {
+        (*angles)->data[y*imgx+x]  = atan2((double)_dy[x],(double)_dx[x]);//calculate gradient 
+      }
+      else
+        (*angles)->data[y*imgx+x] = NOTDEF;
+    }
    }
    edge.release();
    DX.release();
@@ -3778,7 +3779,7 @@ void calculateGradient3( double * img_in, unsigned int imgx, unsigned int imgy, 
  */
 int ellipse2Param(double *p,double param[])
 {
-	// ax^2 + bxy + cy^2 + dx + ey + f = 0 
+  // ax^2 + bxy + cy^2 + dx + ey + f = 0 
   double a,b,c,d,e,f;
   double thetarad,cost,sint,cos_squared,sin_squared,cos_sin,Ao,Au,Av,Auu,Avv,tuCentre,tvCentre,wCentre,uCentre,vCentre,Ru,Rv;
   a = p[0];
@@ -3814,312 +3815,312 @@ int ellipse2Param(double *p,double param[])
  //     else Ru=-pow(-Ru,0.5);
  //     if (Rv>0) Rv=pow(Rv,0.5);
  //     else Rv=-pow(-Rv,0.5);
-	  if (Ru <= 0 || Rv <= 0)//³¤¶ÌÖáĞ¡ÓÚ0µÄÇé¿ö£¿£¿£¿
-		  return 0;
-	  Ru = sqrt(Ru);
-	  Rv = sqrt(Rv);
+    if (Ru <= 0 || Rv <= 0)//é•¿çŸ­è½´å°äº0çš„æƒ…å†µï¼Ÿï¼Ÿï¼Ÿ
+      return 0;
+    Ru = sqrt(Ru);
+    Rv = sqrt(Rv);
       param[0]=uCentre;param[1]=vCentre;
       param[2]=Ru;param[3]=Rv;param[4]=thetarad;
-	  //»á³öÏÖRu < RvÇé¿ö£¬¶Ôµ÷Ò»ÏÂ
-	  if(Ru < Rv )
-	  {
-		  param[2] = Rv;
-		  param[3] = Ru;
-		  if(thetarad < 0)//µ÷»»³¤¶ÌÖá£¬Ê¹µÃµÚÈı¸ö²ÎÊıÎª³¤Öá£¬µÚËÄ¸öÎª¶ÌÖá
-			  param[4] += M_1_2_PI;
-		  else
-			  param[4] -= M_1_2_PI;
-		  if(thetarad < - M_1_2_PI)//³¤ÖáÇã½ÇÏŞ¶¨ÔÚ-pi/2 ~ pi/2£¬¾ß±¸Î¨Ò»ĞÔ
-			  param[4] += M_PI;
-		  if(thetarad > M_1_2_PI)
-			  param[4] -= M_PI;
-	  }
+    //ä¼šå‡ºç°Ru < Rvæƒ…å†µï¼Œå¯¹è°ƒä¸€ä¸‹
+    if(Ru < Rv )
+    {
+      param[2] = Rv;
+      param[3] = Ru;
+      if(thetarad < 0)//è°ƒæ¢é•¿çŸ­è½´ï¼Œä½¿å¾—ç¬¬ä¸‰ä¸ªå‚æ•°ä¸ºé•¿è½´ï¼Œç¬¬å››ä¸ªä¸ºçŸ­è½´
+        param[4] += M_1_2_PI;
+      else
+        param[4] -= M_1_2_PI;
+      if(thetarad < - M_1_2_PI)//é•¿è½´å€¾è§’é™å®šåœ¨-pi/2 ~ pi/2ï¼Œå…·å¤‡å”¯ä¸€æ€§
+        param[4] += M_PI;
+      if(thetarad > M_1_2_PI)
+        param[4] -= M_PI;
+    }
     }
   return 1;
 }
 //input : (xi,yi)
-//output: x0,y0,a,b,phi,elliparaĞèÒªÊÂÏÈÉêÇëÄÚ´æ
+//output: x0,y0,a,b,phi,elliparaéœ€è¦äº‹å…ˆç”³è¯·å†…å­˜
 //successfull, return 1; else return 0
 int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
 {
-	double* D = (double*)malloc(datanum*6*sizeof(double));
-	double S[36]; 
-	double C[36];
-	memset(D,0,sizeof(double)*datanum);
-	memset(S,0,sizeof(double)*36);
-	memset(C,0,sizeof(double)*36);
-	for ( int i = 0; i<datanum; i++)
-	{
-		D[i*6]  = dataxy[i].x*dataxy[i].x;
-		D[i*6+1]= dataxy[i].x*dataxy[i].y;
-		D[i*6+2]= dataxy[i].y*dataxy[i].y;
-		D[i*6+3]= dataxy[i].x;
-		D[i*6+4]= dataxy[i].y;
-		D[i*6+5]= 1;
-	}
-	for ( int i = 0; i<6; i++)
-		for ( int j = i; j<6; j++)
-		{
-			//S[i*6+j]
-			for ( int k = 0; k<datanum; k++)
-				S[i*6+j] += D[k*6+i]*D[k*6+j];
-		}
-	free(D);//ÊÍ·ÅÄÚ´æ
-	//¶Ô³Æ¾ØÕó¸³Öµ
-	for ( int i = 0; i<6; i++)
-		for ( int j = 0; j<i; j++)
-			S[i*6+j]=S[j*6+i];
-	C[0*6+2] = 2;
-	C[1*6+1] = -1;
-	C[2*6+0] = 2;
-	// eig(S,C) eig(inv(S)*C)
-	double alphar[6],alphai[6],beta[6];
-	double vl[36] = {0};//´Ë´¦²»ÓÃ
-	double vr[36] = {0};
-	char JOBVL = 'N';
-	char JOBVR = 'V';
-	ptrdiff_t fitN = 6;
-	double fitWork[64];
-	ptrdiff_t workLen = 64;
-	ptrdiff_t info;
-	//info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
-	//×¢ÒâSÎª¶Ô³Æ¾ØÕó£¬¹Ê×ªÖÃºóµÈÓÚ±¾Éí£¬±ä³ÉÁĞÓÅÏÈ£¬S¿ÉÒÔ²»±ä
-	dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
-	if(info == 0)
-	{
-		int index = -1;
-		for ( int i = 0; i<6; i++)
-			if( (alphar[i]>=-(2.2204460492503131e-014)) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
-				index = i;//vr[:,i],vrµÚiÁĞ¶ÔÓ¦µÄÌØÕ÷ÏòÁ¿ÔòÎªÄâºÏ²ÎÊı
-		if(index == -1)//ÔÙÊÔÒ»´Î£¬·Å¿í¶ÔÊµ²¿>0µÄÔ¼Êø£¬·Å¿íµ½>-0.005
-		{
-			double temp = -0.005;//Õâ¸ö²ÎÊıºÜ¹Ø¼ü
-			for ( int i = 0; i<6; i++)
-			if( (alphar[i]>=temp) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
-			{
-				temp = alphar[i];
-				index = i;//vr[:,i],vrµÚiÁĞ¶ÔÓ¦µÄÌØÕ÷ÏòÁ¿ÔòÎªÄâºÏ²ÎÊı
-			}
-		}
-		if(index != -1)
-		{
-			//´Ë´¦½èÓÃbetaÀ´´«µİ²ÎÊı
-		    //beta[0] = vr[6*0+index];
-		    //beta[1] = vr[6*1+index];
-		    //beta[2] = vr[6*2+index];
-		    //beta[3] = vr[6*3+index];
-		    //beta[4] = vr[6*4+index];
-		    //beta[5] = vr[6*5+index];
-			  beta[0] = vr[6*index+0];
-		      beta[1] = vr[6*index+1];
-		      beta[2] = vr[6*index+2];
-		      beta[3] = vr[6*index+3];
-		      beta[4] = vr[6*index+4];
-		      beta[5] = vr[6*index+5];
-			ellipse2Param(beta,ellipara);//ax^2 + bxy + cy^2 + dx + ey + f = 0, transform to (x0,y0,a,b,phi)
-			return 1;
-		}
-	}
-	return 0;
+  double* D = (double*)malloc(datanum*6*sizeof(double));
+  double S[36]; 
+  double C[36];
+  memset(D,0,sizeof(double)*datanum);
+  memset(S,0,sizeof(double)*36);
+  memset(C,0,sizeof(double)*36);
+  for ( int i = 0; i<datanum; i++)
+  {
+    D[i*6]  = dataxy[i].x*dataxy[i].x;
+    D[i*6+1]= dataxy[i].x*dataxy[i].y;
+    D[i*6+2]= dataxy[i].y*dataxy[i].y;
+    D[i*6+3]= dataxy[i].x;
+    D[i*6+4]= dataxy[i].y;
+    D[i*6+5]= 1;
+  }
+  for ( int i = 0; i<6; i++)
+    for ( int j = i; j<6; j++)
+    {
+      //S[i*6+j]
+      for ( int k = 0; k<datanum; k++)
+        S[i*6+j] += D[k*6+i]*D[k*6+j];
+    }
+  free(D);//é‡Šæ”¾å†…å­˜
+  //å¯¹ç§°çŸ©é˜µèµ‹å€¼
+  for ( int i = 0; i<6; i++)
+    for ( int j = 0; j<i; j++)
+      S[i*6+j]=S[j*6+i];
+  C[0*6+2] = 2;
+  C[1*6+1] = -1;
+  C[2*6+0] = 2;
+  // eig(S,C) eig(inv(S)*C)
+  double alphar[6],alphai[6],beta[6];
+  double vl[36] = {0};//æ­¤å¤„ä¸ç”¨
+  double vr[36] = {0};
+  char JOBVL = 'N';
+  char JOBVR = 'V';
+  ptrdiff_t fitN = 6;
+  double fitWork[64];
+  ptrdiff_t workLen = 64;
+  ptrdiff_t info;
+  //info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
+  //æ³¨æ„Sä¸ºå¯¹ç§°çŸ©é˜µï¼Œæ•…è½¬ç½®åç­‰äºæœ¬èº«ï¼Œå˜æˆåˆ—ä¼˜å…ˆï¼ŒSå¯ä»¥ä¸å˜
+  dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+  if(info == 0)
+  {
+    int index = -1;
+    for ( int i = 0; i<6; i++)
+      if( (alphar[i]>=-(2.2204460492503131e-014)) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
+        index = i;//vr[:,i],vrç¬¬iåˆ—å¯¹åº”çš„ç‰¹å¾å‘é‡åˆ™ä¸ºæ‹Ÿåˆå‚æ•°
+    if(index == -1)//å†è¯•ä¸€æ¬¡ï¼Œæ”¾å®½å¯¹å®éƒ¨>0çš„çº¦æŸï¼Œæ”¾å®½åˆ°>-0.005
+    {
+      double temp = -0.005;//è¿™ä¸ªå‚æ•°å¾ˆå…³é”®
+      for ( int i = 0; i<6; i++)
+      if( (alphar[i]>=temp) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
+      {
+        temp = alphar[i];
+        index = i;//vr[:,i],vrç¬¬iåˆ—å¯¹åº”çš„ç‰¹å¾å‘é‡åˆ™ä¸ºæ‹Ÿåˆå‚æ•°
+      }
+    }
+    if(index != -1)
+    {
+      //æ­¤å¤„å€Ÿç”¨betaæ¥ä¼ é€’å‚æ•°
+        //beta[0] = vr[6*0+index];
+        //beta[1] = vr[6*1+index];
+        //beta[2] = vr[6*2+index];
+        //beta[3] = vr[6*3+index];
+        //beta[4] = vr[6*4+index];
+        //beta[5] = vr[6*5+index];
+        beta[0] = vr[6*index+0];
+          beta[1] = vr[6*index+1];
+          beta[2] = vr[6*index+2];
+          beta[3] = vr[6*index+3];
+          beta[4] = vr[6*index+4];
+          beta[5] = vr[6*index+5];
+      ellipse2Param(beta,ellipara);//ax^2 + bxy + cy^2 + dx + ey + f = 0, transform to (x0,y0,a,b,phi)
+      return 1;
+    }
+  }
+  return 0;
 }
 
-//input: dataxyÎªÊı¾İµã(xi,yi),×Ü¹²ÓĞdatanum¸ö
-//output: ÄâºÏ¾ØÕóS. ×¢Òâ£ºSĞèÒªÊÂÏÈÉêÇëÄÚ´æ£¬double S[36].
+//input: dataxyä¸ºæ•°æ®ç‚¹(xi,yi),æ€»å…±æœ‰datanumä¸ª
+//output: æ‹ŸåˆçŸ©é˜µS. æ³¨æ„ï¼šSéœ€è¦äº‹å…ˆç”³è¯·å†…å­˜ï¼Œdouble S[36].
 inline void calcuFitMatrix(point2d* dataxy, int datanum, double * S)
 {
-	double* D = (double*)malloc(datanum*6*sizeof(double));
-	memset(D,0,sizeof(double)*datanum);
-	for ( int i = 0; i<datanum; i++)
-	{
-		D[i*6]  = dataxy[i].x*dataxy[i].x;
-		D[i*6+1]= dataxy[i].x*dataxy[i].y;
-		D[i*6+2]= dataxy[i].y*dataxy[i].y;
-		D[i*6+3]= dataxy[i].x;
-		D[i*6+4]= dataxy[i].y;
-		D[i*6+5]= 1;
-	}
-	for ( int i = 0; i<6; i++)
-	{
-		for ( int j = i; j<6; j++)
-		{
-			//S[i*6+j]
-			for ( int k = 0; k<datanum; k++)
-				S[i*6+j] += D[k*6+i]*D[k*6+j];
-		}
-	}
-    free(D);//ÊÍ·ÅÄÚ´æ
-	//¶Ô³Æ¾ØÕó¸³Öµ
-	for ( int i = 0; i<6; i++)
-		for ( int j = 0; j<i; j++)
-			S[i*6+j]=S[j*6+i];
+  double* D = (double*)malloc(datanum*6*sizeof(double));
+  memset(D,0,sizeof(double)*datanum);
+  for ( int i = 0; i<datanum; i++)
+  {
+    D[i*6]  = dataxy[i].x*dataxy[i].x;
+    D[i*6+1]= dataxy[i].x*dataxy[i].y;
+    D[i*6+2]= dataxy[i].y*dataxy[i].y;
+    D[i*6+3]= dataxy[i].x;
+    D[i*6+4]= dataxy[i].y;
+    D[i*6+5]= 1;
+  }
+  for ( int i = 0; i<6; i++)
+  {
+    for ( int j = i; j<6; j++)
+    {
+      //S[i*6+j]
+      for ( int k = 0; k<datanum; k++)
+        S[i*6+j] += D[k*6+i]*D[k*6+j];
+    }
+  }
+    free(D);//é‡Šæ”¾å†…å­˜
+  //å¯¹ç§°çŸ©é˜µèµ‹å€¼
+  for ( int i = 0; i<6; i++)
+    for ( int j = 0; j<i; j++)
+      S[i*6+j]=S[j*6+i];
 }
 //input: fit matrixes S1,S2. length is 36.
 //output: fit matrix S_out. S_out = S1 + S2.
-//S_outÊÂÏÈĞèÒªÉêÇëÄÚ´æ
+//S_outäº‹å…ˆéœ€è¦ç”³è¯·å†…å­˜
 inline void addFitMatrix(double * S1, double * S2, double * S_out)
 {
-	int ind;
-	for ( int i = 0; i<6; i++ )
-		for ( int j = i; j<6; j++)
-		{
-			ind = i*6+j;
-			S_out[ind] = S1[ind]+S2[ind];
-		}
-	//¶Ô³Æ¾ØÕó¸³Öµ
-	for ( int i = 0; i<6; i++)
-		for ( int j = 0; j<i; j++)
-			S_out[i*6+j]=S_out[j*6+i];
+  int ind;
+  for ( int i = 0; i<6; i++ )
+    for ( int j = i; j<6; j++)
+    {
+      ind = i*6+j;
+      S_out[ind] = S1[ind]+S2[ind];
+    }
+  //å¯¹ç§°çŸ©é˜µèµ‹å€¼
+  for ( int i = 0; i<6; i++)
+    for ( int j = 0; j<i; j++)
+      S_out[i*6+j]=S_out[j*6+i];
 }
-//input : S¾ØÕó£¬6 x 6 = 36
-//output: (A,B,C,D,E,F)ÇÒA>0, ellicoeffĞèÒªÊÂÏÈÉêÇëÄÚ´æ. µ±Òª×ª»»³É(x0,y0,a,b,phi)Ê±£¬ÔòÒªÓÃ
+//input : SçŸ©é˜µï¼Œ6 x 6 = 36
+//output: (A,B,C,D,E,F)ä¸”A>0, ellicoefféœ€è¦äº‹å…ˆç”³è¯·å†…å­˜. å½“è¦è½¬æ¢æˆ(x0,y0,a,b,phi)æ—¶ï¼Œåˆ™è¦ç”¨
 //ellipse2Param(ellicoeff,ellipara); ax^2 + bxy + cy^2 + dx + ey + f = 0, transform to (x0,y0,a,b,phi)
 //successfull, return 1; else return 0
 int fitEllipse2(double * S, double* ellicoeff)
 {
-	double C[36];
-	memset(C,0,sizeof(double)*36);
-	
-	C[0*6+2] = 2;
-	C[1*6+1] = -1;
-	C[2*6+0] = 2;
-	// eig(S,C) eig(inv(S)*C)
-	double alphar[6],alphai[6],beta[6];
-	double vl[36] = {0};//´Ë´¦²»ÓÃ
-	double vr[36] = {0};
-	char JOBVL = 'N';
-	char JOBVR = 'V';
-	ptrdiff_t fitN = 6;
-	double fitWork[64];
-	ptrdiff_t workLen = 64;
-	ptrdiff_t info;
-	//info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
-	dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
-	if(info == 0)
-	{
-		int index = -1;
-		for ( int i = 0; i<6; i++)
-			if( (alphar[i]>=-(2.2204460492503131e-014)) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
-				index = i;//vr[:,i],vrµÚiÁĞ¶ÔÓ¦µÄÌØÕ÷ÏòÁ¿ÔòÎªÄâºÏ²ÎÊı
-		if(index == -1)//ÔÙÊÔÒ»´Î£¬·Å¿í¶ÔÊµ²¿>0µÄÔ¼Êø£¬·Å¿íµ½>-0.005
-		{
-			double temp = -0.005;//Õâ¸ö²ÎÊıºÜ¹Ø¼ü
-			for ( int i = 0; i<6; i++)
-			if( (alphar[i]>=temp) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
-			{
-				temp = alphar[i];
-				index = i;//vr[:,i],vrµÚiÁĞ¶ÔÓ¦µÄÌØÕ÷ÏòÁ¿ÔòÎªÄâºÏ²ÎÊı
-			}
-		}
-		if(index != -1)
-		{
-			//´Ë´¦½èÓÃbetaÀ´´«µİ²ÎÊı
-	        if(vr[6*index+0] < 0)//×¢ÒâÁĞÓÅÏÈ
-			{
-				ellicoeff[0] = -vr[6*index+0]; //-vr[6*0+index];
-				ellicoeff[1] = -vr[6*index+1]; //-vr[6*1+index];
-				ellicoeff[2] = -vr[6*index+2]; //-vr[6*2+index];
-				ellicoeff[3] = -vr[6*index+3]; //-vr[6*3+index];
-				ellicoeff[4] = -vr[6*index+4]; //-vr[6*4+index];
-				ellicoeff[5] = -vr[6*index+5]; //-vr[6*5+index];
-			}
-			else
-			{
-				ellicoeff[0] = vr[6*index+0];//vr[6*0+index];
-				ellicoeff[1] = vr[6*index+1];//vr[6*1+index];
-				ellicoeff[2] = vr[6*index+2];//vr[6*2+index];
-				ellicoeff[3] = vr[6*index+3];//vr[6*3+index];
-				ellicoeff[4] = vr[6*index+4];//vr[6*4+index];
-				ellicoeff[5] = vr[6*index+5];//vr[6*5+index];
-			}
-			return 1;
-		}
-	}
-	return 0;
+  double C[36];
+  memset(C,0,sizeof(double)*36);
+  
+  C[0*6+2] = 2;
+  C[1*6+1] = -1;
+  C[2*6+0] = 2;
+  // eig(S,C) eig(inv(S)*C)
+  double alphar[6],alphai[6],beta[6];
+  double vl[36] = {0};//æ­¤å¤„ä¸ç”¨
+  double vr[36] = {0};
+  char JOBVL = 'N';
+  char JOBVR = 'V';
+  ptrdiff_t fitN = 6;
+  double fitWork[64];
+  ptrdiff_t workLen = 64;
+  ptrdiff_t info;
+  //info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
+  dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+  if(info == 0)
+  {
+    int index = -1;
+    for ( int i = 0; i<6; i++)
+      if( (alphar[i]>=-(2.2204460492503131e-014)) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
+        index = i;//vr[:,i],vrç¬¬iåˆ—å¯¹åº”çš„ç‰¹å¾å‘é‡åˆ™ä¸ºæ‹Ÿåˆå‚æ•°
+    if(index == -1)//å†è¯•ä¸€æ¬¡ï¼Œæ”¾å®½å¯¹å®éƒ¨>0çš„çº¦æŸï¼Œæ”¾å®½åˆ°>-0.005
+    {
+      double temp = -0.005;//è¿™ä¸ªå‚æ•°å¾ˆå…³é”®
+      for ( int i = 0; i<6; i++)
+      if( (alphar[i]>=temp) && (alphai[i] == 0) && (beta[i] != 0)) // 100*DBL_EPSILON, eigenvalue = (alphar + i*alphai)/beta
+      {
+        temp = alphar[i];
+        index = i;//vr[:,i],vrç¬¬iåˆ—å¯¹åº”çš„ç‰¹å¾å‘é‡åˆ™ä¸ºæ‹Ÿåˆå‚æ•°
+      }
+    }
+    if(index != -1)
+    {
+      //æ­¤å¤„å€Ÿç”¨betaæ¥ä¼ é€’å‚æ•°
+          if(vr[6*index+0] < 0)//æ³¨æ„åˆ—ä¼˜å…ˆ
+      {
+        ellicoeff[0] = -vr[6*index+0]; //-vr[6*0+index];
+        ellicoeff[1] = -vr[6*index+1]; //-vr[6*1+index];
+        ellicoeff[2] = -vr[6*index+2]; //-vr[6*2+index];
+        ellicoeff[3] = -vr[6*index+3]; //-vr[6*3+index];
+        ellicoeff[4] = -vr[6*index+4]; //-vr[6*4+index];
+        ellicoeff[5] = -vr[6*index+5]; //-vr[6*5+index];
+      }
+      else
+      {
+        ellicoeff[0] = vr[6*index+0];//vr[6*0+index];
+        ellicoeff[1] = vr[6*index+1];//vr[6*1+index];
+        ellicoeff[2] = vr[6*index+2];//vr[6*2+index];
+        ellicoeff[3] = vr[6*index+3];//vr[6*3+index];
+        ellicoeff[4] = vr[6*index+4];//vr[6*4+index];
+        ellicoeff[5] = vr[6*index+5];//vr[6*5+index];
+      }
+      return 1;
+    }
+  }
+  return 0;
 }
 
-//Èë²Î£ºe1 = (x1,y1,a1,b1,phi1), e2 = (x2,y2,a2,b2,phi2)
-//Êä³ö£ºÏàµÈÎª1£¬·ñÔòÎª0
+//å…¥å‚ï¼še1 = (x1,y1,a1,b1,phi1), e2 = (x2,y2,a2,b2,phi2)
+//è¾“å‡ºï¼šç›¸ç­‰ä¸º1ï¼Œå¦åˆ™ä¸º0
 inline bool isEllipseEqual(double * ellipse1, double * ellipse2, double centers_distance_threshold, double semimajor_errorratio, double semiminor_errorratio, double angle_errorratio, double iscircle_ratio)
 {
-	bool con1 = ( abs(ellipse1[0] - ellipse2[0]) < centers_distance_threshold && abs(ellipse1[1] - ellipse2[1]) < centers_distance_threshold &&
-		abs(ellipse1[2] - ellipse2[2])/MAX(ellipse1[2],ellipse2[2]) < semimajor_errorratio && abs(ellipse1[3] - ellipse2[3])/MIN(ellipse1[3],ellipse2[3]) < semiminor_errorratio );
-	bool con2 = ( ellipse1[3]/ellipse1[2] >= iscircle_ratio );//0.9 0.85
-	bool con3 = ( ellipse2[3]/ellipse2[2] >= iscircle_ratio );
-	bool con4 = ( (con2 && con3) || (con2 == false && con3 == false && abs(ellipse1[4]-ellipse2[4])<= angle_errorratio*M_PI) );
-	return (con1 && con4);
+  bool con1 = ( abs(ellipse1[0] - ellipse2[0]) < centers_distance_threshold && abs(ellipse1[1] - ellipse2[1]) < centers_distance_threshold &&
+    abs(ellipse1[2] - ellipse2[2])/MAX(ellipse1[2],ellipse2[2]) < semimajor_errorratio && abs(ellipse1[3] - ellipse2[3])/MIN(ellipse1[3],ellipse2[3]) < semiminor_errorratio );
+  bool con2 = ( ellipse1[3]/ellipse1[2] >= iscircle_ratio );//0.9 0.85
+  bool con3 = ( ellipse2[3]/ellipse2[2] >= iscircle_ratio );
+  bool con4 = ( (con2 && con3) || (con2 == false && con3 == false && abs(ellipse1[4]-ellipse2[4])<= angle_errorratio*M_PI) );
+  return (con1 && con4);
 }
 
 inline bool regionLimitation( point2d point_g1s, point2d g1s_ls_dir, point2d point_g1e, point2d g1e_ls_dir, point2d point_g2s, point2d g2s_ls_dir, point2d point_g2e, point2d g2e_ls_dir, double polarity, double region_limitation_dis_tolerance)
 {
-	point2d g1m_ls_dir, g2m_ls_dir;
-	point2d g1s_arc_dir,g1e_arc_dir,g1m_arc_dir,g2s_arc_dir,g2e_arc_dir,g2m_arc_dir;
-	point2d test_vec1,test_vec2,test_vec3; //»¡Ö¸ÏòÔ²ĞÄµÄÏòÁ¿ºÍ²âÊÔÏòÁ¿
-	//×éµÄpend<-pstart¹¹³ÉµÄÏòÁ¿Îªgim_arc_dir
-	double xdelta, ydelta, theta;
-	xdelta = point_g1e.x - point_g1s.x;
-	ydelta = point_g1e.y - point_g1s.y;
-	theta = atan2(ydelta,xdelta);
-	g1m_ls_dir.x = cos(theta);
-	g1m_ls_dir.y = sin(theta);
-	xdelta = point_g2e.x - point_g2s.x;
-	ydelta = point_g2e.y - point_g2s.y;
-	theta = atan2(ydelta,xdelta);
-	g2m_ls_dir.x = cos(theta);
-	g2m_ls_dir.y = sin(theta);
+  point2d g1m_ls_dir, g2m_ls_dir;
+  point2d g1s_arc_dir,g1e_arc_dir,g1m_arc_dir,g2s_arc_dir,g2e_arc_dir,g2m_arc_dir;
+  point2d test_vec1,test_vec2,test_vec3; //å¼§æŒ‡å‘åœ†å¿ƒçš„å‘é‡å’Œæµ‹è¯•å‘é‡
+  //ç»„çš„pend<-pstartæ„æˆçš„å‘é‡ä¸ºgim_arc_dir
+  double xdelta, ydelta, theta;
+  xdelta = point_g1e.x - point_g1s.x;
+  ydelta = point_g1e.y - point_g1s.y;
+  theta = atan2(ydelta,xdelta);
+  g1m_ls_dir.x = cos(theta);
+  g1m_ls_dir.y = sin(theta);
+  xdelta = point_g2e.x - point_g2s.x;
+  ydelta = point_g2e.y - point_g2s.y;
+  theta = atan2(ydelta,xdelta);
+  g2m_ls_dir.x = cos(theta);
+  g2m_ls_dir.y = sin(theta);
 
-	if( polarity == 1)// polarity is equal 1, arc vector = (dy,-dx)
-	{
-		g1s_arc_dir.x = g1s_ls_dir.y;
-		g1s_arc_dir.y = -g1s_ls_dir.x;
-		g1e_arc_dir.x = g1e_ls_dir.y;
-		g1e_arc_dir.y = -g1e_ls_dir.x;
-		g1m_arc_dir.x = g1m_ls_dir.y;
-		g1m_arc_dir.y = -g1m_ls_dir.x;
-		g2s_arc_dir.x = g2s_ls_dir.y;
-		g2s_arc_dir.y = -g2s_ls_dir.x;
-		g2e_arc_dir.x = g2e_ls_dir.y;
-		g2e_arc_dir.y = -g2e_ls_dir.x;
-		g2m_arc_dir.x = g2m_ls_dir.y;
-		g2m_arc_dir.y = -g2m_ls_dir.x;
-	}
-	else// polarity is equal -1, arc vector = (-dy,dx)
-	{
-		g1s_arc_dir.x = -g1s_ls_dir.y;
-		g1s_arc_dir.y = g1s_ls_dir.x;
-		g1e_arc_dir.x = -g1e_ls_dir.y;
-		g1e_arc_dir.y = g1e_ls_dir.x;
-		g1m_arc_dir.x = -g1m_ls_dir.y;
-		g1m_arc_dir.y = g1m_ls_dir.x;
-		g2s_arc_dir.x = -g2s_ls_dir.y;
-		g2s_arc_dir.y = g2s_ls_dir.x;
-		g2e_arc_dir.x = -g2e_ls_dir.y;
-		g2e_arc_dir.y = g2e_ls_dir.x;
-		g2m_arc_dir.x = -g2m_ls_dir.y;
-		g2m_arc_dir.y = g2m_ls_dir.x;
-	}
-	test_vec1.x = (point_g2e.x - point_g1s.x);
-	test_vec1.y = (point_g2e.y - point_g1s.y);
-	test_vec2.x = (point_g2s.x - point_g1e.x);
-	test_vec2.y = (point_g2s.y - point_g1e.y);
-	test_vec3.x = (test_vec1.x + test_vec2.x)/2;
-	test_vec3.y = (test_vec1.y + test_vec2.y)/2;
-	double t1,t2,t3,t4,t5,t6;
-	t1 = dotProduct(g1s_arc_dir,test_vec1);
-	t2 = dotProduct(g1e_arc_dir,test_vec2);
-	t3 = dotProduct(g1m_arc_dir,test_vec3);
-	t4 = -dotProduct(g2e_arc_dir,test_vec1);
-	t5 = -dotProduct(g2s_arc_dir,test_vec2);
-	t6 = -dotProduct(g2m_arc_dir,test_vec3);
+  if( polarity == 1)// polarity is equal 1, arc vector = (dy,-dx)
+  {
+    g1s_arc_dir.x = g1s_ls_dir.y;
+    g1s_arc_dir.y = -g1s_ls_dir.x;
+    g1e_arc_dir.x = g1e_ls_dir.y;
+    g1e_arc_dir.y = -g1e_ls_dir.x;
+    g1m_arc_dir.x = g1m_ls_dir.y;
+    g1m_arc_dir.y = -g1m_ls_dir.x;
+    g2s_arc_dir.x = g2s_ls_dir.y;
+    g2s_arc_dir.y = -g2s_ls_dir.x;
+    g2e_arc_dir.x = g2e_ls_dir.y;
+    g2e_arc_dir.y = -g2e_ls_dir.x;
+    g2m_arc_dir.x = g2m_ls_dir.y;
+    g2m_arc_dir.y = -g2m_ls_dir.x;
+  }
+  else// polarity is equal -1, arc vector = (-dy,dx)
+  {
+    g1s_arc_dir.x = -g1s_ls_dir.y;
+    g1s_arc_dir.y = g1s_ls_dir.x;
+    g1e_arc_dir.x = -g1e_ls_dir.y;
+    g1e_arc_dir.y = g1e_ls_dir.x;
+    g1m_arc_dir.x = -g1m_ls_dir.y;
+    g1m_arc_dir.y = g1m_ls_dir.x;
+    g2s_arc_dir.x = -g2s_ls_dir.y;
+    g2s_arc_dir.y = g2s_ls_dir.x;
+    g2e_arc_dir.x = -g2e_ls_dir.y;
+    g2e_arc_dir.y = g2e_ls_dir.x;
+    g2m_arc_dir.x = -g2m_ls_dir.y;
+    g2m_arc_dir.y = g2m_ls_dir.x;
+  }
+  test_vec1.x = (point_g2e.x - point_g1s.x);
+  test_vec1.y = (point_g2e.y - point_g1s.y);
+  test_vec2.x = (point_g2s.x - point_g1e.x);
+  test_vec2.y = (point_g2s.y - point_g1e.y);
+  test_vec3.x = (test_vec1.x + test_vec2.x)/2;
+  test_vec3.y = (test_vec1.y + test_vec2.y)/2;
+  double t1,t2,t3,t4,t5,t6;
+  t1 = dotProduct(g1s_arc_dir,test_vec1);
+  t2 = dotProduct(g1e_arc_dir,test_vec2);
+  t3 = dotProduct(g1m_arc_dir,test_vec3);
+  t4 = -dotProduct(g2e_arc_dir,test_vec1);
+  t5 = -dotProduct(g2s_arc_dir,test_vec2);
+  t6 = -dotProduct(g2m_arc_dir,test_vec3);
 
-	if(  dotProduct(g1s_arc_dir,test_vec1)  >= region_limitation_dis_tolerance && \
-		 dotProduct(g1e_arc_dir,test_vec2)  >= region_limitation_dis_tolerance && \
-		 dotProduct(g1m_arc_dir,test_vec3)  >= region_limitation_dis_tolerance && \
-		-dotProduct(g2e_arc_dir,test_vec1) >= region_limitation_dis_tolerance && \
-	    -dotProduct(g2s_arc_dir,test_vec2) >= region_limitation_dis_tolerance && \
-		-dotProduct(g2m_arc_dir,test_vec3) >= region_limitation_dis_tolerance
-		)
-		return TRUE;
-	return FALSE;
+  if(  dotProduct(g1s_arc_dir,test_vec1)  >= region_limitation_dis_tolerance && \
+     dotProduct(g1e_arc_dir,test_vec2)  >= region_limitation_dis_tolerance && \
+     dotProduct(g1m_arc_dir,test_vec3)  >= region_limitation_dis_tolerance && \
+    -dotProduct(g2e_arc_dir,test_vec1) >= region_limitation_dis_tolerance && \
+      -dotProduct(g2s_arc_dir,test_vec2) >= region_limitation_dis_tolerance && \
+    -dotProduct(g2m_arc_dir,test_vec3) >= region_limitation_dis_tolerance
+    )
+    return TRUE;
+  return FALSE;
 }
 
 /*
@@ -4132,11 +4133,11 @@ void drawEllipse(Mat img, double * ellipara)
   static int ccc = 0;
   static unsigned int cnt = 0;
   if(cnt % 2 == 0 )
-	  ccc = 0;
+    ccc = 0;
   else
   {
-	  ccc = 255;
-	  cout<<cnt/2<<'\t'<<ellipara[0]<<'\t'<<ellipara[1]<<"\t"<<ellipara[2]<<'\t'<<ellipara[3]<<'\t'<<ellipara[4]<<endl;
+    ccc = 255;
+    cout<<cnt/2<<'\t'<<ellipara[0]<<'\t'<<ellipara[1]<<"\t"<<ellipara[2]<<'\t'<<ellipara[3]<<'\t'<<ellipara[4]<<endl;
   }
   cnt++;
 
@@ -4148,19 +4149,19 @@ void drawEllipse(Mat img, double * ellipara)
 }
 void drawEdge(Mat img, point2d * dataxy, int num)
 {
-	 static int ccc = 0;
+   static int ccc = 0;
      static int cnt = 0;
      cnt++;
      if(cnt % 2 == 0 )
-	     ccc = 0;
+       ccc = 0;
      else
-	  ccc = 255;
-	Mat imgtemp = img.clone();
-	for (int i = 0; i<num; i++)
-	{
-		imgtemp.at<Vec3b>(dataxy[i].y,dataxy[i].x) = (Vec3b(ccc,255,0));
-	}
-	namedWindow("w2");
+    ccc = 255;
+  Mat imgtemp = img.clone();
+  for (int i = 0; i<num; i++)
+  {
+    imgtemp.at<Vec3b>(dataxy[i].y,dataxy[i].x) = (Vec3b(ccc,255,0));
+  }
+  namedWindow("w2");
     imshow("w2",imgtemp);
 }
 */
@@ -4197,8 +4198,8 @@ inline double d_rosin (double *param, double x, double y)
   dmin = DBL_MAX;
   for ( int i = 0; i<4; i++)
   {
-	  if( d[i] <= dmin)
-		  dmin = d[i];
+    if( d[i] <= dmin)
+      dmin = d[i];
   }
 //  if (X+Y>xi*xi+yi*yi)
 //    return dmin;
@@ -4207,664 +4208,664 @@ inline double d_rosin (double *param, double x, double y)
 }
 /*----------------------------------------------------------------------------*/
 
-//ÊäÈë
-//lsdËã·¨¼ì²âµÃµ½µÄÏß¶Î¼¯ºÏlinesµÄÊıÁ¿line_num£¬returnµÄ·µ»ØÖµÊÇline_numsÌõÏß¶Î£¬ÎªÒ»Î¬doubleĞÍÊı×élines£¬³¤¶ÈÎª8*n£¬Ã¿8¸öÎªÒ»×é
-//´æ×Åx1,y1,x2,y2,dx,dy,length,polarity
-//groups: Ïß¶Î·Ö×é£¬Ã¿¸ö×é´æ°´ÕÕ¼¸ºÎ·Ö²¼Ë³ĞòË³Ê±Õë»òÕßÄæÊ±Õë´æ´¢×ÅÏß¶ÎË÷Òı£¬Ïß¶ÎË÷Òı·¶Î§ÊÇ0~line_num-1. ÕâÀïÓÉÓÚÊÇÖ¸Õë£¬Ê¹ÓÃÊ±Òª×¢Òâ(*group)
-//first_group_ind¡¢second_group_indÊÇÆ¥Åä×é¶ÓµÄË÷Òı£¬µ±ÌáÈ¡salient hypothesisÊ±£¬second_group_ind = -1, fit_matrix2 = NULL.
-//fit_matrix1, fit_matrix2, ·Ö±ğÊÇ×é¶ÓµÄ¶ÔÓ¦µÄÄâºÏ¾ØÕó
-//angles, ÊÇ±ßÔµµãÍ¼+Ìİ¶È·½Ïò¡£ ÎŞ±ßÔµµãÊ±ÊÇNODEF
+//è¾“å…¥
+//lsdç®—æ³•æ£€æµ‹å¾—åˆ°çš„çº¿æ®µé›†åˆlinesçš„æ•°é‡line_numï¼Œreturnçš„è¿”å›å€¼æ˜¯line_numsæ¡çº¿æ®µï¼Œä¸ºä¸€ç»´doubleå‹æ•°ç»„linesï¼Œé•¿åº¦ä¸º8*nï¼Œæ¯8ä¸ªä¸ºä¸€ç»„
+//å­˜ç€x1,y1,x2,y2,dx,dy,length,polarity
+//groups: çº¿æ®µåˆ†ç»„ï¼Œæ¯ä¸ªç»„å­˜æŒ‰ç…§å‡ ä½•åˆ†å¸ƒé¡ºåºé¡ºæ—¶é’ˆæˆ–è€…é€†æ—¶é’ˆå­˜å‚¨ç€çº¿æ®µç´¢å¼•ï¼Œçº¿æ®µç´¢å¼•èŒƒå›´æ˜¯0~line_num-1. è¿™é‡Œç”±äºæ˜¯æŒ‡é’ˆï¼Œä½¿ç”¨æ—¶è¦æ³¨æ„(*group)
+//first_group_indã€second_group_indæ˜¯åŒ¹é…ç»„é˜Ÿçš„ç´¢å¼•ï¼Œå½“æå–salient hypothesisæ—¶ï¼Œsecond_group_ind = -1, fit_matrix2 = NULL.
+//fit_matrix1, fit_matrix2, åˆ†åˆ«æ˜¯ç»„é˜Ÿçš„å¯¹åº”çš„æ‹ŸåˆçŸ©é˜µ
+//angles, æ˜¯è¾¹ç¼˜ç‚¹å›¾+æ¢¯åº¦æ–¹å‘ã€‚ æ— è¾¹ç¼˜ç‚¹æ—¶æ˜¯NODEF
 //distance_tolerance:
-//group_inliers_num:¼ÇÂ¼×Å¸÷¸ö×éµÄÖ§³ÖÄÚµãÊıÁ¿µÄÊı×é£¬ÊµÊ±¸üĞÂ£¬³õÊ¼Ê±Îª0
-//Êä³ö
+//group_inliers_num:è®°å½•ç€å„ä¸ªç»„çš„æ”¯æŒå†…ç‚¹æ•°é‡çš„æ•°ç»„ï¼Œå®æ—¶æ›´æ–°ï¼Œåˆå§‹æ—¶ä¸º0
+//è¾“å‡º
 //ellipara
 bool calcEllipseParametersAndValidate( double * lines, int line_num, std::vector<std::vector<int>> * groups, int first_group_ind,int second_group_ind, double * fit_matrix1, double * fit_matrix2, image_double angles, double distance_tolerance, unsigned int * group_inliers_num, point5d *ellipara)
 {
-	double S[36]; //ÄâºÏ¾ØÕóS
-	double Coefficients[6] = {0,0,0,0,0,0};// ax^2 + bxy + cy^2 + dx + ey + f = 0 
-	double param[5], param2[5];
-	int info,addr;
-	rect rec;
-	rect_iter* iter;
-	int rec_support_cnt,rec_inliers_cnt;
-	bool flag1 = TRUE, flag2 = TRUE;
-	double point_normalx, point_normaly, point_normal, temp;
-	std::vector<point2i> first_group_inliers, second_group_inliers;
-	point2i pixel_temp;
-	double semimajor_errorratio,semiminor_errorratio,iscircle_ratio;
-	if( fit_matrix2 == NULL || second_group_ind == -1)//Ö»¶ÔÒ»¸ö¸²¸Ç¶È½Ï´óµÄ×é½øĞĞÄâºÏ
-	{
-		for ( int i  = 0; i < 36; i++)
-			S[i] = fit_matrix1[i];
-	}
-	else
-	{
-		addFitMatrix(fit_matrix1,fit_matrix2,S);//¶Ô×é¶Ô½øĞĞÄâºÏ£¬ S = fit_matrix1 + fit_matrix2
-	}
-	info = fitEllipse2(S, Coefficients);// ax^2 + bxy + cy^2 + dx + ey + f = 0, a > 0
-	if ( info == 0 )//ÄâºÏÊ§°Ü
-	{
-		ellipara = NULL;
-		return FALSE;
-	}
-	ellipse2Param(Coefficients, param);// (x0,y0,a,b,phi)
-	if ( min(param[2],param[3]) < 3*distance_tolerance || max(param[2],param[3]) > min(angles->xsize,angles->ysize) ||  param[0] < 0 || param[0] > angles->xsize || param[1] < 0 || param[1] > angles->ysize )
-	{
-		ellipara = NULL;
-		return FALSE;
-	}
-	//if ( first_group_ind == 2 && second_group_ind == 8)
-	//drawEllipse(img,param);
-	//×é¶ÓÖĞµÄ first groupÏÈ½øĞĞÄÚµã×¼ÔòÑéÖ¤£¬²¢ÇÒ¸üĞÂ×éµÄÖ§³ÖÄÚµãÊıÁ¿
-	for ( unsigned int i = 0; i<(*groups)[first_group_ind].size(); i++)
-	{
-		addr = (*groups)[first_group_ind][i] * 8; //µÚfirst_group_ind·Ö×éµÄµÚiÌõÏß¶ÎË÷Òı*8
-		rec.x1 = lines[addr];
-		rec.y1 = lines[addr+1];
-		rec.x2 = lines[addr+2];
-		rec.y2 = lines[addr+3];
-		rec.x  = (rec.x1 + rec.x2)/2;
-		rec.y  = (rec.y1 + rec.y2)/2;
-		rec.dx = lines[addr+4];
-		rec.dy = lines[addr+5];
-		rec.width = 3*distance_tolerance;
-		//line_length[i] = (int)lines[addr+6];//¼ÇÂ¼Ïß¶Î³¤¶Èµ½Êı×éline_length[i]
-		rec_support_cnt = rec_inliers_cnt = 0;//ÇåÁãºÜÖØÒª
-		if ( lines[addr+7] == 1) //¼«ĞÔÒ»ÖÂ
-		{
-			for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//Ïß¶Î1
-			{
-				//Íâ½Ó¾ØĞÎ¿ÉÄÜ»áÔ½½ç
-				if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
-				{
-					temp  = angles->data[iter->y*angles->xsize+iter->x] ;//ÄÚµãµÄÌİ¶È·½Ïò
-					if(temp!= NOTDEF )
-					{
-						//test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
-						point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
-						point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
-						point_normal = atan2(-point_normaly,-point_normalx); //±ßÔµµãµÄ·¨Ïß·½Ïò,Ö¸ÏòÍÖÔ²ÄÚ²à
-						rec_inliers_cnt++;
-						if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5¡ãÄÚ ÇÒ || d - r || < 3 dis_t
-						{
-							rec_support_cnt++;
-							pixel_temp.x = iter->x; pixel_temp.y = iter->y;
-							first_group_inliers.push_back(pixel_temp);//Ìí¼Ó¸ÃÏß¶Î¶ÔÓ¦µÄÄÚµã
-						}
-					} 
-				}
-			}
-		}
-		else//¼«ĞÔÏà·´
-		{
-			for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//Ïß¶Î1
-			{
-				//Íâ½Ó¾ØĞÎ¿ÉÄÜ»áÔ½½ç
-				if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
-				{
-					temp  = angles->data[iter->y*angles->xsize+iter->x] ;//ÄÚµãµÄÌİ¶È·½Ïò
-					if(temp!= NOTDEF )
-					{
-						//test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
-						point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
-						point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
-						point_normal = atan2(point_normaly,point_normalx); //±ßÔµµãµÄ·¨Ïß·½Ïò,Ö¸ÏòÍÖÔ²Íâ²à
-						rec_inliers_cnt++;
-						if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5¡ãÄÚ ÇÒ || d - r || < 3 dis_t
-						{
-							rec_support_cnt++;
-							pixel_temp.x = iter->x; pixel_temp.y = iter->y;
-							first_group_inliers.push_back(pixel_temp);//Ìí¼Ó¸ÃÏß¶Î¶ÔÓ¦µÄÄÚµã
-						}
-					} 
-				}
-			}
-		}
-		if( !( rec_support_cnt > 0 && ( rec_support_cnt >= 0.8*lines[addr+6] || rec_support_cnt*1.0/rec_inliers_cnt >= 0.6) ) )
-		{
-			flag1 = FALSE; //flag1 ³õÊ¼»¯Ê±ÎªTRUE, Ò»µ©×éÄÚÓĞÒ»ÌõÏß¶Î²»Âú×ãÒªÇó£¬Ö±½Ófalse, ÄÚµã×¼ÔòÑéÖ¤²»Í¨¹ı
-			break;
-		}
-	}
-	if ( flag1 == TRUE && first_group_inliers.size() >= 0.8*group_inliers_num[first_group_ind] )//¿¿½ü×î´óÍ³¼Æ¹ıµÄÄÚµã,Í¨¹ıÑéÖ¤
-	{
-		if( first_group_inliers.size() >= group_inliers_num[first_group_ind])//¸üĞÂ×é³öÏÖ¹ıµÄ×î´óÄÚµãÊı
-			group_inliers_num[first_group_ind] =  first_group_inliers.size();
-	}
-	else 
-		flag1 = FALSE;
-	//µÚÒ»¸ö×éÍê³ÉÑéÖ¤
-	if ( second_group_ind == -1 || fit_matrix2 == NULL)//Ö»¶ÔÒ»¸ö¸²¸Ç¶È½Ï´óµÄ×é½øĞĞÄâºÏ
-	{
-		ellipara->x = param[0];//ÒòÎªÎŞÂÛÈçºÎ£¬¶¼ĞèÒª·µ»ØÏÔÖøĞÔÇ¿µÄÍÖÔ²
-	    ellipara->y = param[1];
-	    ellipara->a = param[2];
-	    ellipara->b = param[3];
-	    ellipara->phi = param[4];
-		if ( flag1 == TRUE)//Í¨¹ıÄÚµãÔÙ´ÎÄâºÏ£¬Ìá¸ßÖÊÁ¿
-		{
-			point2d * dataxy = (point2d*)malloc(sizeof(point2d)*first_group_inliers.size());
-			for ( unsigned int i = 0; i<first_group_inliers.size(); i++)
-			{
-				dataxy[i].x = first_group_inliers[i].x;
-				dataxy[i].y = first_group_inliers[i].y;
-			}
-			info = fitEllipse(dataxy,first_group_inliers.size(), param2);
-			free(dataxy); //ÊÍ·ÅÄÚ´æ
-			if ( info == 1  && isEllipseEqual(param2,param,3*distance_tolerance,0.1,0.1,0.1,0.9) )
-			{
-				ellipara->x = param2[0];//¸üĞÂÍÖÔ²£¬Ìá¸ßÆ·ÖÊ
-			    ellipara->y = param2[1];
-			    ellipara->a = param2[2];
-			    ellipara->b = param2[3];
-			    ellipara->phi = param2[4];
-			    //drawEllipse(img,param2);
-			}
-		}
-		return TRUE;//¶ÔÓÚÖ»ÓĞÒ»¸ö×éµÄÌáÈ¡ÍÖÔ²£¬´ËÊ±Ö±½Ó·µ»Ø
-	}
-	//½ÓÏÂÀ´£¬¶Ô×é¶ÓÖĞµÄ second group½øĞĞÄÚµã×¼ÔòÑéÖ¤£¬²¢ÇÒ¸üĞÂ×éµÄÖ§³ÖÄÚµãÊıÁ¿
-	if (flag1 == FALSE)//ÔÚ×é¶ÓÔËËãÖĞ£¬Èç¹ûµÚÒ»¸ö×é¶¼ÎŞ·¨Âú×ãÄÚµãÒªÇó£¬Ö±½Ó·µ»Øfalse
-		return FALSE;
-	for ( unsigned int i = 0; i<(*groups)[second_group_ind].size(); i++)
-	{
-		addr = (*groups)[second_group_ind][i] * 8; //µÚfirst_group_ind·Ö×éµÄµÚiÌõÏß¶ÎË÷Òı*8
-		rec.x1 = lines[addr];
-		rec.y1 = lines[addr+1];
-		rec.x2 = lines[addr+2];
-		rec.y2 = lines[addr+3];
-		rec.x  = (rec.x1 + rec.x2)/2;
-		rec.y  = (rec.y1 + rec.y2)/2;
-		rec.dx = lines[addr+4];
-		rec.dy = lines[addr+5];
-		rec.width = 3*distance_tolerance;
-		//line_length[i] = (int)lines[addr+6];//¼ÇÂ¼Ïß¶Î³¤¶Èµ½Êı×éline_length[i]
-		rec_support_cnt = rec_inliers_cnt = 0;//ÇåÁãºÜÖØÒª
-		if ( lines[addr+7] == 1) //¼«ĞÔÒ»ÖÂ
-		{
-			for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//Ïß¶Î1
-			{
-				//Íâ½Ó¾ØĞÎ¿ÉÄÜ»áÔ½½ç
-				if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
-				{
-					temp  = angles->data[iter->y*angles->xsize+iter->x] ;//ÄÚµãµÄÌİ¶È·½Ïò
-					if(temp!= NOTDEF )
-					{
-						//test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
-						point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
-						point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
-						point_normal = atan2(-point_normaly,-point_normalx); //±ßÔµµãµÄ·¨Ïß·½Ïò,Ö¸ÏòÍÖÔ²ÄÚ²à
-						rec_inliers_cnt++;
-						if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5¡ãÄÚ ÇÒ || d - r || < 3 dis_t
-						{
-							rec_support_cnt++;
-							pixel_temp.x = iter->x; pixel_temp.y = iter->y;
-							second_group_inliers.push_back(pixel_temp);//Ìí¼Ó¸ÃÏß¶Î¶ÔÓ¦µÄÄÚµã
-						}
-					} 
-				}
-			}
-		}
-		else//¼«ĞÔÏà·´
-		{
-			for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//Ïß¶Î1
-			{
-				//Íâ½Ó¾ØĞÎ¿ÉÄÜ»áÔ½½ç
-				if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
-				{
-					temp  = angles->data[iter->y*angles->xsize+iter->x] ;//ÄÚµãµÄÌİ¶È·½Ïò
-					if(temp!= NOTDEF )
-					{
-						//test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
-						point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
-						point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
-						point_normal = atan2(point_normaly,point_normalx); //±ßÔµµãµÄ·¨Ïß·½Ïò,Ö¸ÏòÍÖÔ²Íâ²à
-						rec_inliers_cnt++;
-						if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5¡ãÄÚ ÇÒ || d - r || < 3 dis_t
-						{
-							rec_support_cnt++;
-							pixel_temp.x = iter->x; pixel_temp.y = iter->y;
-							second_group_inliers.push_back(pixel_temp);//Ìí¼Ó¸ÃÏß¶Î¶ÔÓ¦µÄÄÚµã
-						}
-					} 
-				}
-			}
-		}
-		if( !(rec_support_cnt > 0 && ( rec_support_cnt >= 0.8*lines[addr+6] || rec_support_cnt*1.0/rec_inliers_cnt >= 0.6) ) )
-		{
-			flag2 = FALSE; //flag1 ³õÊ¼»¯Ê±ÎªTRUE, Ò»µ©×éÄÚÓĞÒ»ÌõÏß¶Î²»Âú×ãÒªÇó£¬Ö±½Ófalse, ÄÚµã×¼ÔòÑéÖ¤²»Í¨¹ı
-			break;
-		}
-	}
-	if ( flag2 == TRUE && second_group_inliers.size() >= 0.8*group_inliers_num[second_group_ind] )//¿¿½ü×î´óÍ³¼Æ¹ıµÄÄÚµã,Í¨¹ıÑéÖ¤
-	{
-		if(second_group_inliers.size() >= group_inliers_num[second_group_ind])//¸üĞÂ×é³öÏÖ¹ıµÄ×î´óÄÚµãÊı
-			group_inliers_num[second_group_ind] = second_group_inliers.size();
-	}
-	else 
-		flag2 = FALSE;
-	//µÚ¶ş¸ö×éÍê³ÉÑéÖ¤
-	if ( flag1 == TRUE && flag2 == TRUE)
-	{
-		point2d * dataxy = (point2d*)malloc(sizeof(point2d)*(first_group_inliers.size() + second_group_inliers.size()));
-		for ( unsigned int i = 0; i<first_group_inliers.size(); i++)
-		{
-			dataxy[i].x = first_group_inliers[i].x;
-			dataxy[i].y = first_group_inliers[i].y;
-		}
-		addr = first_group_inliers.size();
-		for ( unsigned int i = 0; i<second_group_inliers.size(); i++)//Á¬½ÓÁ½¸öÊı×éÊ±Ò»¶¨Òª×¢ÒâË÷Òı·¶Î§
-		{
-			dataxy[addr+i].x = second_group_inliers[i].x;
-			dataxy[addr+i].y = second_group_inliers[i].y;
-		}
-//		drawEdge(img,dataxy,(first_group_inliers.size() + second_group_inliers.size()));
-		info = fitEllipse(dataxy,(first_group_inliers.size() + second_group_inliers.size()), param2);
-		free(dataxy); //ÊÍ·ÅÄÚ´æ
-		//Ğ¡³¤¶ÌÖáµÄÍÖÔ²ĞèÒª·Å¿í²ÎÊı
-		if ( param[2] <= 50 )
-			semimajor_errorratio = 0.25;
-		else if (param[2] <= 100 )
-			semimajor_errorratio = 0.15;
-		else
-			semimajor_errorratio = 0.1;
-		if ( param[3] <= 50 )
-			semiminor_errorratio = 0.25;
-		else if ( param[3] <= 100)
-			semiminor_errorratio = 0.15;
-		else
-			semiminor_errorratio = 0.1;
-		if (param[2] <= 50 && param[3] <= 50 )
-			iscircle_ratio = 0.75;
-		else if (param[2] >= 50 && param[2] <= 100 &&  param[3] >= 50 && param[3] <= 100 )
-			iscircle_ratio = 0.85;
-		else
-			iscircle_ratio = 0.9;
-		if ( info == 1  && isEllipseEqual(param2,param,3*distance_tolerance,semimajor_errorratio,semiminor_errorratio,0.1, iscircle_ratio) )
-		{
-			ellipara->x = param2[0];//¸üĞÂÍÖÔ²£¬Ìá¸ßÆ·ÖÊ
-		    ellipara->y = param2[1];
-		    ellipara->a = param2[2];
-		    ellipara->b = param2[3];
-		    ellipara->phi = param2[4];
-		    //drawEllipse(img,param2);
-			return TRUE;
-		}
-	}
-	return FALSE;
+  double S[36]; //æ‹ŸåˆçŸ©é˜µS
+  double Coefficients[6] = {0,0,0,0,0,0};// ax^2 + bxy + cy^2 + dx + ey + f = 0 
+  double param[5], param2[5];
+  int info,addr;
+  rect rec;
+  rect_iter* iter;
+  int rec_support_cnt,rec_inliers_cnt;
+  bool flag1 = TRUE, flag2 = TRUE;
+  double point_normalx, point_normaly, point_normal, temp;
+  std::vector<point2i> first_group_inliers, second_group_inliers;
+  point2i pixel_temp;
+  double semimajor_errorratio,semiminor_errorratio,iscircle_ratio;
+  if( fit_matrix2 == NULL || second_group_ind == -1)//åªå¯¹ä¸€ä¸ªè¦†ç›–åº¦è¾ƒå¤§çš„ç»„è¿›è¡Œæ‹Ÿåˆ
+  {
+    for ( int i  = 0; i < 36; i++)
+      S[i] = fit_matrix1[i];
+  }
+  else
+  {
+    addFitMatrix(fit_matrix1,fit_matrix2,S);//å¯¹ç»„å¯¹è¿›è¡Œæ‹Ÿåˆï¼Œ S = fit_matrix1 + fit_matrix2
+  }
+  info = fitEllipse2(S, Coefficients);// ax^2 + bxy + cy^2 + dx + ey + f = 0, a > 0
+  if ( info == 0 )//æ‹Ÿåˆå¤±è´¥
+  {
+    ellipara = NULL;
+    return FALSE;
+  }
+  ellipse2Param(Coefficients, param);// (x0,y0,a,b,phi)
+  if ( min(param[2],param[3]) < 3*distance_tolerance || max(param[2],param[3]) > min(angles->xsize,angles->ysize) ||  param[0] < 0 || param[0] > angles->xsize || param[1] < 0 || param[1] > angles->ysize )
+  {
+    ellipara = NULL;
+    return FALSE;
+  }
+  //if ( first_group_ind == 2 && second_group_ind == 8)
+  //drawEllipse(img,param);
+  //ç»„é˜Ÿä¸­çš„ first groupå…ˆè¿›è¡Œå†…ç‚¹å‡†åˆ™éªŒè¯ï¼Œå¹¶ä¸”æ›´æ–°ç»„çš„æ”¯æŒå†…ç‚¹æ•°é‡
+  for ( unsigned int i = 0; i<(*groups)[first_group_ind].size(); i++)
+  {
+    addr = (*groups)[first_group_ind][i] * 8; //ç¬¬first_group_indåˆ†ç»„çš„ç¬¬iæ¡çº¿æ®µç´¢å¼•*8
+    rec.x1 = lines[addr];
+    rec.y1 = lines[addr+1];
+    rec.x2 = lines[addr+2];
+    rec.y2 = lines[addr+3];
+    rec.x  = (rec.x1 + rec.x2)/2;
+    rec.y  = (rec.y1 + rec.y2)/2;
+    rec.dx = lines[addr+4];
+    rec.dy = lines[addr+5];
+    rec.width = 3*distance_tolerance;
+    //line_length[i] = (int)lines[addr+6];//è®°å½•çº¿æ®µé•¿åº¦åˆ°æ•°ç»„line_length[i]
+    rec_support_cnt = rec_inliers_cnt = 0;//æ¸…é›¶å¾ˆé‡è¦
+    if ( lines[addr+7] == 1) //ææ€§ä¸€è‡´
+    {
+      for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//çº¿æ®µ1
+      {
+        //å¤–æ¥çŸ©å½¢å¯èƒ½ä¼šè¶Šç•Œ
+        if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
+        {
+          temp  = angles->data[iter->y*angles->xsize+iter->x] ;//å†…ç‚¹çš„æ¢¯åº¦æ–¹å‘
+          if(temp!= NOTDEF )
+          {
+            //test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
+            point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
+            point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
+            point_normal = atan2(-point_normaly,-point_normalx); //è¾¹ç¼˜ç‚¹çš„æ³•çº¿æ–¹å‘,æŒ‡å‘æ¤­åœ†å†…ä¾§
+            rec_inliers_cnt++;
+            if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5Â°å†… ä¸” || d - r || < 3 dis_t
+            {
+              rec_support_cnt++;
+              pixel_temp.x = iter->x; pixel_temp.y = iter->y;
+              first_group_inliers.push_back(pixel_temp);//æ·»åŠ è¯¥çº¿æ®µå¯¹åº”çš„å†…ç‚¹
+            }
+          } 
+        }
+      }
+    }
+    else//ææ€§ç›¸å
+    {
+      for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//çº¿æ®µ1
+      {
+        //å¤–æ¥çŸ©å½¢å¯èƒ½ä¼šè¶Šç•Œ
+        if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
+        {
+          temp  = angles->data[iter->y*angles->xsize+iter->x] ;//å†…ç‚¹çš„æ¢¯åº¦æ–¹å‘
+          if(temp!= NOTDEF )
+          {
+            //test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
+            point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
+            point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
+            point_normal = atan2(point_normaly,point_normalx); //è¾¹ç¼˜ç‚¹çš„æ³•çº¿æ–¹å‘,æŒ‡å‘æ¤­åœ†å¤–ä¾§
+            rec_inliers_cnt++;
+            if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5Â°å†… ä¸” || d - r || < 3 dis_t
+            {
+              rec_support_cnt++;
+              pixel_temp.x = iter->x; pixel_temp.y = iter->y;
+              first_group_inliers.push_back(pixel_temp);//æ·»åŠ è¯¥çº¿æ®µå¯¹åº”çš„å†…ç‚¹
+            }
+          } 
+        }
+      }
+    }
+    if( !( rec_support_cnt > 0 && ( rec_support_cnt >= 0.8*lines[addr+6] || rec_support_cnt*1.0/rec_inliers_cnt >= 0.6) ) )
+    {
+      flag1 = FALSE; //flag1 åˆå§‹åŒ–æ—¶ä¸ºTRUE, ä¸€æ—¦ç»„å†…æœ‰ä¸€æ¡çº¿æ®µä¸æ»¡è¶³è¦æ±‚ï¼Œç›´æ¥false, å†…ç‚¹å‡†åˆ™éªŒè¯ä¸é€šè¿‡
+      break;
+    }
+  }
+  if ( flag1 == TRUE && first_group_inliers.size() >= 0.8*group_inliers_num[first_group_ind] )//é è¿‘æœ€å¤§ç»Ÿè®¡è¿‡çš„å†…ç‚¹,é€šè¿‡éªŒè¯
+  {
+    if( first_group_inliers.size() >= group_inliers_num[first_group_ind])//æ›´æ–°ç»„å‡ºç°è¿‡çš„æœ€å¤§å†…ç‚¹æ•°
+      group_inliers_num[first_group_ind] =  first_group_inliers.size();
+  }
+  else 
+    flag1 = FALSE;
+  //ç¬¬ä¸€ä¸ªç»„å®ŒæˆéªŒè¯
+  if ( second_group_ind == -1 || fit_matrix2 == NULL)//åªå¯¹ä¸€ä¸ªè¦†ç›–åº¦è¾ƒå¤§çš„ç»„è¿›è¡Œæ‹Ÿåˆ
+  {
+    ellipara->x = param[0];//å› ä¸ºæ— è®ºå¦‚ä½•ï¼Œéƒ½éœ€è¦è¿”å›æ˜¾è‘—æ€§å¼ºçš„æ¤­åœ†
+      ellipara->y = param[1];
+      ellipara->a = param[2];
+      ellipara->b = param[3];
+      ellipara->phi = param[4];
+    if ( flag1 == TRUE)//é€šè¿‡å†…ç‚¹å†æ¬¡æ‹Ÿåˆï¼Œæé«˜è´¨é‡
+    {
+      point2d * dataxy = (point2d*)malloc(sizeof(point2d)*first_group_inliers.size());
+      for ( unsigned int i = 0; i<first_group_inliers.size(); i++)
+      {
+        dataxy[i].x = first_group_inliers[i].x;
+        dataxy[i].y = first_group_inliers[i].y;
+      }
+      info = fitEllipse(dataxy,first_group_inliers.size(), param2);
+      free(dataxy); //é‡Šæ”¾å†…å­˜
+      if ( info == 1  && isEllipseEqual(param2,param,3*distance_tolerance,0.1,0.1,0.1,0.9) )
+      {
+        ellipara->x = param2[0];//æ›´æ–°æ¤­åœ†ï¼Œæé«˜å“è´¨
+          ellipara->y = param2[1];
+          ellipara->a = param2[2];
+          ellipara->b = param2[3];
+          ellipara->phi = param2[4];
+          //drawEllipse(img,param2);
+      }
+    }
+    return TRUE;//å¯¹äºåªæœ‰ä¸€ä¸ªç»„çš„æå–æ¤­åœ†ï¼Œæ­¤æ—¶ç›´æ¥è¿”å›
+  }
+  //æ¥ä¸‹æ¥ï¼Œå¯¹ç»„é˜Ÿä¸­çš„ second groupè¿›è¡Œå†…ç‚¹å‡†åˆ™éªŒè¯ï¼Œå¹¶ä¸”æ›´æ–°ç»„çš„æ”¯æŒå†…ç‚¹æ•°é‡
+  if (flag1 == FALSE)//åœ¨ç»„é˜Ÿè¿ç®—ä¸­ï¼Œå¦‚æœç¬¬ä¸€ä¸ªç»„éƒ½æ— æ³•æ»¡è¶³å†…ç‚¹è¦æ±‚ï¼Œç›´æ¥è¿”å›false
+    return FALSE;
+  for ( unsigned int i = 0; i<(*groups)[second_group_ind].size(); i++)
+  {
+    addr = (*groups)[second_group_ind][i] * 8; //ç¬¬first_group_indåˆ†ç»„çš„ç¬¬iæ¡çº¿æ®µç´¢å¼•*8
+    rec.x1 = lines[addr];
+    rec.y1 = lines[addr+1];
+    rec.x2 = lines[addr+2];
+    rec.y2 = lines[addr+3];
+    rec.x  = (rec.x1 + rec.x2)/2;
+    rec.y  = (rec.y1 + rec.y2)/2;
+    rec.dx = lines[addr+4];
+    rec.dy = lines[addr+5];
+    rec.width = 3*distance_tolerance;
+    //line_length[i] = (int)lines[addr+6];//è®°å½•çº¿æ®µé•¿åº¦åˆ°æ•°ç»„line_length[i]
+    rec_support_cnt = rec_inliers_cnt = 0;//æ¸…é›¶å¾ˆé‡è¦
+    if ( lines[addr+7] == 1) //ææ€§ä¸€è‡´
+    {
+      for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//çº¿æ®µ1
+      {
+        //å¤–æ¥çŸ©å½¢å¯èƒ½ä¼šè¶Šç•Œ
+        if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
+        {
+          temp  = angles->data[iter->y*angles->xsize+iter->x] ;//å†…ç‚¹çš„æ¢¯åº¦æ–¹å‘
+          if(temp!= NOTDEF )
+          {
+            //test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
+            point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
+            point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
+            point_normal = atan2(-point_normaly,-point_normalx); //è¾¹ç¼˜ç‚¹çš„æ³•çº¿æ–¹å‘,æŒ‡å‘æ¤­åœ†å†…ä¾§
+            rec_inliers_cnt++;
+            if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5Â°å†… ä¸” || d - r || < 3 dis_t
+            {
+              rec_support_cnt++;
+              pixel_temp.x = iter->x; pixel_temp.y = iter->y;
+              second_group_inliers.push_back(pixel_temp);//æ·»åŠ è¯¥çº¿æ®µå¯¹åº”çš„å†…ç‚¹
+            }
+          } 
+        }
+      }
+    }
+    else//ææ€§ç›¸å
+    {
+      for(iter = ri_ini(&rec);!ri_end(iter);ri_inc(iter))//çº¿æ®µ1
+      {
+        //å¤–æ¥çŸ©å½¢å¯èƒ½ä¼šè¶Šç•Œ
+        if(iter->x >= 0 && iter->y >= 0 && iter->x < angles->xsize && iter->y < angles->ysize)
+        {
+          temp  = angles->data[iter->y*angles->xsize+iter->x] ;//å†…ç‚¹çš„æ¢¯åº¦æ–¹å‘
+          if(temp!= NOTDEF )
+          {
+            //test point's normal is (ax0+by0/2+d/2, cy0+bx0/2+e/2)
+            point_normalx = Coefficients[0]*iter->x + (Coefficients[1]*iter->y + Coefficients[3])/2;
+            point_normaly = Coefficients[2]*iter->y + (Coefficients[1]*iter->x + Coefficients[4])/2;
+            point_normal = atan2(point_normaly,point_normalx); //è¾¹ç¼˜ç‚¹çš„æ³•çº¿æ–¹å‘,æŒ‡å‘æ¤­åœ†å¤–ä¾§
+            rec_inliers_cnt++;
+            if(angle_diff(point_normal,temp) <= M_1_8_PI ) //+- 22.5Â°å†… ä¸” || d - r || < 3 dis_t
+            {
+              rec_support_cnt++;
+              pixel_temp.x = iter->x; pixel_temp.y = iter->y;
+              second_group_inliers.push_back(pixel_temp);//æ·»åŠ è¯¥çº¿æ®µå¯¹åº”çš„å†…ç‚¹
+            }
+          } 
+        }
+      }
+    }
+    if( !(rec_support_cnt > 0 && ( rec_support_cnt >= 0.8*lines[addr+6] || rec_support_cnt*1.0/rec_inliers_cnt >= 0.6) ) )
+    {
+      flag2 = FALSE; //flag1 åˆå§‹åŒ–æ—¶ä¸ºTRUE, ä¸€æ—¦ç»„å†…æœ‰ä¸€æ¡çº¿æ®µä¸æ»¡è¶³è¦æ±‚ï¼Œç›´æ¥false, å†…ç‚¹å‡†åˆ™éªŒè¯ä¸é€šè¿‡
+      break;
+    }
+  }
+  if ( flag2 == TRUE && second_group_inliers.size() >= 0.8*group_inliers_num[second_group_ind] )//é è¿‘æœ€å¤§ç»Ÿè®¡è¿‡çš„å†…ç‚¹,é€šè¿‡éªŒè¯
+  {
+    if(second_group_inliers.size() >= group_inliers_num[second_group_ind])//æ›´æ–°ç»„å‡ºç°è¿‡çš„æœ€å¤§å†…ç‚¹æ•°
+      group_inliers_num[second_group_ind] = second_group_inliers.size();
+  }
+  else 
+    flag2 = FALSE;
+  //ç¬¬äºŒä¸ªç»„å®ŒæˆéªŒè¯
+  if ( flag1 == TRUE && flag2 == TRUE)
+  {
+    point2d * dataxy = (point2d*)malloc(sizeof(point2d)*(first_group_inliers.size() + second_group_inliers.size()));
+    for ( unsigned int i = 0; i<first_group_inliers.size(); i++)
+    {
+      dataxy[i].x = first_group_inliers[i].x;
+      dataxy[i].y = first_group_inliers[i].y;
+    }
+    addr = first_group_inliers.size();
+    for ( unsigned int i = 0; i<second_group_inliers.size(); i++)//è¿æ¥ä¸¤ä¸ªæ•°ç»„æ—¶ä¸€å®šè¦æ³¨æ„ç´¢å¼•èŒƒå›´
+    {
+      dataxy[addr+i].x = second_group_inliers[i].x;
+      dataxy[addr+i].y = second_group_inliers[i].y;
+    }
+//    drawEdge(img,dataxy,(first_group_inliers.size() + second_group_inliers.size()));
+    info = fitEllipse(dataxy,(first_group_inliers.size() + second_group_inliers.size()), param2);
+    free(dataxy); //é‡Šæ”¾å†…å­˜
+    //å°é•¿çŸ­è½´çš„æ¤­åœ†éœ€è¦æ”¾å®½å‚æ•°
+    if ( param[2] <= 50 )
+      semimajor_errorratio = 0.25;
+    else if (param[2] <= 100 )
+      semimajor_errorratio = 0.15;
+    else
+      semimajor_errorratio = 0.1;
+    if ( param[3] <= 50 )
+      semiminor_errorratio = 0.25;
+    else if ( param[3] <= 100)
+      semiminor_errorratio = 0.15;
+    else
+      semiminor_errorratio = 0.1;
+    if (param[2] <= 50 && param[3] <= 50 )
+      iscircle_ratio = 0.75;
+    else if (param[2] >= 50 && param[2] <= 100 &&  param[3] >= 50 && param[3] <= 100 )
+      iscircle_ratio = 0.85;
+    else
+      iscircle_ratio = 0.9;
+    if ( info == 1  && isEllipseEqual(param2,param,3*distance_tolerance,semimajor_errorratio,semiminor_errorratio,0.1, iscircle_ratio) )
+    {
+      ellipara->x = param2[0];//æ›´æ–°æ¤­åœ†ï¼Œæé«˜å“è´¨
+        ellipara->y = param2[1];
+        ellipara->a = param2[2];
+        ellipara->b = param2[3];
+        ellipara->phi = param2[4];
+        //drawEllipse(img,param2);
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 
-//ÊäÈë
-//lsdËã·¨¼ì²âµÃµ½µÄÏß¶Î¼¯ºÏlinesµÄÊıÁ¿line_num£¬returnµÄ·µ»ØÖµÊÇline_numsÌõÏß¶Î£¬ÎªÒ»Î¬doubleĞÍÊı×élines£¬³¤¶ÈÎª8*n£¬Ã¿8¸öÎªÒ»×é
-//´æ×Åx1,y1,x2,y2,dx,dy,length,polarity
-//groups: Ïß¶Î·Ö×é£¬Ã¿¸ö×é´æ°´ÕÕ¼¸ºÎ·Ö²¼Ë³ĞòË³Ê±Õë»òÕßÄæÊ±Õë´æ´¢×ÅÏß¶ÎË÷Òı£¬Ïß¶ÎË÷Òı·¶Î§ÊÇ0~line_num-1
-//coverages: Ã¿¸ö·Ö×éµÄ½Ç¶È¸²¸Ç·¶Î§0~2pi£¬Èç¹û×éÀïÖ»ÓĞ1ÌõÏß¶Î£¬¸²¸Ç½Ç¶ÈÎª0¡£Êı×é³¤¶ÈµÈÓÚ·Ö×éµÄÊıÁ¿¡£
-//angles ´æ±ßÔµµãµÄÌİ¶È·½Ïògradient direction, ÎŞ±ßÔµµãÎ»NOTDEF
-//·µ»ØÖµ PairedGroupList* list ·µ»ØµÄÊÇ³õÊ¼ÍÖÔ²¼¯ºÏµÄÊı×é£¬³¤¶Èlist->length. 
-//ÇĞ¼Ç£¬¸ÃÄÚ´æÔÚº¯ÊıÄÚÉêÇë£¬ÓÃÍê¸Ãº¯Êı¼ÇµÃÊÍ·ÅÄÚ´æ£¬µ÷ÓÃº¯ÊıfreePairedSegmentList()½øĞĞÊÍ·Å
+//è¾“å…¥
+//lsdç®—æ³•æ£€æµ‹å¾—åˆ°çš„çº¿æ®µé›†åˆlinesçš„æ•°é‡line_numï¼Œreturnçš„è¿”å›å€¼æ˜¯line_numsæ¡çº¿æ®µï¼Œä¸ºä¸€ç»´doubleå‹æ•°ç»„linesï¼Œé•¿åº¦ä¸º8*nï¼Œæ¯8ä¸ªä¸ºä¸€ç»„
+//å­˜ç€x1,y1,x2,y2,dx,dy,length,polarity
+//groups: çº¿æ®µåˆ†ç»„ï¼Œæ¯ä¸ªç»„å­˜æŒ‰ç…§å‡ ä½•åˆ†å¸ƒé¡ºåºé¡ºæ—¶é’ˆæˆ–è€…é€†æ—¶é’ˆå­˜å‚¨ç€çº¿æ®µç´¢å¼•ï¼Œçº¿æ®µç´¢å¼•èŒƒå›´æ˜¯0~line_num-1
+//coverages: æ¯ä¸ªåˆ†ç»„çš„è§’åº¦è¦†ç›–èŒƒå›´0~2piï¼Œå¦‚æœç»„é‡Œåªæœ‰1æ¡çº¿æ®µï¼Œè¦†ç›–è§’åº¦ä¸º0ã€‚æ•°ç»„é•¿åº¦ç­‰äºåˆ†ç»„çš„æ•°é‡ã€‚
+//angles å­˜è¾¹ç¼˜ç‚¹çš„æ¢¯åº¦æ–¹å‘gradient direction, æ— è¾¹ç¼˜ç‚¹ä½NOTDEF
+//è¿”å›å€¼ PairedGroupList* list è¿”å›çš„æ˜¯åˆå§‹æ¤­åœ†é›†åˆçš„æ•°ç»„ï¼Œé•¿åº¦list->length. 
+//åˆ‡è®°ï¼Œè¯¥å†…å­˜åœ¨å‡½æ•°å†…ç”³è¯·ï¼Œç”¨å®Œè¯¥å‡½æ•°è®°å¾—é‡Šæ”¾å†…å­˜ï¼Œè°ƒç”¨å‡½æ•°freePairedSegmentList()è¿›è¡Œé‡Šæ”¾
 
 PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, double * coverages, image_double angles, double distance_tolerance, int specified_polarity)
 {
-	//¼ÓËÙ¼ÆËã
-	//int* lineInliersIndex = (int*)malloc(sizeof(int)*line_num);//Èç¹ûµÚiÌõÏß¶ÎÕÒµ½ÁËÄÚµã£¬Ôò¼ÇÂ¼ÆäË÷ÒıÎªj = length(supportInliers),¼´supportInliers.at(j)´æ×Å¸ÃÏß¶ÎµÄÖ§³ÖÄÚµã,Ã»ÕÒµ½ÄÚµãµÄÏß¶Î¶ÔÓ¦Ë÷ÒıÎª³õÊ¼Öµ-1.
-    //vector<vector<point2d>> supportInliers;//±£´æÏàÓ¦Ïß¶ÎµÄÖ§³ÖÄÚµã
-	//memset(lineInliersIndex,-1,sizeof(int)*line_num);//´Ë´¦ÒªÊµ¼ùÈ·Êµ¿ÉĞĞ£¬¶ÔÓÚÕûÊı¿ÉÒÔ³õÊ¼»¯Îª0£¬-1.¶ÔÓÚ¸¡µãÊıÔòÖ»¿ÉÒÔÎª0.
+  //åŠ é€Ÿè®¡ç®—
+  //int* lineInliersIndex = (int*)malloc(sizeof(int)*line_num);//å¦‚æœç¬¬iæ¡çº¿æ®µæ‰¾åˆ°äº†å†…ç‚¹ï¼Œåˆ™è®°å½•å…¶ç´¢å¼•ä¸ºj = length(supportInliers),å³supportInliers.at(j)å­˜ç€è¯¥çº¿æ®µçš„æ”¯æŒå†…ç‚¹,æ²¡æ‰¾åˆ°å†…ç‚¹çš„çº¿æ®µå¯¹åº”ç´¢å¼•ä¸ºåˆå§‹å€¼-1.
+    //vector<vector<point2d>> supportInliers;//ä¿å­˜ç›¸åº”çº¿æ®µçš„æ”¯æŒå†…ç‚¹
+  //memset(lineInliersIndex,-1,sizeof(int)*line_num);//æ­¤å¤„è¦å®è·µç¡®å®å¯è¡Œï¼Œå¯¹äºæ•´æ•°å¯ä»¥åˆå§‹åŒ–ä¸º0ï¼Œ-1.å¯¹äºæµ®ç‚¹æ•°åˆ™åªå¯ä»¥ä¸º0.
 
-	PairGroupList * pairGroupList = NULL;
-	PairGroupNode *head, *tail;
-	int pairlength = 0;
-	point2d pointG1s,pointG1e,pointG2s,pointG2e,g1s_ls_dir,g1e_ls_dir,g2s_ls_dir,g2e_ls_dir;
-	double polarity;
-	point5d ellipara;
-    int groupsNum = (*groups).size();//×éµÄÊıÁ¿
-	double * fitMatrixes = (double*)malloc(sizeof(double)*groupsNum*36);//¶¨ÒåÄâºÏ¾ØÕóS_{6 x 6}. Ã¿¸ö×é¶¼ÓĞÒ»¸öÄâºÏ¾ØÕó
-	unsigned int * supportInliersNum = (unsigned int*)malloc(sizeof(int)*groupsNum);//ÓÃÓÚ´æ´¢Ã¿¸ö×éÔø¾­×î´ó³öÏÖµÄÖ§³ÖÄÚµãÊıÁ¿
-	memset(fitMatrixes,0,sizeof(double)*groupsNum*36);
-	memset(supportInliersNum, 0, sizeof(unsigned int)*groupsNum);//³õÊ¼»¯Îª0.
-	//double distance_tolerance = max( 2.0, 0.005*min(angles->xsize,angles->ysize) ); // 0.005%*min(xsize,ysize)
+  PairGroupList * pairGroupList = NULL;
+  PairGroupNode *head, *tail;
+  int pairlength = 0;
+  point2d pointG1s,pointG1e,pointG2s,pointG2e,g1s_ls_dir,g1e_ls_dir,g2s_ls_dir,g2e_ls_dir;
+  double polarity;
+  point5d ellipara;
+    int groupsNum = (*groups).size();//ç»„çš„æ•°é‡
+  double * fitMatrixes = (double*)malloc(sizeof(double)*groupsNum*36);//å®šä¹‰æ‹ŸåˆçŸ©é˜µS_{6 x 6}. æ¯ä¸ªç»„éƒ½æœ‰ä¸€ä¸ªæ‹ŸåˆçŸ©é˜µ
+  unsigned int * supportInliersNum = (unsigned int*)malloc(sizeof(int)*groupsNum);//ç”¨äºå­˜å‚¨æ¯ä¸ªç»„æ›¾ç»æœ€å¤§å‡ºç°çš„æ”¯æŒå†…ç‚¹æ•°é‡
+  memset(fitMatrixes,0,sizeof(double)*groupsNum*36);
+  memset(supportInliersNum, 0, sizeof(unsigned int)*groupsNum);//åˆå§‹åŒ–ä¸º0.
+  //double distance_tolerance = max( 2.0, 0.005*min(angles->xsize,angles->ysize) ); // 0.005%*min(xsize,ysize)
     int i,j;
-	int cnt_temp,ind_start,ind_end;
-	bool info;
+  int cnt_temp,ind_start,ind_end;
+  bool info;
     
-	//ÊµÀı»¯ÄâºÏ¾ØÕóSi
-	point2d * dataxy = (point2d*)malloc(sizeof(point2d)*line_num*2);//ÉêÇë×ã¹»´óÄÚ´æ, line_numÌõÏß¶Î£¬¹²ÓĞ2line_num¸ö¶Ëµã
-	for ( i = 0; i<groupsNum; i++)
-	{
-		cnt_temp = 0;//Ç§Íò×¢ÒâÒªÇå0
-		for ( j = 0; j<(*groups)[i].size(); j++)
-		{
-			//Ã¿Ò»ÌõÏß¶ÎÓĞ2¸ö¶Ëµã
-			dataxy[cnt_temp].x = lines[(*groups)[i][j]*8];
-			dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+1];
-			dataxy[cnt_temp].x = lines[(*groups)[i][j]*8+2];
-			dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+3];
-		}
-		calcuFitMatrix(dataxy,cnt_temp, fitMatrixes+i*36);
-	}
-	free(dataxy);//ÊÍ·ÅÄÚ´æ
+  //å®ä¾‹åŒ–æ‹ŸåˆçŸ©é˜µSi
+  point2d * dataxy = (point2d*)malloc(sizeof(point2d)*line_num*2);//ç”³è¯·è¶³å¤Ÿå¤§å†…å­˜, line_numæ¡çº¿æ®µï¼Œå…±æœ‰2line_numä¸ªç«¯ç‚¹
+  for ( i = 0; i<groupsNum; i++)
+  {
+    cnt_temp = 0;//åƒä¸‡æ³¨æ„è¦æ¸…0
+    for ( j = 0; j<(*groups)[i].size(); j++)
+    {
+      //æ¯ä¸€æ¡çº¿æ®µæœ‰2ä¸ªç«¯ç‚¹
+      dataxy[cnt_temp].x = lines[(*groups)[i][j]*8];
+      dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+1];
+      dataxy[cnt_temp].x = lines[(*groups)[i][j]*8+2];
+      dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+3];
+    }
+    calcuFitMatrix(dataxy,cnt_temp, fitMatrixes+i*36);
+  }
+  free(dataxy);//é‡Šæ”¾å†…å­˜
 
-	head = tail = NULL;//½«³õÊ¼ÍÖÔ²¼¯ºÏ´æ´¢µ½Á´±íÖĞ
-	//selection of salient elliptic hypothesis
-	for ( i = 0; i<groupsNum; i++)
-	{
-		if(coverages[i] >= M_4_9_PI )//µ±×éµÄ¸²¸Ç½Ç¶È>= 4pi/9 = 80¡ã, ÎÒÃÇÈÏÎª¾ßÓĞºÜ´óµÄÏÔÖøĞÔ£¬¿ÉÖ±½ÓÄâºÏÌáÈ¡
-		{
-			//¼ÓÈë¼«ĞÔÅĞ¶Ï,Ö»ÌáÈ¡Ö¸¶¨¼«ĞÔµÄÍÖÔ²
-			if (specified_polarity == 0 || (lines[(*groups)[i][0]*8+7] == specified_polarity))
-			{
-				//ÏÔÖøĞÔ´óµÄ³õÊ¼ÍÖÔ²ÌáÈ¡£¬Ò»¶¨»á·µ»ØTRUE£¬Òò´ËÃ»±ØÒªÔÙÅĞ¶Ï
-				info = calcEllipseParametersAndValidate(lines,line_num,groups,i,-1,(fitMatrixes+i*36),NULL,angles,distance_tolerance,supportInliersNum,&ellipara);
-				if (info == FALSE) 
-				{
-					continue;
-					error("getValidInitialEllipseSet, selection of salient ellipses failed!");//ÕâÖÖÇé¿ö»á³öÏÖ£¿£¿,ÅÜ54.jpg³öÏÖ¸ÃÎÊÌâ
-				}
-				PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
-				node->center.x = ellipara.x;
-				node->center.y = ellipara.y;
-				node->axis.x   = ellipara.a;
-				node->axis.y   = ellipara.b;
-				node->phi      = ellipara.phi;
-				node->pairGroupInd.x = i;
-				node->pairGroupInd.y = -1;//ÎŞ
-				if(head != NULL)
-				{
-					tail->next = node;
-					tail = node;
-				}
-				else
-				{
-					head = tail = node;
-				}
-				pairlength++;
-			}
-		}
-	}
+  head = tail = NULL;//å°†åˆå§‹æ¤­åœ†é›†åˆå­˜å‚¨åˆ°é“¾è¡¨ä¸­
+  //selection of salient elliptic hypothesis
+  for ( i = 0; i<groupsNum; i++)
+  {
+    if(coverages[i] >= M_4_9_PI )//å½“ç»„çš„è¦†ç›–è§’åº¦>= 4pi/9 = 80Â°, æˆ‘ä»¬è®¤ä¸ºå…·æœ‰å¾ˆå¤§çš„æ˜¾è‘—æ€§ï¼Œå¯ç›´æ¥æ‹Ÿåˆæå–
+    {
+      //åŠ å…¥ææ€§åˆ¤æ–­,åªæå–æŒ‡å®šææ€§çš„æ¤­åœ†
+      if (specified_polarity == 0 || (lines[(*groups)[i][0]*8+7] == specified_polarity))
+      {
+        //æ˜¾è‘—æ€§å¤§çš„åˆå§‹æ¤­åœ†æå–ï¼Œä¸€å®šä¼šè¿”å›TRUEï¼Œå› æ­¤æ²¡å¿…è¦å†åˆ¤æ–­
+        info = calcEllipseParametersAndValidate(lines,line_num,groups,i,-1,(fitMatrixes+i*36),NULL,angles,distance_tolerance,supportInliersNum,&ellipara);
+        if (info == FALSE) 
+        {
+          continue;
+          error("getValidInitialEllipseSet, selection of salient ellipses failed!");//è¿™ç§æƒ…å†µä¼šå‡ºç°ï¼Ÿï¼Ÿ,è·‘54.jpgå‡ºç°è¯¥é—®é¢˜
+        }
+        PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
+        node->center.x = ellipara.x;
+        node->center.y = ellipara.y;
+        node->axis.x   = ellipara.a;
+        node->axis.y   = ellipara.b;
+        node->phi      = ellipara.phi;
+        node->pairGroupInd.x = i;
+        node->pairGroupInd.y = -1;//æ— 
+        if(head != NULL)
+        {
+          tail->next = node;
+          tail = node;
+        }
+        else
+        {
+          head = tail = node;
+        }
+        pairlength++;
+      }
+    }
+  }
     //selection of pair group hypothesis
-	for ( i = 0; i<groupsNum-1; i++)
-		for ( j = i+1; j<groupsNum; j++)
-			{
-				//¼ÓÈë¼«ĞÔÅĞ¶Ï,Ö»ÌáÈ¡Ö¸¶¨¼«ĞÔµÄÍÖÔ²
-			   if (specified_polarity == 0 || (lines[(*groups)[i][0]*8+7] == specified_polarity))
-			    {
-					//group i 's polarity is the same as group j; and the number of two paired groups should be >= 3.
-					if( lines[(*groups)[i][0]*8+7] == lines[(*groups)[j][0]*8+7] && ((*groups)[i].size() + (*groups)[j].size()) >= 3)
-					{
-						ind_start = (*groups)[i][0];//µÚi×éµÄ×î¿ªÊ¼Ò»ÌõÏß¶ÎË÷Òı
-						ind_end   = (*groups)[i][(*groups)[i].size()-1];//µÚi×éµÄ×îºóÒ»ÌõÏß¶ÎË÷Òı
-						pointG1s.x = lines[ind_start*8];
-						pointG1s.y = lines[ind_start*8+1];
-						g1s_ls_dir.x = lines[ind_start*8+4];
-						g1s_ls_dir.y = lines[ind_start*8+5];
-						pointG1e.x = lines[ind_end*8+2];
-						pointG1e.y = lines[ind_end*8+3];
-						g1e_ls_dir.x = lines[ind_end*8+4];
-						g1e_ls_dir.y = lines[ind_end*8+5];
-						ind_start = (*groups)[j][0];//µÚj×éµÄ×î¿ªÊ¼Ò»ÌõÏß¶ÎË÷Òı
-						ind_end   = (*groups)[j][(*groups)[j].size()-1];//µÚj×éµÄ×îºóÒ»ÌõÏß¶ÎË÷Òı
-						pointG2s.x = lines[ind_start*8];
-						pointG2s.y = lines[ind_start*8+1];
-						g2s_ls_dir.x = lines[ind_start*8+4];
-						g2s_ls_dir.y = lines[ind_start*8+5];
-						pointG2e.x = lines[ind_end*8+2];
-						pointG2e.y = lines[ind_end*8+3];
-						g2e_ls_dir.x = lines[ind_end*8+4];
-						g2e_ls_dir.y = lines[ind_end*8+5];
-						polarity = lines[ind_start*8+7]; //i,jÁ½×éµÄ¼«ĞÔ
-						if(regionLimitation(pointG1s,g1s_ls_dir,pointG1e,g1e_ls_dir,pointG2s,g2s_ls_dir,pointG2e,g2e_ls_dir,polarity,-3*distance_tolerance))//¶¼ÔÚ±Ë´ËµÄÏßĞÔÇøÓòÄÚ
-						{
-							//if ( i == 2)
-							//	drawPairGroup(img,lines,(*groups),i,j);
+  for ( i = 0; i<groupsNum-1; i++)
+    for ( j = i+1; j<groupsNum; j++)
+      {
+        //åŠ å…¥ææ€§åˆ¤æ–­,åªæå–æŒ‡å®šææ€§çš„æ¤­åœ†
+         if (specified_polarity == 0 || (lines[(*groups)[i][0]*8+7] == specified_polarity))
+          {
+          //group i 's polarity is the same as group j; and the number of two paired groups should be >= 3.
+          if( lines[(*groups)[i][0]*8+7] == lines[(*groups)[j][0]*8+7] && ((*groups)[i].size() + (*groups)[j].size()) >= 3)
+          {
+            ind_start = (*groups)[i][0];//ç¬¬iç»„çš„æœ€å¼€å§‹ä¸€æ¡çº¿æ®µç´¢å¼•
+            ind_end   = (*groups)[i][(*groups)[i].size()-1];//ç¬¬iç»„çš„æœ€åä¸€æ¡çº¿æ®µç´¢å¼•
+            pointG1s.x = lines[ind_start*8];
+            pointG1s.y = lines[ind_start*8+1];
+            g1s_ls_dir.x = lines[ind_start*8+4];
+            g1s_ls_dir.y = lines[ind_start*8+5];
+            pointG1e.x = lines[ind_end*8+2];
+            pointG1e.y = lines[ind_end*8+3];
+            g1e_ls_dir.x = lines[ind_end*8+4];
+            g1e_ls_dir.y = lines[ind_end*8+5];
+            ind_start = (*groups)[j][0];//ç¬¬jç»„çš„æœ€å¼€å§‹ä¸€æ¡çº¿æ®µç´¢å¼•
+            ind_end   = (*groups)[j][(*groups)[j].size()-1];//ç¬¬jç»„çš„æœ€åä¸€æ¡çº¿æ®µç´¢å¼•
+            pointG2s.x = lines[ind_start*8];
+            pointG2s.y = lines[ind_start*8+1];
+            g2s_ls_dir.x = lines[ind_start*8+4];
+            g2s_ls_dir.y = lines[ind_start*8+5];
+            pointG2e.x = lines[ind_end*8+2];
+            pointG2e.y = lines[ind_end*8+3];
+            g2e_ls_dir.x = lines[ind_end*8+4];
+            g2e_ls_dir.y = lines[ind_end*8+5];
+            polarity = lines[ind_start*8+7]; //i,jä¸¤ç»„çš„ææ€§
+            if(regionLimitation(pointG1s,g1s_ls_dir,pointG1e,g1e_ls_dir,pointG2s,g2s_ls_dir,pointG2e,g2e_ls_dir,polarity,-3*distance_tolerance))//éƒ½åœ¨å½¼æ­¤çš„çº¿æ€§åŒºåŸŸå†…
+            {
+              //if ( i == 2)
+              //  drawPairGroup(img,lines,(*groups),i,j);
 
-							if(calcEllipseParametersAndValidate(lines,line_num,groups,i,j,(fitMatrixes+i*36),(fitMatrixes+j*36),angles,distance_tolerance,supportInliersNum,&ellipara))//¶ş´ÎÒ»°ã·½³ÌÏßĞÔÇó½â£¬Ïß¶ÎµÄÄÚµãÖ§³Ö±ÈÀı
-							{
-								PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
-								node->center.x = ellipara.x;
-								node->center.y = ellipara.y;
-								node->axis.x   = ellipara.a;
-								node->axis.y   = ellipara.b;
-								node->phi      = ellipara.phi;
-								node->pairGroupInd.x = i;
-								node->pairGroupInd.y = -1;//ÎŞ
-								if(head != NULL)
-								{
-									tail->next = node;
-									tail = node;
-								}
-								else
-								{
-									head = tail = node;
-								}
-								pairlength++;
-							}
-						}
-						
-					}
-			   }
-			}
-	if(pairlength > 0)
-	{
-		PairGroupNode *p;
-		p = head;
-		pairGroupList = pairGroupListInit(pairlength);
-		for( int i = 0; i<pairGroupList->length; i++)
-		{
-			pairGroupList->pairGroup[i].center.x = p->center.x;
-			pairGroupList->pairGroup[i].center.y = p->center.y;
-			pairGroupList->pairGroup[i].axis.x = p->axis.x;
-			pairGroupList->pairGroup[i].axis.y = p->axis.y;
-			pairGroupList->pairGroup[i].phi = p->phi;
-			pairGroupList->pairGroup[i].pairGroupInd.x = p->pairGroupInd.x;//¼ÇÂ¼×é¶Ô(i,j),ÓÉgroupsÖĞµÄµÚi¸ö×éºÍµÚj¸ö×é¹¹³ÉµÄÆ¥Åä×é²úÉú¸ÃÓĞĞ§ÍÖÔ²²ÎÊı
-			pairGroupList->pairGroup[i].pairGroupInd.y = p->pairGroupInd.y;
-			p = p->next;
-		}
-		tail->next = NULL;
-		while (head != NULL)
-		{
-			p = head;
-			head = head->next;
-			free(p);
-		}
-	}
-	//supportInliers.resize(0);
-	//free(lineInliersIndex);//ÊÍ·ÅÏß¶ÎÄÚµãµÄË÷Òı
-	free(supportInliersNum);//ÊÍ·Å´æ´¢¸÷¸ö×éµÄÖ§³ÖÄÚµãÊıÁ¿µÄÊı×é
-	free(fitMatrixes);//ÊÍ·Å´æ´¢¸÷¸ö×éµÄÄâºÏ¾ØÕó
-	return pairGroupList;
+              if(calcEllipseParametersAndValidate(lines,line_num,groups,i,j,(fitMatrixes+i*36),(fitMatrixes+j*36),angles,distance_tolerance,supportInliersNum,&ellipara))//äºŒæ¬¡ä¸€èˆ¬æ–¹ç¨‹çº¿æ€§æ±‚è§£ï¼Œçº¿æ®µçš„å†…ç‚¹æ”¯æŒæ¯”ä¾‹
+              {
+                PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
+                node->center.x = ellipara.x;
+                node->center.y = ellipara.y;
+                node->axis.x   = ellipara.a;
+                node->axis.y   = ellipara.b;
+                node->phi      = ellipara.phi;
+                node->pairGroupInd.x = i;
+                node->pairGroupInd.y = -1;//æ— 
+                if(head != NULL)
+                {
+                  tail->next = node;
+                  tail = node;
+                }
+                else
+                {
+                  head = tail = node;
+                }
+                pairlength++;
+              }
+            }
+            
+          }
+         }
+      }
+  if(pairlength > 0)
+  {
+    PairGroupNode *p;
+    p = head;
+    pairGroupList = pairGroupListInit(pairlength);
+    for( int i = 0; i<pairGroupList->length; i++)
+    {
+      pairGroupList->pairGroup[i].center.x = p->center.x;
+      pairGroupList->pairGroup[i].center.y = p->center.y;
+      pairGroupList->pairGroup[i].axis.x = p->axis.x;
+      pairGroupList->pairGroup[i].axis.y = p->axis.y;
+      pairGroupList->pairGroup[i].phi = p->phi;
+      pairGroupList->pairGroup[i].pairGroupInd.x = p->pairGroupInd.x;//è®°å½•ç»„å¯¹(i,j),ç”±groupsä¸­çš„ç¬¬iä¸ªç»„å’Œç¬¬jä¸ªç»„æ„æˆçš„åŒ¹é…ç»„äº§ç”Ÿè¯¥æœ‰æ•ˆæ¤­åœ†å‚æ•°
+      pairGroupList->pairGroup[i].pairGroupInd.y = p->pairGroupInd.y;
+      p = p->next;
+    }
+    tail->next = NULL;
+    while (head != NULL)
+    {
+      p = head;
+      head = head->next;
+      free(p);
+    }
+  }
+  //supportInliers.resize(0);
+  //free(lineInliersIndex);//é‡Šæ”¾çº¿æ®µå†…ç‚¹çš„ç´¢å¼•
+  free(supportInliersNum);//é‡Šæ”¾å­˜å‚¨å„ä¸ªç»„çš„æ”¯æŒå†…ç‚¹æ•°é‡çš„æ•°ç»„
+  free(fitMatrixes);//é‡Šæ”¾å­˜å‚¨å„ä¸ªç»„çš„æ‹ŸåˆçŸ©é˜µ
+  return pairGroupList;
 }
 
 
 void generateEllipseCandidates( PairGroupList * pairGroupList, double distance_tolerance, double * & ellipse_candidates, int * candidates_num)
 {
-	if( pairGroupList->length <= 0 )//¼ì²â£¬ÖÁÉÙÒªÓĞ1¸öÑù±¾ÓÃÀ´²úÉúºòÑ¡
-	{
-		ellipse_candidates = NULL;
-		(*candidates_num) = 0;
-		return;
-	}
-	double * centers;
-	int center_num; //ÍÖÔ²ÖĞĞÄ(xi,yi)µÄ¾ÛÀàÊıÁ¿
-	double * phis;
-	int phi_num;    //Õë¶ÔÃ¿Ò»¸öÍÖÔ²ÖĞĞÄ(xi,yi)£¬ÇãĞ±½Ç¶ÈphiµÄ¾ÛÀàÊıÁ¿
-	double * axises;
-	int axis_num;   //Õë¶ÔÃ¿Ò»¸öÍÖÔ²ÖĞĞÄºÍÇã½Ç(xi,yi,phi),³¤¶Ì°ëÖá(a,b)µÄ¾ÛÀàÊıÁ¿
-	double * bufferXY = (double*)calloc(pairGroupList->length*2,sizeof(double));
-	double * bufferPhi = (double*)calloc(pairGroupList->length,sizeof(double));
-	double * bufferAB = (double*)calloc(pairGroupList->length*2,sizeof(double));
-	point2i * bufferIndexes = (point2i *)calloc(pairGroupList->length,sizeof(point2i));//point[i].x¼ÇÂ¼µÚi¸ö·ÖÀàÔÚbufferXXÖĞµÄÆğÊ¼Ë÷ÒıÎ»ÖÃ£¬point[i].y¼ÇÂ¼µÚi¸ö·ÖÀàÔÚbufferXXÖĞµÄ³¤¶È
-	double  * buffer2AB = (double*)calloc(pairGroupList->length*2,sizeof(double));
-	point2i * buffer2Indexes = (point2i *)calloc(pairGroupList->length,sizeof(point2i));//point[i].x¼ÇÂ¼µÚi¸ö·ÖÀàÔÚbufferXXÖĞµÄÆğÊ¼Ë÷ÒıÎ»ÖÃ£¬point[i].y¼ÇÂ¼µÚi¸ö·ÖÀàÔÚbufferXXÖĞµÄ³¤¶È
-	int     * buffer_temp = (int*)calloc(pairGroupList->length,sizeof(int));
-	int addr,addr2,info,ind;
-	double dis_min,dis_temp;
-	if ( bufferXY == NULL || bufferPhi == NULL || bufferAB == NULL || bufferIndexes == NULL ||
-		 buffer2AB == NULL || buffer2Indexes == NULL || buffer_temp == NULL
-		)
-	{
-		ellipse_candidates = NULL;
-		(*candidates_num) = 0;
-		error("generateEllipseCandidates, not enough memory");
-	}
-	(*candidates_num) = 0; //ºòÑ¡ÍÖÔ²ÊıÁ¿£¬³õÊ¼»¯Îª0,·Ç³£ÖØÒª
-	//copy
-	for ( int i = 0; i<pairGroupList->length; i++)
-	{
-		addr = 2*i;
-		bufferXY[addr] = pairGroupList->pairGroup[i].center.x;
-		bufferXY[addr+1] = pairGroupList->pairGroup[i].center.y;
-	}
-	//cluster the ellipses' centers
-	info = cluster2DPoints(bufferXY,pairGroupList->length,distance_tolerance,centers,&center_num);
-	if( info == 0)
-	{
-		ellipse_candidates = NULL;
-		(*candidates_num) = 0;
-		error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic centers");
-	}
-	//classification,Ñ°ÕÒÃ¿¸öµã¹éÊôµÄ¾ÛÀàÖĞĞÄ
-	for ( int i = 0; i<pairGroupList->length; i++)
-	{
-		dis_min = DBL_MAX;
-		ind = -1;
-		for ( int j = 0; j<center_num; j++)
-		{
-			addr = 2*j;
-			dis_temp = (pairGroupList->pairGroup[i].center.x - centers[addr])*(pairGroupList->pairGroup[i].center.x - centers[addr]) + (pairGroupList->pairGroup[i].center.y - centers[addr+1])*(pairGroupList->pairGroup[i].center.y - centers[addr+1]);
-			if(dis_temp < dis_min)
-			{
-				dis_min = dis_temp;
-				ind = j; //record the nearest center's index
-			}
-		}
-		buffer_temp[i] = ind; //´Ë´¦½èÓÃbuffer2À´¼ÇÏÂµÚi¸ö³õÊ¼ÍÖÔ²¶ÔÓ¦µÚind¸öÍÖÔ²¾ÛÀàÖĞĞÄ
-	}
-	//½«·ÖÀà½á¹û°´Ë³Ğò´æµ½bufferXY,bufferPhi,bufferABÖĞ£¬ÇÒbufferIndexes[i]´æ×ÅµÚi¸ö¾ÛÀàÖĞĞÄµÄÆğÊ¼Ë÷ÒıÎ»ÖÃºÍ³¤¶È
-	memset(bufferIndexes,0,sizeof(point2i)*pairGroupList->length);
-	ind = 0;//ÇåÁã£¬Ñù±¾µãÆğÊ¼Î»ÖÃ£¬Ë÷ÒıÎ»ÖÃÊÇind*2,·ÖÇøµÄ»ùÖ·
-	for ( int i = 0; i<center_num; i++)
-	{
-		bufferIndexes[i].x = ind; 
-		for ( int j = 0; j<pairGroupList->length; j++)
-		{
-			if ( buffer_temp[j] == i)
-			{
-				addr = ind*2;//ÇĞ¼Ç³¤¶Ì°ëÖáÊÇÒ»×éÒ»×é´ç´¢µÄ£¬ĞèÒª x 2
-				addr2 = bufferIndexes[i].y*2;
-				bufferPhi[ind+bufferIndexes[i].y] = pairGroupList->pairGroup[j].phi;
-				bufferAB[addr+addr2] = pairGroupList->pairGroup[j].axis.x;
-				bufferAB[addr+addr2+1] = pairGroupList->pairGroup[j].axis.y;
-				bufferIndexes[i].y++;//µÚi¸ö¾ÛÀàÖĞĞÄÖÜÎ§µÄµãÊıÁ¿¼Ó1
-			}
-		}
-		if(bufferIndexes[i].y == 0)//¾ÛÀàÖĞĞÄÖÜÎ§Ã»ÓĞ¿¿½üµÄµã
-		{
-			error("generateEllipseCandidates, no XY points near to the clustering center");
-		}
-		ind += bufferIndexes[i].y;
-	}
-	//cout<<"2D cluster centers over"<<endl;
-	//¶ÔÃ¿Ò»¸öÍÖÔ²ÖĞĞÄµÄÖÜÎ§µÄµã½øĞĞÇã½Ç¾ÛÀà
-	//µÚi¸öÍÖÔ²¾ÛÀàÖĞĞÄ£¬ÆäÁÚ½üµãµÄË÷Òı·¶Î§ÊÇ£ºbufferIndexs[i].x ~ (bufferIndex[i].x + bufferIndex[i].y-1)
-	for ( int i = 0; i<center_num; i++)
-	{
-		
+  if( pairGroupList->length <= 0 )//æ£€æµ‹ï¼Œè‡³å°‘è¦æœ‰1ä¸ªæ ·æœ¬ç”¨æ¥äº§ç”Ÿå€™é€‰
+  {
+    ellipse_candidates = NULL;
+    (*candidates_num) = 0;
+    return;
+  }
+  double * centers;
+  int center_num; //æ¤­åœ†ä¸­å¿ƒ(xi,yi)çš„èšç±»æ•°é‡
+  double * phis;
+  int phi_num;    //é’ˆå¯¹æ¯ä¸€ä¸ªæ¤­åœ†ä¸­å¿ƒ(xi,yi)ï¼Œå€¾æ–œè§’åº¦phiçš„èšç±»æ•°é‡
+  double * axises;
+  int axis_num;   //é’ˆå¯¹æ¯ä¸€ä¸ªæ¤­åœ†ä¸­å¿ƒå’Œå€¾è§’(xi,yi,phi),é•¿çŸ­åŠè½´(a,b)çš„èšç±»æ•°é‡
+  double * bufferXY = (double*)calloc(pairGroupList->length*2,sizeof(double));
+  double * bufferPhi = (double*)calloc(pairGroupList->length,sizeof(double));
+  double * bufferAB = (double*)calloc(pairGroupList->length*2,sizeof(double));
+  point2i * bufferIndexes = (point2i *)calloc(pairGroupList->length,sizeof(point2i));//point[i].xè®°å½•ç¬¬iä¸ªåˆ†ç±»åœ¨bufferXXä¸­çš„èµ·å§‹ç´¢å¼•ä½ç½®ï¼Œpoint[i].yè®°å½•ç¬¬iä¸ªåˆ†ç±»åœ¨bufferXXä¸­çš„é•¿åº¦
+  double  * buffer2AB = (double*)calloc(pairGroupList->length*2,sizeof(double));
+  point2i * buffer2Indexes = (point2i *)calloc(pairGroupList->length,sizeof(point2i));//point[i].xè®°å½•ç¬¬iä¸ªåˆ†ç±»åœ¨bufferXXä¸­çš„èµ·å§‹ç´¢å¼•ä½ç½®ï¼Œpoint[i].yè®°å½•ç¬¬iä¸ªåˆ†ç±»åœ¨bufferXXä¸­çš„é•¿åº¦
+  int     * buffer_temp = (int*)calloc(pairGroupList->length,sizeof(int));
+  int addr,addr2,info,ind;
+  double dis_min,dis_temp;
+  if ( bufferXY == NULL || bufferPhi == NULL || bufferAB == NULL || bufferIndexes == NULL ||
+     buffer2AB == NULL || buffer2Indexes == NULL || buffer_temp == NULL
+    )
+  {
+    ellipse_candidates = NULL;
+    (*candidates_num) = 0;
+    error("generateEllipseCandidates, not enough memory");
+  }
+  (*candidates_num) = 0; //å€™é€‰æ¤­åœ†æ•°é‡ï¼Œåˆå§‹åŒ–ä¸º0,éå¸¸é‡è¦
+  //copy
+  for ( int i = 0; i<pairGroupList->length; i++)
+  {
+    addr = 2*i;
+    bufferXY[addr] = pairGroupList->pairGroup[i].center.x;
+    bufferXY[addr+1] = pairGroupList->pairGroup[i].center.y;
+  }
+  //cluster the ellipses' centers
+  info = cluster2DPoints(bufferXY,pairGroupList->length,distance_tolerance,centers,&center_num);
+  if( info == 0)
+  {
+    ellipse_candidates = NULL;
+    (*candidates_num) = 0;
+    error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic centers");
+  }
+  //classification,å¯»æ‰¾æ¯ä¸ªç‚¹å½’å±çš„èšç±»ä¸­å¿ƒ
+  for ( int i = 0; i<pairGroupList->length; i++)
+  {
+    dis_min = DBL_MAX;
+    ind = -1;
+    for ( int j = 0; j<center_num; j++)
+    {
+      addr = 2*j;
+      dis_temp = (pairGroupList->pairGroup[i].center.x - centers[addr])*(pairGroupList->pairGroup[i].center.x - centers[addr]) + (pairGroupList->pairGroup[i].center.y - centers[addr+1])*(pairGroupList->pairGroup[i].center.y - centers[addr+1]);
+      if(dis_temp < dis_min)
+      {
+        dis_min = dis_temp;
+        ind = j; //record the nearest center's index
+      }
+    }
+    buffer_temp[i] = ind; //æ­¤å¤„å€Ÿç”¨buffer2æ¥è®°ä¸‹ç¬¬iä¸ªåˆå§‹æ¤­åœ†å¯¹åº”ç¬¬indä¸ªæ¤­åœ†èšç±»ä¸­å¿ƒ
+  }
+  //å°†åˆ†ç±»ç»“æœæŒ‰é¡ºåºå­˜åˆ°bufferXY,bufferPhi,bufferABä¸­ï¼Œä¸”bufferIndexes[i]å­˜ç€ç¬¬iä¸ªèšç±»ä¸­å¿ƒçš„èµ·å§‹ç´¢å¼•ä½ç½®å’Œé•¿åº¦
+  memset(bufferIndexes,0,sizeof(point2i)*pairGroupList->length);
+  ind = 0;//æ¸…é›¶ï¼Œæ ·æœ¬ç‚¹èµ·å§‹ä½ç½®ï¼Œç´¢å¼•ä½ç½®æ˜¯ind*2,åˆ†åŒºçš„åŸºå€
+  for ( int i = 0; i<center_num; i++)
+  {
+    bufferIndexes[i].x = ind; 
+    for ( int j = 0; j<pairGroupList->length; j++)
+    {
+      if ( buffer_temp[j] == i)
+      {
+        addr = ind*2;//åˆ‡è®°é•¿çŸ­åŠè½´æ˜¯ä¸€ç»„ä¸€ç»„å¯¸å‚¨çš„ï¼Œéœ€è¦ x 2
+        addr2 = bufferIndexes[i].y*2;
+        bufferPhi[ind+bufferIndexes[i].y] = pairGroupList->pairGroup[j].phi;
+        bufferAB[addr+addr2] = pairGroupList->pairGroup[j].axis.x;
+        bufferAB[addr+addr2+1] = pairGroupList->pairGroup[j].axis.y;
+        bufferIndexes[i].y++;//ç¬¬iä¸ªèšç±»ä¸­å¿ƒå‘¨å›´çš„ç‚¹æ•°é‡åŠ 1
+      }
+    }
+    if(bufferIndexes[i].y == 0)//èšç±»ä¸­å¿ƒå‘¨å›´æ²¡æœ‰é è¿‘çš„ç‚¹
+    {
+      error("generateEllipseCandidates, no XY points near to the clustering center");
+    }
+    ind += bufferIndexes[i].y;
+  }
+  //cout<<"2D cluster centers over"<<endl;
+  //å¯¹æ¯ä¸€ä¸ªæ¤­åœ†ä¸­å¿ƒçš„å‘¨å›´çš„ç‚¹è¿›è¡Œå€¾è§’èšç±»
+  //ç¬¬iä¸ªæ¤­åœ†èšç±»ä¸­å¿ƒï¼Œå…¶é‚»è¿‘ç‚¹çš„ç´¢å¼•èŒƒå›´æ˜¯ï¼šbufferIndexs[i].x ~ (bufferIndex[i].x + bufferIndex[i].y-1)
+  for ( int i = 0; i<center_num; i++)
+  {
+    
 
-		double * phi_pointer_temp = bufferPhi+bufferIndexes[i].x;//Çã½ÇÖ¸Õë
-		double * ab_pointer_temp = bufferAB+bufferIndexes[i].x*2;//³¤¶Ì°ëÖáµÄÖ¸Õë,¼Ç×¡ x 2
-		info = cluster1DDatas(phi_pointer_temp, bufferIndexes[i].y, 0.0873, phis, &phi_num);//¶Ôphi¾ÛÀà, pi/180*5 = 0.0873, 5¡ãÎó²î
-		if (info == 0) //²»¶®ÎªÊ²Ã´£¬¾ÛÀàÖĞĞÄcenters[i]µÄÖÜÎ§¿ÉÄÜÃ»ÓĞ×î¿¿½üËüµÄµã,ÊıÁ¿bufferIndexes[i].y = 0
-		{ 
-			//cout<<"generateEllipseCandidates, cluster2DPoints, error in clustering elliptic phis"<<endl;
-			continue;
-			//error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic phis");
-		}
-		//classification,Ñ°ÕÒÃ¿¸öµã¹éÊôµÄ¾ÛÀàÖĞĞÄ
-		for ( int j = 0; j<bufferIndexes[i].y; j++ )
-		{
-			dis_min = DBL_MAX;
-			ind = -1;
-			for ( int k = 0; k<phi_num; k++)
-			{
-				dis_temp = (*(phi_pointer_temp+j)-phis[k]) * (*(phi_pointer_temp+j)-phis[k]);
-				if(dis_temp < dis_min)
-				{
-					dis_min = dis_temp;
-					ind = k;//record the nearest phi's index
-				}
-			}
-			buffer_temp[j] = ind;
-		}
-		//½«·ÖÀà½á¹û°´Ë³Ğò´æ´¢µ½buffer2ABÖĞ£¬ÇÒbuffer2Indexes[j].x¶ÔÓ¦µÚi¸öphiµÄ¾ÛÀàÖĞĞÄÆğÊ¼µã£¬buffer2Indexes[j].y¶ÔÓ¦ÊıÁ¿(³¤¶È)
-		memset(buffer2Indexes,0,sizeof(point2i)*bufferIndexes[i].y);
-		ind = 0;
-		for ( int j = 0; j<phi_num; j++)
-		{
-			buffer2Indexes[j].x = ind;//ÆğÊ¼µã
-			for ( int k = 0; k<bufferIndexes[i].y; k++)
-			{
-				if ( buffer_temp[k] == j)
-				{
-					addr = ind*2;
-					addr2 = buffer2Indexes[j].y*2;
-					buffer2AB[addr+addr2] = *(ab_pointer_temp+k*2);
-					buffer2AB[addr+addr2+1] = *(ab_pointer_temp+k*2+1);
-					buffer2Indexes[j].y++;//³¤¶È¼Ó1
-				}
-			}
-			ind += buffer2Indexes[j].y;
-		}
-		for ( int j = 0; j<phi_num; j++ )
-		{
-			double * ab_pointer_temp2 = buffer2AB+buffer2Indexes[j].x*2; //³¤¶Ì°ëÖáµÄÖ¸Õë,¼Ç×¡ x 2
-			info = cluster2DPoints(ab_pointer_temp2, buffer2Indexes[j].y, distance_tolerance, axises, &axis_num);
-			if (info == 0) //²»¶®ÎªÊ²Ã´£¬¾ÛÀàÖĞĞÄphi_jµÄÖÜÎ§¿ÉÄÜÃ»ÓĞ×î¿¿½üËüµÄµã,ÊıÁ¿buffer2Indexes[j].y = 0
-			{   
-				//cout<<"generateEllipseCandidates, cluster2DPoints, error in clustering elliptic axises"<<endl;
-				continue;
-				//error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic axises");
-			}
-			//½«ºòÑ¡ÍÖÔ²ÖØĞ´µ½bufferXY,bufferPhi,bufferABÀïÃæ, ºòÑ¡ÍÖÔ²ÊıÁ¿(*candidates_num)++
-			for ( int k = 0; k<axis_num; k++)
-			{
-				addr = (*candidates_num)*2;
-				bufferXY[addr] = centers[i*2];
-				bufferXY[addr+1] = centers[i*2+1];
-				bufferPhi[(*candidates_num)] = phis[j];
-				bufferAB[addr] = axises[k*2];
-				bufferAB[addr+1] = axises[k*2+1];
-				(*candidates_num)++;
-			}
-			free(axises);//cluster2DPointsÑÏ¸ñÒªÇó£¬ÓÃÍêaxisesºó£¬ĞèÒªÊÍ·Åº¯ÊıÄÚ²¿ÉêÇëµÄÄÚ´æ
-		}
-		free(phis);//cluster1DDatasÑÏ¸ñÒªÇó£¬ÓÃÍêphisºó£¬ĞèÒªÊÍ·Åº¯ÊıÄÚ²¿ÉêÇëµÄÄÚ´æ
-	}
-	free(centers);//cluster2DPointsÑÏ¸ñÒªÇó£¬ÓÃÍêcentersºó£¬ĞèÒªÊÍ·Åº¯ÊıÄÚ²¿ÉêÇëµÄÄÚ´æ
-	//ÊÍ·ÅÔÚº¯Êı¿ªÍ·ÉêÇëµÄ²¿·ÖÄÚ´æ
-	free(buffer_temp); //´Ë´¦ÊÍ·Å³öÎÊÌâ
-	free(buffer2Indexes);
-	free(buffer2AB);
-	free(bufferIndexes);
-	ellipse_candidates = (double*)malloc(sizeof(double)*(*candidates_num)*5);
-	for ( int i = 0; i < (*candidates_num); i++ )
-	{
-		addr = 2*i;
-		ellipse_candidates[i*5]  = bufferXY[addr];
-		ellipse_candidates[i*5+1]= bufferXY[addr+1];
-		ellipse_candidates[i*5+2]= bufferAB[addr];
-		ellipse_candidates[i*5+3]= bufferAB[addr+1];
-		ellipse_candidates[i*5+4]= bufferPhi[i];
-	}
-	//ÊÍ·ÅÔÚº¯Êı¿ªÍ·ÉêÇëµÄÄÚ´æ
-	free(bufferAB);
-	free(bufferPhi);
-	free(bufferXY);
-	if((*candidates_num)<= 0)
-	{
-		*candidates_num = 0;
-		ellipse_candidates = NULL;
-		//cout<<"no any candidates generated!"<<endl;
-	}
+    double * phi_pointer_temp = bufferPhi+bufferIndexes[i].x;//å€¾è§’æŒ‡é’ˆ
+    double * ab_pointer_temp = bufferAB+bufferIndexes[i].x*2;//é•¿çŸ­åŠè½´çš„æŒ‡é’ˆ,è®°ä½ x 2
+    info = cluster1DDatas(phi_pointer_temp, bufferIndexes[i].y, 0.0873, phis, &phi_num);//å¯¹phièšç±», pi/180*5 = 0.0873, 5Â°è¯¯å·®
+    if (info == 0) //ä¸æ‡‚ä¸ºä»€ä¹ˆï¼Œèšç±»ä¸­å¿ƒcenters[i]çš„å‘¨å›´å¯èƒ½æ²¡æœ‰æœ€é è¿‘å®ƒçš„ç‚¹,æ•°é‡bufferIndexes[i].y = 0
+    { 
+      //cout<<"generateEllipseCandidates, cluster2DPoints, error in clustering elliptic phis"<<endl;
+      continue;
+      //error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic phis");
+    }
+    //classification,å¯»æ‰¾æ¯ä¸ªç‚¹å½’å±çš„èšç±»ä¸­å¿ƒ
+    for ( int j = 0; j<bufferIndexes[i].y; j++ )
+    {
+      dis_min = DBL_MAX;
+      ind = -1;
+      for ( int k = 0; k<phi_num; k++)
+      {
+        dis_temp = (*(phi_pointer_temp+j)-phis[k]) * (*(phi_pointer_temp+j)-phis[k]);
+        if(dis_temp < dis_min)
+        {
+          dis_min = dis_temp;
+          ind = k;//record the nearest phi's index
+        }
+      }
+      buffer_temp[j] = ind;
+    }
+    //å°†åˆ†ç±»ç»“æœæŒ‰é¡ºåºå­˜å‚¨åˆ°buffer2ABä¸­ï¼Œä¸”buffer2Indexes[j].xå¯¹åº”ç¬¬iä¸ªphiçš„èšç±»ä¸­å¿ƒèµ·å§‹ç‚¹ï¼Œbuffer2Indexes[j].yå¯¹åº”æ•°é‡(é•¿åº¦)
+    memset(buffer2Indexes,0,sizeof(point2i)*bufferIndexes[i].y);
+    ind = 0;
+    for ( int j = 0; j<phi_num; j++)
+    {
+      buffer2Indexes[j].x = ind;//èµ·å§‹ç‚¹
+      for ( int k = 0; k<bufferIndexes[i].y; k++)
+      {
+        if ( buffer_temp[k] == j)
+        {
+          addr = ind*2;
+          addr2 = buffer2Indexes[j].y*2;
+          buffer2AB[addr+addr2] = *(ab_pointer_temp+k*2);
+          buffer2AB[addr+addr2+1] = *(ab_pointer_temp+k*2+1);
+          buffer2Indexes[j].y++;//é•¿åº¦åŠ 1
+        }
+      }
+      ind += buffer2Indexes[j].y;
+    }
+    for ( int j = 0; j<phi_num; j++ )
+    {
+      double * ab_pointer_temp2 = buffer2AB+buffer2Indexes[j].x*2; //é•¿çŸ­åŠè½´çš„æŒ‡é’ˆ,è®°ä½ x 2
+      info = cluster2DPoints(ab_pointer_temp2, buffer2Indexes[j].y, distance_tolerance, axises, &axis_num);
+      if (info == 0) //ä¸æ‡‚ä¸ºä»€ä¹ˆï¼Œèšç±»ä¸­å¿ƒphi_jçš„å‘¨å›´å¯èƒ½æ²¡æœ‰æœ€é è¿‘å®ƒçš„ç‚¹,æ•°é‡buffer2Indexes[j].y = 0
+      {   
+        //cout<<"generateEllipseCandidates, cluster2DPoints, error in clustering elliptic axises"<<endl;
+        continue;
+        //error("generateEllipseCandidates, cluster2DPoints, error in clustering elliptic axises");
+      }
+      //å°†å€™é€‰æ¤­åœ†é‡å†™åˆ°bufferXY,bufferPhi,bufferABé‡Œé¢, å€™é€‰æ¤­åœ†æ•°é‡(*candidates_num)++
+      for ( int k = 0; k<axis_num; k++)
+      {
+        addr = (*candidates_num)*2;
+        bufferXY[addr] = centers[i*2];
+        bufferXY[addr+1] = centers[i*2+1];
+        bufferPhi[(*candidates_num)] = phis[j];
+        bufferAB[addr] = axises[k*2];
+        bufferAB[addr+1] = axises[k*2+1];
+        (*candidates_num)++;
+      }
+      free(axises);//cluster2DPointsä¸¥æ ¼è¦æ±‚ï¼Œç”¨å®Œaxisesåï¼Œéœ€è¦é‡Šæ”¾å‡½æ•°å†…éƒ¨ç”³è¯·çš„å†…å­˜
+    }
+    free(phis);//cluster1DDatasä¸¥æ ¼è¦æ±‚ï¼Œç”¨å®Œphisåï¼Œéœ€è¦é‡Šæ”¾å‡½æ•°å†…éƒ¨ç”³è¯·çš„å†…å­˜
+  }
+  free(centers);//cluster2DPointsä¸¥æ ¼è¦æ±‚ï¼Œç”¨å®Œcentersåï¼Œéœ€è¦é‡Šæ”¾å‡½æ•°å†…éƒ¨ç”³è¯·çš„å†…å­˜
+  //é‡Šæ”¾åœ¨å‡½æ•°å¼€å¤´ç”³è¯·çš„éƒ¨åˆ†å†…å­˜
+  free(buffer_temp); //æ­¤å¤„é‡Šæ”¾å‡ºé—®é¢˜
+  free(buffer2Indexes);
+  free(buffer2AB);
+  free(bufferIndexes);
+  ellipse_candidates = (double*)malloc(sizeof(double)*(*candidates_num)*5);
+  for ( int i = 0; i < (*candidates_num); i++ )
+  {
+    addr = 2*i;
+    ellipse_candidates[i*5]  = bufferXY[addr];
+    ellipse_candidates[i*5+1]= bufferXY[addr+1];
+    ellipse_candidates[i*5+2]= bufferAB[addr];
+    ellipse_candidates[i*5+3]= bufferAB[addr+1];
+    ellipse_candidates[i*5+4]= bufferPhi[i];
+  }
+  //é‡Šæ”¾åœ¨å‡½æ•°å¼€å¤´ç”³è¯·çš„å†…å­˜
+  free(bufferAB);
+  free(bufferPhi);
+  free(bufferXY);
+  if((*candidates_num)<= 0)
+  {
+    *candidates_num = 0;
+    ellipse_candidates = NULL;
+    //cout<<"no any candidates generated!"<<endl;
+  }
 }
 
 
@@ -4875,185 +4876,159 @@ void generateEllipseCandidates( PairGroupList * pairGroupList, double distance_t
 
 //==========================================END=======================================================================
 /**
-ÊäÈë£º
-prhs[0]: ÊäÈëµÄ»Ò¶ÈÍ¼Ïñ£¬µ¥Í¨µÀ£¬´óĞ¡ÊÇimgy x imgx
-prhs[1]: ±ßÔµÌáÈ¡Ñ¡Ôñ£¬1 canny; 2 sobel
-prhs[2]: ¼ì²âÖ¸¶¨µÄÍÖÔ²¼«ĞÔ
-Êä³ö£º
-plhs[0]: ºòÑ¡ÍÖÔ²×éºÏ(xi,yi,ai,bi,phi_i)', 5 x m
-plhs[1]: ±ßÔµÍ¼£¬´óĞ¡ÊÇimgy x imgx£¬Éè±ßÔµµã×ÜÊıÎª edgepix_n. ¶şÖµ»¯£¬0 »òÕß 255
-plhs[2]: ±ßÔµµãµÄÌİ¶ÈÏòÁ¿¾ØÕó£¬´óĞ¡ÊÇ 2 x edgepix_n, (cos(theta_rad),sin(theta_rad))'...
-plhs[3]: Ïß¶ÎÍ¼£¬´óĞ¡ÊÇimgy x imgx 
+è¾“å…¥ï¼š
+prhs[0]: è¾“å…¥çš„ç°åº¦å›¾åƒï¼Œå•é€šé“ï¼Œå¤§å°æ˜¯imgy x imgx
+prhs[1]: è¾¹ç¼˜æå–é€‰æ‹©ï¼Œ1 canny; 2 sobel
+prhs[2]: æ£€æµ‹æŒ‡å®šçš„æ¤­åœ†ææ€§
+è¾“å‡ºï¼š
+plhs[0]: å€™é€‰æ¤­åœ†ç»„åˆ(xi,yi,ai,bi,phi_i)', 5 x m
+plhs[1]: è¾¹ç¼˜å›¾ï¼Œå¤§å°æ˜¯imgy x imgxï¼Œè®¾è¾¹ç¼˜ç‚¹æ€»æ•°ä¸º edgepix_n. äºŒå€¼åŒ–ï¼Œ0 æˆ–è€… 255
+plhs[2]: è¾¹ç¼˜ç‚¹çš„æ¢¯åº¦å‘é‡çŸ©é˜µï¼Œå¤§å°æ˜¯ 2 x edgepix_n, (cos(theta_rad),sin(theta_rad))'...
+plhs[3]: çº¿æ®µå›¾ï¼Œå¤§å°æ˜¯imgy x imgx 
 */
 /*
-compile£º
+compileï¼š
 mex generateEllipseCandidates.cpp -IF:\OpenCV\opencv2.4.9\build\include -IF:\OpenCV\opencv2.4.9\build\include\opencv -IF:\OpenCV\opencv2.4.9\build\include\opencv2 -LF:\OpenCV\opencv2.4.9\build\x64\vc11\lib -IF:\Matlab\settlein\extern\include -LF:\Matlab\settlein\extern\lib\win64\microsoft -lopencv_core249 -lopencv_highgui249 -lopencv_imgproc249 -llibmwlapack.lib
 */
 //======================================MEX function==================================================================
 
 void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-	if(nrhs!=3) 
-      mexErrMsgIdAndTxt( "MATLAB:revord:invalidNumInputs","One input required.");
-    else if(nlhs > 4) 
-      mexErrMsgIdAndTxt( "MATLAB:revord:maxlhs","Too many output arguments.");
-	uchar * inputimg = (uchar*)mxGetData(prhs[0]);
-	int imgy,imgx;
-	int edge_process_select = (int)mxGetScalar(prhs[1]);//±ßÔµÌáÈ¡Ñ¡Ôñ£¬1 canny; 2 sobel
-	int specified_polarity  = (int)mxGetScalar(prhs[2]);//1,Ö¸¶¨¼ì²âµÄÍÖÔ²¼«ĞÔÒªÎªÕı; -1Ö¸¶¨¼«ĞÔÎª¸º; 0±íÊ¾Á½ÖÖ¼«ĞÔÍÖÔ²¶¼¼ì²â
-	imgy = (int)mxGetM(prhs[0]);
-	imgx = (int)mxGetN(prhs[0]);
-	double *data=(double*)malloc(imgy*imgx*sizeof(double));//½«ÊäÈë¾ØÕóÖĞµÄÍ¼ÏñÊı¾İ×ª´æµ½Ò»Î¬Êı×éÖĞ
+    if(nrhs!=3)
+        mexErrMsgIdAndTxt( "MATLAB:revord:invalidNumInputs","One input required.");
+    else if(nlhs > 4)
+        mexErrMsgIdAndTxt( "MATLAB:revord:maxlhs","Too many output arguments.");
+    uchar * inputimg = (uchar*)mxGetData(prhs[0]);
+    int imgy,imgx;
+    int edge_process_select = (int)mxGetScalar(prhs[1]);//è¾¹ç¼˜æå–é€‰æ‹©ï¼Œ1 canny; 2 sobel
+    int specified_polarity  = (int)mxGetScalar(prhs[2]);//1,æŒ‡å®šæ£€æµ‹çš„æ¤­åœ†ææ€§è¦ä¸ºæ­£; -1æŒ‡å®šææ€§ä¸ºè´Ÿ; 0è¡¨ç¤ºä¸¤ç§ææ€§æ¤­åœ†éƒ½æ£€æµ‹
+    imgy = (int)mxGetM(prhs[0]);
+    imgx = (int)mxGetN(prhs[0]);
+    double *data=(double*)malloc(imgy*imgx*sizeof(double));//å°†è¾“å…¥çŸ©é˜µä¸­çš„å›¾åƒæ•°æ®è½¬å­˜åˆ°ä¸€ç»´æ•°ç»„ä¸­
     for(int c=0;c<imgx;c++)
     {
         for(int r=0;r<imgy;r++)
         {
-           data[c+r*imgx]=inputimg[r+c*imgy];              
-        }    
+            data[c+r*imgx]=inputimg[r+c*imgy];
+        }
     }
-	int n;//Ïß¶ÎÊıÁ¿
-	//int new_n;
-	std::vector<std::vector<int>> groups;
-	double * coverages;
-	int * reg;
-	int reg_x;
-	int reg_y;
+    int n;//çº¿æ®µæ•°é‡
+    //int new_n;
+    std::vector<std::vector<int>> groups;
+    double * coverages;
+    int * reg;
+    int reg_x;
+    int reg_y;
     double* out=mylsd(&n, data,imgx,imgy,&reg,&reg_x,&reg_y);
-	groupLSs(out,n,reg,reg_x,reg_y,&groups);//·Ö×é
-	free(reg); //ÊÍ·ÅÄÚ´æ
-	calcuGroupCoverage(out,n,groups,coverages);//¼ÆËãÃ¿¸ö×éµÄ¸²¸Ç½Ç¶È
+    groupLSs(out,n,reg,reg_x,reg_y,&groups);//åˆ†ç»„
+    free(reg); //é‡Šæ”¾å†…å­˜
+    calcuGroupCoverage(out,n,groups,coverages);//è®¡ç®—æ¯ä¸ªç»„çš„è¦†ç›–è§’åº¦
 
     printf("The number of output arc-support line segments: %i\n",n);
-	printf("The number of arc-support groups:%i\n",groups.size());
-	/*int groups_t = 0;
-	for (int i = 0; i<groups.size(); i++)
-	{ 
-		groups_t+= groups[i].size();
-	}
-	printf("Groups' total ls num:%i\n",groups_t);*/
+    printf("The number of arc-support groups:%i\n",groups.size());
+  /*int groups_t = 0;
+  for (int i = 0; i<groups.size(); i++)
+  { 
+    groups_t+= groups[i].size();
+  }
+  printf("Groups' total ls num:%i\n",groups_t);*/
 
-	 image_double angles;
-	 if(edge_process_select == 1)
-		calculateGradient2(data,imgx,imgy,&angles); //version2, sobel; version 3 canny
-	 else 
-		 calculateGradient3(data,imgx,imgy,&angles); //version2, sobel; version 3 canny
-	 PairGroupList * pairGroupList;
-	 double distance_tolerance = 2;//max( 2.0, 0.005*min(angles->xsize,angles->ysize) ); // 0.005%*min(xsize,ysize)
-	 double * candidates; //ºòÑ¡ÍÖÔ²
-	 double * candidates_out;//Êä³öºòÑ¡ÍÖÔ²Ö¸Õë
-	 int  candidates_num = 0;//ºòÑ¡ÍÖÔ²ÊıÁ¿
-	 //rejectShortLines(out,n,&new_n);
-	 pairGroupList = getValidInitialEllipseSet(out,n,&groups,coverages,angles,distance_tolerance,specified_polarity);
-	 if(pairGroupList != NULL)
-	 {
-		printf("The number of initial ellipses£º%i \n",pairGroupList->length);
-		generateEllipseCandidates(pairGroupList, distance_tolerance, candidates, &candidates_num);
-		printf("The number of ellipse candidates: %i \n",candidates_num);
-		
-		plhs[0] = mxCreateDoubleMatrix(5,candidates_num,mxREAL);
-		candidates_out = (double*)mxGetPr(plhs[0]);
-		//ºòÑ¡Ô²×éºÏ(xi,yi,ai,bi,phi_i)', 5 x candidates_num, ¸´ÖÆµ½¾ØÕócandidates_outÖĞ
-		memcpy(candidates_out,candidates,sizeof(double)*5*candidates_num);
+    image_double angles;
+    if(edge_process_select == 1)
+        calculateGradient2(data,imgx,imgy,&angles); //version2, sobel; version 3 canny
+    else
+        calculateGradient3(data,imgx,imgy,&angles); //version2, sobel; version 3 canny
+    PairGroupList * pairGroupList;
+    double distance_tolerance = 2;//max( 2.0, 0.005*min(angles->xsize,angles->ysize) ); // 0.005%*min(xsize,ysize)
+    double * candidates; //å€™é€‰æ¤­åœ†
+    double * candidates_out;//è¾“å‡ºå€™é€‰æ¤­åœ†æŒ‡é’ˆ
+    int  candidates_num = 0;//å€™é€‰æ¤­åœ†æ•°é‡
+    //rejectShortLines(out,n,&new_n);
+    pairGroupList = getValidInitialEllipseSet(out,n,&groups,coverages,angles,distance_tolerance,specified_polarity);
+    if(pairGroupList != NULL)
+    {
+        printf("The number of initial ellipsesï¼š%i \n",pairGroupList->length);
+        generateEllipseCandidates(pairGroupList, distance_tolerance, candidates, &candidates_num);
+        printf("The number of ellipse candidates: %i \n",candidates_num);
+    
+        plhs[0] = mxCreateDoubleMatrix(5,candidates_num,mxREAL);
+        candidates_out = (double*)mxGetPr(plhs[0]);
+        //å€™é€‰åœ†ç»„åˆ(xi,yi,ai,bi,phi_i)', 5 x candidates_num, å¤åˆ¶åˆ°çŸ©é˜µcandidates_outä¸­
+        memcpy(candidates_out,candidates,sizeof(double)*5*candidates_num);
 
-		freePairGroupList(pairGroupList);
-		free(candidates);
-	 }
-	 else
-	 {
-		 printf("The number of initial ellipses£º%i \n",0);
-		 double *candidates_out;
-		 plhs[0] = mxCreateDoubleMatrix(5,1,mxREAL);
-		 candidates_out = (double*)mxGetPr(plhs[0]);
-		 candidates_out[0] = candidates_out[1] = candidates_out[2] = candidates_out[3] = candidates_out[4] = 0;
-	 }
-	 uchar *edgeimg_out;
-	 unsigned long edge_pixels_total_num = 0;//±ßÔµ×ÜÏñËØ
-	 double *gradient_vec_out;
-	 plhs[1] = mxCreateNumericMatrix(imgy,imgx,mxUINT8_CLASS,mxREAL);
-	 edgeimg_out = (uchar*)mxGetData(plhs[1]);
-	 //½«±ßÔµÍ¼¸´ÖÆµ½¾ØÕóedgeimg_outÖĞ
-	 //½«Ìİ¶ÈÏòÁ¿´æµ½¾ØÕógradient_vec_outÖĞ
-	 unsigned long addr,g_cnt = 0;
-	 for ( int c = 0; c < imgx; c++ )
-		 for ( int r = 0; r < imgy; r++)
-		 {
-			 addr = r*imgx+c;
-			 if(angles->data[addr] == NOTDEF)
-				 edgeimg_out[c*imgy+r] = 0;
-			 else
-			 {
-				 edgeimg_out[c*imgy+r] = 255;//Îª±ßÔµµã£¬¸³ÖµÎª°×É«
-				 //------------------------------------------------
-				 edge_pixels_total_num++;
-			 }
-		 }
-	 printf("edge pixel number: %i\n",edge_pixels_total_num);
-	//ÉêÇëedge_pixels_total_num x 2 À´±£´æÃ¿Ò»¸ö±ßÔµµãµÄÌİ¶ÈÏòÁ¿£¬ÒÔÁĞÎªÓÅÏÈ£¬·ûºÏmatlabµÄÏ°¹ß
-	 plhs[2] = mxCreateDoubleMatrix(2,edge_pixels_total_num,mxREAL);
-	 gradient_vec_out = (double*)mxGetPr(plhs[2]);
-	  for ( int c = 0; c < imgx; c++ )
-		 for ( int r = 0; r < imgy; r++)
-		 {
-			 addr = r*imgx+c;
-			 if(angles->data[addr] != NOTDEF)
-			 {
-				 gradient_vec_out[g_cnt++] = cos(angles->data[addr]);
-				 gradient_vec_out[g_cnt++] = sin(angles->data[addr]);
-			 }
-		 }
-	 //---------------------------------------------------------------------
-	//Êä³öÏß¶Î¼ì²âµÄÍ¼Ïñ
-	if(nlhs == 4)
-	{
-		Mat ls_mat = Mat::zeros(imgy,imgx,CV_8UC1);
-		for ( int i = 0; i<n ; i++)//draw lines
-		{
-		  Point2d p1(out[8*i],out[8*i+1]),p2(out[8*i+2],out[8*i+3]);
-		  line(ls_mat,p1,p2,Scalar(255,0,0));
-		}
-		if(candidates_num > 0)//draw ellipses
-		{
-			for ( int i = 0; i<candidates_num; i++)
-				ellipse(ls_mat,cv::Point((int)candidates_out[i*5],(int)candidates_out[i*5+1]),cv::Size(candidates_out[i*5+2],candidates_out[i*5+3]),candidates_out[i*5+4]*180/M_PI,0,360,(Scalar(255,0,0)),1);
-		}
-		plhs[3] = mxCreateDoubleMatrix(imgy,imgx,mxREAL);
-		double * ls_img_out = (double*)mxGetPr(plhs[3]);
-		//memcpy(ls_out_mat,ls_mat.data ,sizeof(unsigned char)*M*N);
-		for (int i = 0; i<imgx; i++)
-			for (int j = 0; j<imgy;j++)
-				ls_img_out[i*imgy+j]=ls_mat.data[j*imgx+i];
-	}
-	//---------------------------------------------------------------------
-	//ÕâÀïµÄfreeÊÇÊÍ·Å³ÌĞòÖĞÓÃÓÚ²úÉúºòÑ¡Ô²ËùÓÃµ½µÄÒ»ÏµÁĞÄÚ´æ
-	free(data);
-	free(coverages);
-	free(out);
-	free_image_double(angles);
-
-}
-
-
-
-
-
-
-
-
-
-
-/*
-void mexFunction(int nlhs, mxArray * plhs[], int nrhs, const mxArray * prhs[])
-{
-	int m = mxGetM(prhs[0]);
-	int n = mxGetN(prhs[0]);
-	double * p = (double*)mxGetData(prhs[0]);
-	int sum = 0;
-	for (int c = 0; c<n; c++)
-		for ( int r = 0; r<m; r++)
-			sum += p[c*m+r];
-	plhs[0] = mxCreateDoubleMatrix(1,1,mxREAL);
-	double *pout = mxGetPr(plhs[0]);
-	*pout = sum;
+        freePairGroupList(pairGroupList);
+        free(candidates);
+   }
+   else
+   {
+        printf("The number of initial ellipsesï¼š%i \n",0);
+        double *candidates_out;
+        plhs[0] = mxCreateDoubleMatrix(5,1,mxREAL);
+        candidates_out = (double*)mxGetPr(plhs[0]);
+        candidates_out[0] = candidates_out[1] = candidates_out[2] = candidates_out[3] = candidates_out[4] = 0;
+   }
+   uchar *edgeimg_out;
+   unsigned long edge_pixels_total_num = 0;//è¾¹ç¼˜æ€»åƒç´ 
+   double *gradient_vec_out;
+   plhs[1] = mxCreateNumericMatrix(imgy,imgx,mxUINT8_CLASS,mxREAL);
+   edgeimg_out = (uchar*)mxGetData(plhs[1]);
+   //å°†è¾¹ç¼˜å›¾å¤åˆ¶åˆ°çŸ©é˜µedgeimg_outä¸­
+   //å°†æ¢¯åº¦å‘é‡å­˜åˆ°çŸ©é˜µgradient_vec_outä¸­
+   unsigned long addr,g_cnt = 0;
+   for ( int c = 0; c < imgx; c++ )
+     for ( int r = 0; r < imgy; r++)
+     {
+       addr = r*imgx+c;
+       if(angles->data[addr] == NOTDEF)
+         edgeimg_out[c*imgy+r] = 0;
+       else
+       {
+         edgeimg_out[c*imgy+r] = 255;//ä¸ºè¾¹ç¼˜ç‚¹ï¼Œèµ‹å€¼ä¸ºç™½è‰²
+         //------------------------------------------------
+         edge_pixels_total_num++;
+       }
+     }
+   printf("edge pixel number: %i\n",edge_pixels_total_num);
+  //ç”³è¯·edge_pixels_total_num x 2 æ¥ä¿å­˜æ¯ä¸€ä¸ªè¾¹ç¼˜ç‚¹çš„æ¢¯åº¦å‘é‡ï¼Œä»¥åˆ—ä¸ºä¼˜å…ˆï¼Œç¬¦åˆmatlabçš„ä¹ æƒ¯
+   plhs[2] = mxCreateDoubleMatrix(2,edge_pixels_total_num,mxREAL);
+   gradient_vec_out = (double*)mxGetPr(plhs[2]);
+    for ( int c = 0; c < imgx; c++ )
+     for ( int r = 0; r < imgy; r++)
+     {
+       addr = r*imgx+c;
+       if(angles->data[addr] != NOTDEF)
+       {
+         gradient_vec_out[g_cnt++] = cos(angles->data[addr]);
+         gradient_vec_out[g_cnt++] = sin(angles->data[addr]);
+       }
+     }
+   //---------------------------------------------------------------------
+  //è¾“å‡ºçº¿æ®µæ£€æµ‹çš„å›¾åƒ
+  if(nlhs == 4)
+  {
+    Mat ls_mat = Mat::zeros(imgy,imgx,CV_8UC1);
+    for ( int i = 0; i<n ; i++)//draw lines
+    {
+      Point2d p1(out[8*i],out[8*i+1]),p2(out[8*i+2],out[8*i+3]);
+      line(ls_mat,p1,p2,Scalar(255,0,0));
+    }
+    if(candidates_num > 0)//draw ellipses
+    {
+      for ( int i = 0; i<candidates_num; i++)
+        ellipse(ls_mat,cv::Point((int)candidates_out[i*5],(int)candidates_out[i*5+1]),cv::Size(candidates_out[i*5+2],candidates_out[i*5+3]),candidates_out[i*5+4]*180/M_PI,0,360,(Scalar(255,0,0)),1);
+    }
+    plhs[3] = mxCreateDoubleMatrix(imgy,imgx,mxREAL);
+    double * ls_img_out = (double*)mxGetPr(plhs[3]);
+    //memcpy(ls_out_mat,ls_mat.data ,sizeof(unsigned char)*M*N);
+    for (int i = 0; i<imgx; i++)
+      for (int j = 0; j<imgy;j++)
+        ls_img_out[i*imgy+j]=ls_mat.data[j*imgx+i];
+  }
+  //---------------------------------------------------------------------
+  //è¿™é‡Œçš„freeæ˜¯é‡Šæ”¾ç¨‹åºä¸­ç”¨äºäº§ç”Ÿå€™é€‰åœ†æ‰€ç”¨åˆ°çš„ä¸€ç³»åˆ—å†…å­˜
+  free(data);
+  free(coverages);
+  free(out);
+  free_image_double(angles);
 
 }
-*/
