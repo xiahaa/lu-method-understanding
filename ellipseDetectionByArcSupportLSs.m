@@ -24,6 +24,7 @@ function [ellipses, L, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, speci
     end
 %    figure; imshow(edge);
 %     return;
+%     figure
 %    subplot(1,2,1);imshow(edge);%show edge image
 %    subplot(1,2,2);imshow(lsimg);%show LS image
     t1 = clock;
@@ -186,7 +187,8 @@ end
 %circles:    此次检测到的圆,(x,y,z),若检测到detectnum个，则大小为detectnum x 3
 %validCandidates: list的候选圆中，如果第i个圆被检测到了或者不满足圆条件(圆周上内点数量不足)，则第i个位置为false(初始化时为true)，这样在下一个angleloop轮次验证时可以剔除掉，不必要重复验证。
 %                 validCandidates的大小为 candidate_n x 1.
-function [mylabels,labels, ellipses, validCandidates] = subEllipseDetection( list, points, normals, distance_tolerance, normal_tolerance, Tmin, angleCoverage,E,angleLoop)
+function [mylabels,labels, ellipses, validCandidates] = subEllipseDetection( list, points, normals, distance_tolerance, ...
+    normal_tolerance, Tmin, angleCoverage,E,angleLoop)
     labels = zeros(size(points, 1), 1);%边缘像素点的总数量n,n x 1
     mylabels = zeros(size(points, 1), 1);%测试
     ellipses = zeros(0, 5);
@@ -363,7 +365,7 @@ function [mylabels,labels, ellipses, validCandidates] = subEllipseDetection( lis
     end %for
 end%fun
 
-
+%% done
 function [completeness] = calcuCompleteness(x, center, tbins)
     [theta, ~] = cart2pol(x(:, 1) - center(1), x(:, 2) - center(2));%theta为(-pi,pi)的角度，num x 1
     tmin = -pi; tmax = pi;

@@ -4,7 +4,7 @@
 //
 //  Created by xiao.hu on 2020/5/19.
 //  Copyright © 2020 xiao.hu. All rights reserved.
-//
+// done, isArcsegment is very tricky
 
 #include "elsd.hpp"
 #include "utils.hpp"

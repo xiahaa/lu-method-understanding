@@ -14,7 +14,8 @@ function []  = LCS_ellipse()
 close all;
 
 %image path
-filename = './pics/666.jpg';
+filename = './pics/35.jpg';
+% filename = '/Volumes/document/fore-end/ellipse_detection/data/test_data/sample01.jpg';
 
 % parameters
 Tac = 165;

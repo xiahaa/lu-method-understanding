@@ -4,7 +4,7 @@
 //
 //  Created by xiao.hu on 2020/5/19.
 //  Copyright © 2020 xiao.hu. All rights reserved.
-//
+// done, ellipse fitting
 
 #include "ellipse_geometry.hpp"
 #include "utils.hpp"
@@ -15,13 +15,19 @@
 #include <float.h>
 #include <iostream>
 #include <stdio.h>
-#ifdef __APPLE__
-//#include <Accelerate/Accelerate.h>
-#include <clapack.h>
+
+#ifdef MEX_COMPILE
+    #include "lapack.h"  //matlab
 #else
-//#include "mex.h"
-#include "lapack.h"  //matlab
+    #ifdef __APPLE__
+//#include <Accelerate/Accelerate.h>
+        #include <clapack.h>
+    #else
+        #include "lapack.h"  // make sure you have lapack
+    #endif
 #endif
+//#include "mex.h"
+//#endif
 
 /*----------------------------------------------------------------------------*/
 /** Approximate the distance between a point and an ellipse using Rosin distance.
@@ -174,13 +180,7 @@ int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
     char JOBVR = 'V';
     double fitWork[64];
     
-    
-#ifdef __APPLE__
-    __CLPK_integer fitN = 6;
-    __CLPK_integer workLen = 64;
-    __CLPK_integer info;
-    dggev_(&JOBVL, &JOBVR, &fitN, S, &fitN, C, &fitN, alphar, alphai, beta, vl, &fitN, vr, &fitN, fitWork, &workLen, &info);
-#else
+#ifdef MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
@@ -188,7 +188,23 @@ int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
     //注意S为对称矩阵，故转置后等于本身，变成列优先，S可以不变
     dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,\
           alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+#else
+    #ifdef __APPLE__
+        __CLPK_integer fitN = 6;
+        __CLPK_integer workLen = 64;
+        __CLPK_integer info;
+        dggev_(&JOBVL, &JOBVR, &fitN, S, &fitN, C, &fitN, alphar, alphai, beta, vl, &fitN, vr, &fitN, fitWork, &workLen, &info);
+    #else
+        ptrdiff_t fitN = 6;
+        ptrdiff_t workLen = 64;
+        ptrdiff_t info;
+        //info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
+        //注意S为对称矩阵，故转置后等于本身，变成列优先，S可以不变
+        dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,\
+              alphai,beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+    #endif
 #endif
+    
     if(info == 0)
     {
         int index = -1;
@@ -227,7 +243,7 @@ int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
     return 0;
 }
 
-//input: dataxy为数据点(xi,yi),总共有datanum个
+//input: dataxy为数据点(xi,yi)d,总共有datanum个
 //output: 拟合矩阵S. 注意：S需要事先申请内存，double S[36].
 void calcuFitMatrix(point2d* dataxy, int datanum, double * S)
 {
@@ -296,18 +312,27 @@ int fitEllipse2(double * S, double* ellicoeff)
     char JOBVR = 'V';
     double fitWork[64];
     
-#ifdef __APPLE__
-    __CLPK_integer fitN = 6;
-    __CLPK_integer workLen = 64;
-    __CLPK_integer info;
-    dggev_(&JOBVL, &JOBVR, &fitN, S, &fitN, C, &fitN, alphar, alphai, beta, vl, &fitN, vr, &fitN, fitWork, &workLen, &info);
-#else
+#ifdef MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
     //info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
     dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,\
-           beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+          beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+#else
+    #ifdef __APPLE__
+        __CLPK_integer fitN = 6;
+        __CLPK_integer workLen = 64;
+        __CLPK_integer info;
+        dggev_(&JOBVL, &JOBVR, &fitN, S, &fitN, C, &fitN, alphar, alphai, beta, vl, &fitN, vr, &fitN, fitWork, &workLen, &info);
+    #else
+        ptrdiff_t fitN = 6;
+        ptrdiff_t workLen = 64;
+        ptrdiff_t info;
+        //info = LAPACKE_dggev(LAPACK_ROW_MAJOR,'N','V',6,S,6,C,6,alphar,alphai,beta,vl,6,vr,6);
+        dggev(&JOBVL,&JOBVR,&fitN,S,&fitN,C,&fitN,alphar,alphai,\
+               beta,vl,&fitN,vr,&fitN,fitWork,&workLen,&info);
+    #endif
 #endif
     
     if(info == 0)
