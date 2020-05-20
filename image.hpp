@@ -25,7 +25,7 @@ image_char new_image_char_ini( unsigned int xsize, unsigned int ysize,
                               unsigned char fill_value );
 
 image_int new_image_int(unsigned int xsize, unsigned int ysize);
-static image_int new_image_int_ini( unsigned int xsize, unsigned int ysize,
+image_int new_image_int_ini( unsigned int xsize, unsigned int ysize,
                                    int fill_value );
 
 #endif /* image_hpp */

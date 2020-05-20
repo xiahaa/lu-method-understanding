@@ -152,7 +152,7 @@ image_int new_image_int(unsigned int xsize, unsigned int ysize)
 /** Create a new image_int of size 'xsize' times 'ysize',
  initialized to the value 'fill_value'.
  */
-static image_int new_image_int_ini( unsigned int xsize, unsigned int ysize,
+image_int new_image_int_ini( unsigned int xsize, unsigned int ysize,
                                    int fill_value )
 {
     image_int image = new_image_int(xsize,ysize); /* create image */
@@ -164,3 +164,5 @@ static image_int new_image_int_ini( unsigned int xsize, unsigned int ysize,
     
     return image;
 }
+
+

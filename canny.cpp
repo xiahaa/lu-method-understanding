@@ -14,6 +14,12 @@
 #include <limits.h>
 #include <float.h>
 #include <iostream>
+#include "opencv2/core/core.hpp"
+//#include "opencv2/features2d/features2d.hpp"
+//#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/opencv.hpp"
+
+using namespace cv;
 
 //=============================================================================
 //需要包含如下头文件
@@ -359,7 +365,8 @@ void Canny3(  InputArray image, OutputArray _edges,
     _sobel_y.create(src.size(), CV_16S);
     
     
-    CvMat c_src = src, c_dst = _edges.getMat();
+    CvMat c_src = src;
+    CvMat c_dst = _edges.getMat();
     CvMat c_dx = _sobel_x.getMat();
     CvMat c_dy = _sobel_y.getMat();
     

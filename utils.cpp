@@ -7,18 +7,11 @@
 //
 
 #include "utils.hpp"
-
+#include "datatype.h"
 
 //==================================================================================================
 //=============================miscellaneous functions==============================================
-inline double min(double v1,double v2)
-{
-    return (v1<v2?v1:v2);
-}
-inline double max(double v1,double v2)
-{
-    return (v1>v2?v1:v2);
-}
+
 /** Compare doubles by relative error.
  
  The resulting rounding error after floating point computations

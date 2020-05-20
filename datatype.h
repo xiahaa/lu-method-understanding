@@ -182,4 +182,56 @@ typedef struct ntuple_list_s
 
 
 
+//================================Generate Ellipse Candidates=========================================
+//匹配组对，组对的索引参数，椭圆参数
+typedef struct PairGroup_s
+{
+    point2i pairGroupInd;
+    point2d center;  //(x0,y0)
+    point2d axis;    //(a,b)
+    double  phi;     //angle of orientation
+}PairGroup;
+
+//匹配组对节点
+typedef struct PairGroupNode_s
+{
+    point2i pairGroupInd;
+    point2d center;  //(x0,y0)
+    point2d axis;    //(a,b)
+    double  phi;     //angle of orientation
+    PairGroupNode_s* next;
+}PairGroupNode;
+
+typedef struct  PairGroupList_s
+{
+    int length;
+    PairGroup * pairGroup;
+}PairGroupList;
+
+typedef struct Point2dNode_s
+{
+    point2d point;
+    Point2dNode_s * next;
+}Point2dNode;
+
+typedef struct Point3dNode_s
+{
+    point3d point;
+    Point3dNode_s * next;
+}Point3dNode;
+
+typedef struct Point5dNode_s
+{
+    point2d center;
+    point2d axis;
+    double  phi;
+    Point5dNode_s * next;
+}Point5dNode;
+
+typedef struct Point1dNode_s
+{
+    double data;
+    Point1dNode_s * next;
+}Point1dNode;
+
 #endif /* datatype_h */
