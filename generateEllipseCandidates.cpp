@@ -89,7 +89,7 @@ mex generateEllipseCandidates.cpp -IF:\OpenCV\opencv2.4.9\build\include -IF:\Ope
 //#ifdef MEX_COMPILE
 void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
-   if(nrhs!=3)
+   if(nrhs<3)
        mexErrMsgIdAndTxt( "MATLAB:revord:invalidNumInputs","One input required.");
    else if(nlhs > 4)
        mexErrMsgIdAndTxt( "MATLAB:revord:maxlhs","Too many output arguments.");
@@ -97,6 +97,13 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
    int imgy,imgx;
    int edge_process_select = (int)mxGetScalar(prhs[1]);//?????????????????????1 canny; 2 sobel
    int specified_polarity  = (int)mxGetScalar(prhs[2]);//1,????????????????????????????????????; -1??????????????????; 0?????????????????????????????????
+   int verbose = 0;
+   if (nrhs > 3)
+   {
+       verbose = (int)mxGetScalar(prhs[3]);
+       if (verbose != 0)
+           verbose = 1;
+   }
    imgy = (int)mxGetM(prhs[0]);
    imgx = (int)mxGetN(prhs[0]);
    double *data=(double*)malloc(imgy*imgx*sizeof(double));//?????????????????????????????????????????????????????????
@@ -119,8 +126,11 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
    free(reg); //????????????
    calcuGroupCoverage(out,n,groups,coverages);//??????????????????????????????, done
 
-   mexPrintf("The number of output arc-support line segments: %i\n",n);
-   mexPrintf("The number of arc-support groups:%i\n",groups.size());
+   if (verbose)
+   {
+       mexPrintf("The number of output arc-support line segments: %i\n",n);
+       mexPrintf("The number of arc-support groups:%i\n",groups.size());
+   }
    /*int groups_t = 0;
     for (int i = 0; i<groups.size(); i++)
     {
@@ -142,10 +152,15 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
    pairGroupList = getValidInitialEllipseSet(out,n,&groups,coverages,angles,distance_tolerance,specified_polarity);
    if(pairGroupList != NULL)
    {
-       mexPrintf("The number of initial ellipses???%d \n",pairGroupList->length);
+       if (verbose)
+       {
+            mexPrintf("The number of initial ellipses???%d \n",pairGroupList->length);
+       }
        generateEllipseCandidates(pairGroupList, distance_tolerance, candidates, &candidates_num);
-       mexPrintf("The number of ellipse candidates: %d \n",candidates_num);
-
+       if (verbose)
+       {
+            mexPrintf("The number of ellipse candidates: %d \n",candidates_num);
+       }
        plhs[0] = mxCreateDoubleMatrix(5,candidates_num,mxREAL);
        candidates_out = (double*)mxGetPr(plhs[0]);
        //???????????????(xi,yi,ai,bi,phi_i)', 5 x candidates_num, ???????????????candidates_out???
@@ -156,7 +171,10 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
    }
    else
    {
-       mexPrintf("The number of initial ellipses???%i \n",0);
+       if (verbose)
+       {
+            mexPrintf("The number of initial ellipses???%i \n",0);
+       }
        double *candidates_out;
        plhs[0] = mxCreateDoubleMatrix(5,1,mxREAL);
        candidates_out = (double*)mxGetPr(plhs[0]);
@@ -183,7 +201,10 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                edge_pixels_total_num++;
            }
        }
-   mexPrintf("edge pixel number: %i\n",edge_pixels_total_num);
+   if (verbose)
+   {
+       mexPrintf("edge pixel number: %i\n",edge_pixels_total_num);
+   }
    //??????edge_pixels_total_num x 2 ?????????????????????????????????????????????????????????????????????matlab?????????
    plhs[2] = mxCreateDoubleMatrix(2,edge_pixels_total_num,mxREAL);
    gradient_vec_out = (double*)mxGetPr(plhs[2]);
