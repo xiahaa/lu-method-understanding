@@ -29,14 +29,15 @@ I = imread(filename);
 
 
 %% detecting ellipses from real-world images
-[ellipses, ~, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, specified_polarity);
+% [ellipses, ~, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, specified_polarity);
+[ellipses] = ellipseDetectionLU(I, Tac, Tr, specified_polarity,false);
 
 disp('draw detected ellipses');
 drawEllipses(ellipses',I);
 % display
 ellipses(:,5) = ellipses(:,5)./pi*180;
 ellipses
-disp(['The total number of detected ellipses£º',num2str(size(ellipses,1))]);
+disp(['The total number of detected ellipses??',num2str(size(ellipses,1))]);
 
 %% draw ellipse centers
 %hold on;
