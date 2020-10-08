@@ -97,9 +97,10 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                 for ( int j = 1; j<=4; j++)
                     for ( int k = 1; k<=4; k++)//在4x4邻域内搜索
                     {
-                        xx = (int)(lines[currentLine*8+2]*0.8+j*dir_vec1.x+k*dir_vec2.x);
-                        yy = (int)(lines[currentLine*8+3]*0.8+j*dir_vec1.y+k*dir_vec2.y);
-                        if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//越界
+						// dirty code.
+                        xx = (int)(lines[currentLine*8+2]*0.8+j*dir_vec1.x+k*dir_vec2.x);// here, 0.8 because of the rescale of the raw image, yes,
+                        yy = (int)(lines[currentLine*8+3]*0.8+j*dir_vec1.y+k*dir_vec2.y);// this is because the tuple8 store the rescaled coordinates, so here needs to times 0.8
+                        if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//越界			
                             continue;
                         temp = region[yy*imgx+xx];
                         if(temp>0)//表示有线段的支持区域，在1~line_num
@@ -133,6 +134,7 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                         xx = votebin[j].x;//借用xx变量
                     }
                 }
+				// dirty code: hard threshold without any explanation
                 if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7] )//待实验调整参数值
                 {
                     if(group_up_cnt == line_num)

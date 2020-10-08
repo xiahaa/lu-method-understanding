@@ -523,7 +523,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
                             node->axis.y   = ellipara.b;
                             node->phi      = ellipara.phi;
                             node->pairGroupInd.x = i;
-                            node->pairGroupInd.y = -1;//无
+                            node->pairGroupInd.y = -1;//无 // bug????
                             if(head != NULL)
                             {
                                 tail->next = node;
@@ -552,7 +552,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
             pairGroupList->pairGroup[i].axis.y = p->axis.y;
             pairGroupList->pairGroup[i].phi = p->phi;
             pairGroupList->pairGroup[i].pairGroupInd.x = p->pairGroupInd.x;//记录组对(i,j),由groups中的第i个组和第j个组构成的匹配组产生该有效椭圆参数
-            pairGroupList->pairGroup[i].pairGroupInd.y = p->pairGroupInd.y;
+            pairGroupList->pairGroup[i].pairGroupInd.y = p->pairGroupInd.y;// never group pair ij, seems a bug???
             p = p->next;
         }
         tail->next = NULL;

@@ -1043,7 +1043,7 @@ double * LineSegmentDetection( int * n_out,
             //根据生长的区域得到近似外接矩阵的参数，矩形参数包括:起点，终点，方向theta，宽度等
             region2rect(reg,reg_size,modgrad,reg_angle,prec,p,&main_rect);
             // very tricky since what you get is a rect (ls) you want to justify it
-            // is a arc.... added xiaohu
+            // is a arc.... added xiaohu, I do not think this can actually verify if a LSD is an arc or not....
             if( FALSE == isArcSegment(reg,reg_size,&main_rect,angles,used,pol,prec,p,&rect_up,&rect_down))
                 continue;
             /* Check if the rectangle exceeds the minimal density of
