@@ -1,5 +1,7 @@
 
-%% done
+% done, take all points of ellipse, compute angle, make a histogram and count the number in each bin,
+% the completeness is actually how many bins are nonzero, times a scalar
+% 360, this is to convert to a completeness in terms of 360 coverage
 function [completeness] = calcuCompleteness(x, center, tbins)
     [theta, ~] = cart2pol(x(:, 1) - center(1), x(:, 2) - center(2));%theta??(-pi,pi)????????num x 1
     tmin = -pi; tmax = pi;

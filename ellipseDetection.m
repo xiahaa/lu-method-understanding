@@ -23,9 +23,14 @@ function [mylabels,labels, ellipses] = ellipseDetection(candidates, points, norm
         %ellipse_normals = computePointAngle(candidates(i,:),points);
         %inliers = find( labels == 0 & dRosin_square(candidates(i,:),points) <= 1 );  % +-1??????????????????
         %??????????????????????????????????????(????????????a>b),s_dx????????????points??????
+        
+        % first find points with the bbox of the ellipse
         s_dx = find( points(:,1) >= (ellipseCenter(1)-ellipseAxes(1)-1) & points(:,1) <= (ellipseCenter(1)+ellipseAxes(1)+1) & points(:,2) >= (ellipseCenter(2)-ellipseAxes(1)-1) & points(:,2) <= (ellipseCenter(2)+ellipseAxes(1)+1));
+        % filter using rosin distance
         inliers = s_dx(dRosin_square(candidates(i,:),points(s_dx,:)) <= 1);
+        % compute normals using ellipse parameters
         ellipse_normals = computePointAngle(candidates(i,:),points(inliers,:));
+        % filter again using normal consistency
         p_dot_temp = dot(normals(inliers,:), ellipse_normals, 2); %??????ellipse_normals(inliers,:)??????????ellipse_normals
         p_cnt = sum(p_dot_temp>0);%????????????????????????????????C????????????????????????????????????
         if(p_cnt > size(inliers,1)*0.5)
@@ -40,8 +45,11 @@ function [mylabels,labels, ellipses] = ellipseDetection(candidates, points, norm
         % this co called takeInliers further select the inliers, only
         % points that can be somwhow linked will be left.
         inliers = inliers(takeInliers(points(inliers, :), ellipseCenter, tbins)); 
+        % length of inliers relative to the ellipse geometric entity like
+        % Perimeter 
         support_inliers_ratio = length(inliers)/floor( pi * (1.5*sum(ellipseAxes)-sqrt(ellipseAxes(1)*ellipseAxes(2)) ));
         completeness_ratio = calcuCompleteness(points(inliers,:),ellipseCenter,tbins)/360;
+        % now we have the goodness score of the ith ellipse
         goodness(i) = sqrt(support_inliers_ratio*completeness_ratio); %goodness = sqrt(r_i * r_c)
         %{
         if( support_inliers_ratio >= Tmin && completeness_ratio >= 0.75 ) %300/360 = 0.833333333333333 and ratio great than Tmin
@@ -100,6 +108,8 @@ function [mylabels,labels, ellipses] = ellipseDetection(candidates, points, norm
                 flag = false;
                 for j = 1 : size(ellipses, 1)
                     %????????????????????????????????????????????pi*0.1 = 0.314159265358979
+                    
+                    %% check if duplicate
                     if (sqrt((C(i, 1) - ellipses(j, 1)) .^ 2 + (C(i, 2) - ellipses(j, 2)) .^ 2) <= distance_tolerance ...
                         && sqrt((C(i, 3) - ellipses(j, 3)) .^ 2 + (C(i, 4) - ellipses(j, 4)) .^ 2) <= distance_tolerance ...
                         && abs(C(i, 5) - ellipses(j, 5)) <= 0.314159265358979) %pi/10 = 18??
