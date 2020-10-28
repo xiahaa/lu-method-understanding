@@ -11,6 +11,10 @@
 
 #define MEX_COMPILE 1
 
+#define USE_AFFINE_WARP 1
+#define USE_CNSCORE 1
+
+
 #ifndef FALSE
 #define FALSE 0
 #endif /* !FALSE */
@@ -56,6 +60,9 @@ struct point2i //(or pixel).
 struct point2d
 {
     double x,y;
+
+	point2d(void) :x(0), y(0) {}
+	point2d(double a, double b) :x(a), y(b) {}
 };
 
 struct point1d1i

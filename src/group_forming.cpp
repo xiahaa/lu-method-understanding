@@ -44,7 +44,7 @@ inline double rotateAngle(double start_angle, double end_angle, int polarity)
 //注意：切记用完region,需要在函数外面手动释放region
 // todo, read this and check paper
 // region: a img with each pixel indicate whether the pixel is located on a line (i) or not
-// section III-A, done
+// section III-A, done， bug exist, votebin needs to be set to zero each time for a valid search, potential bug, but not that often met
 void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std::vector<std::vector<int>> * groups)
 {
     if(line_num == 0)
