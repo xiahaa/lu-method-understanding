@@ -13,8 +13,6 @@
 #include "rect.hpp"
 #include "ellipse_geometry.hpp"
 #include <iostream>
-#include "opencv2/highgui/highgui.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
 
 using namespace cv;
 
@@ -466,7 +464,7 @@ char checkCN(const point2d &Q11, const point2d &Q12, const point2d &Q21,
 //切记，该内存在函数内申请，用完该函数记得释放内存，调用函数freePairedSegmentList()进行释放
 
 PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, 
-	double * coverages, image_double angles, double distance_tolerance, int specified_polarity,cv::Mat &image)
+	double * coverages, image_double angles, double distance_tolerance, int specified_polarity)
 {
     //加速计算
     //int* lineInliersIndex = (int*)malloc(sizeof(int)*line_num);//如果第i条线段找到了内点，则记录其索引为j = length(supportInliers),即supportInliers.at(j)存着该线段的支持内点,没找到内点的线段对应索引为初始值-1.
@@ -574,23 +572,12 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 					span = ang1 - ang2;
 				}
 
-				//// only for debug
-				//Mat ls_mat = Mat::zeros(image.rows, image.cols, CV_8UC3);
-				//image.copyTo(ls_mat);
-				//for (int kk = 0; kk<(*groups)[i].size(); kk++)//draw lines
-				//{
-				//	Point2d p1(lines[(*groups)[i][kk] * 8], lines[(*groups)[i][kk] * 8 + 1]), p2(lines[(*groups)[i][kk] * 8 + 2], lines[(*groups)[i][kk] * 8 + 3]);
-				//	cv::line(ls_mat, p1, p2, Scalar(255, 0, 0), 2);
-				//}
-				//std::cout << "span: " << (span) * 180.0 / M_PI << std::endl;
-				//cv::imshow("sss", ls_mat);
-				//cv::waitKey(0);
-
 				if (span / (M_PI * 2) < 0.25) continue;
 #endif
 
 				//std::cout << Ainv << std::endl;
 				//Mat M = (Mat_<double>(3, 3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
+#if USE_LABEL_MATCH
 				std::vector<int> candidates;
 				for (int j = 0; j < groupsNum; j++)
 				{
@@ -647,6 +634,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 						ellipara.phi = param[4];
 					}
 				}
+#endif // USE_LABEL_MATCH
 #endif
 
                 PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
@@ -786,40 +774,12 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 								span2 = ang1 - ang2;
 							}
 
-							//// only for debug
-							//Mat ls_mat = Mat::zeros(image.rows, image.cols, CV_8UC3);
-							//image.copyTo(ls_mat);
-							//for (int kk = 0; kk<(*groups)[i].size(); kk++)//draw lines
-							//{
-							//	Point2d p1(lines[(*groups)[i][kk] * 8], lines[(*groups)[i][kk] * 8 + 1]), p2(lines[(*groups)[i][kk] * 8 + 2], lines[(*groups)[i][kk] * 8 + 3]);
-							//	cv::line(ls_mat, p1, p2, Scalar(255, 0, 0), 2);
-							//}
-							//for (int kk = 0; kk<(*groups)[j].size(); kk++)//draw lines
-							//{
-							//	Point2d p1(lines[(*groups)[j][kk] * 8], lines[(*groups)[j][kk] * 8 + 1]), p2(lines[(*groups)[j][kk] * 8 + 2], lines[(*groups)[j][kk] * 8 + 3]);
-							//	cv::line(ls_mat, p1, p2, Scalar(0, 255, 0), 2);
-							//}
-
-							//std::cout << lines[(*groups)[i][0] * 8 + 7] << " ; " << lines[(*groups)[j][0] * 8 + 7] << std::endl;
-							//std::cout << (*groups)[i].size() << " ; " << (*groups)[j].size() << std::endl;
-							//std::cout << ellipara.x << " ; " << ellipara.y << " ; " << ellipara.a << " ; " << ellipara.b << " ; " << ellipara.phi << std::endl;
-							//std::cout << Ainv << std::endl;
-
-							//std::cout << lines[(*groups)[i][0] * 8] << " ; " << lines[(*groups)[i][0] * 8 + 1] << std::endl;
-							//std::cout << lines[(*groups)[i][(*groups)[i].size() - 1] * 8 + 2] << " ; " << lines[(*groups)[i][(*groups)[i].size() - 1] * 8 + 3] << std::endl;
-							//std::cout << lines[(*groups)[j][0] * 8] << " ; " << lines[(*groups)[j][0] * 8 + 1] << std::endl;
-							//std::cout << lines[(*groups)[j][(*groups)[j].size() - 1] * 8 + 2] << " ; " << lines[(*groups)[j][(*groups)[j].size() - 1] * 8 + 3] << std::endl;
-
-							//std::cout << "span: " << (span1 + span2) * 180.0 / M_PI << std::endl;
-							//cv::imshow("sss", ls_mat);
-							//cv::waitKey(0);
-
-
 							if ((span1 + span2) / (M_PI * 2) < 0.25) continue;
 #endif
 
 							double allcoverage = span1 + span2;
 
+#if USE_LABEL_MATCH
 							if (allcoverage >= M_4_9_PI)
 							{
 								//std::cout << Ainv << std::endl;
@@ -884,6 +844,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 									}
 								}
 							}
+#endif
 #endif
 							PairGroupNode * node = (PairGroupNode*)malloc(sizeof(PairGroupNode));
 							node->center.x = ellipara.x;

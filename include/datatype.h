@@ -11,8 +11,10 @@
 
 #define MEX_COMPILE 1
 
+// tune this to see if final score drops?
 #define USE_AFFINE_WARP 1
 #define USE_SPAN_CHECK	1
+#define USE_LABEL_MATCH 1
 #define USE_CNSCORE 0
 
 
