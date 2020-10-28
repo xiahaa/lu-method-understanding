@@ -13,8 +13,9 @@
 #include <stdlib.h>
 #include <vector>
 #include "datatype.h"
-
+#include "opencv2\opencv.hpp"
 // contribution from lu
-PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, double * coverages, image_double angles, double distance_tolerance, int specified_polarity);
+PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, double * coverages, 
+	image_double angles, double distance_tolerance, int specified_polarity,cv::Mat &image);
 
 #endif /* gen_init_set_hpp */

@@ -12,7 +12,8 @@
 #define MEX_COMPILE 1
 
 #define USE_AFFINE_WARP 1
-#define USE_CNSCORE 1
+#define USE_SPAN_CHECK	1
+#define USE_CNSCORE 0
 
 
 #ifndef FALSE

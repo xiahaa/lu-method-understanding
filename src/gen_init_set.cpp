@@ -13,6 +13,8 @@
 #include "rect.hpp"
 #include "ellipse_geometry.hpp"
 #include <iostream>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 
 using namespace cv;
 
@@ -463,7 +465,8 @@ char checkCN(const point2d &Q11, const point2d &Q12, const point2d &Q21,
 //返回值 PairedGroupList* list 返回的是初始椭圆集合的数组，长度list->length.
 //切记，该内存在函数内申请，用完该函数记得释放内存，调用函数freePairedSegmentList()进行释放
 
-PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, double * coverages, image_double angles, double distance_tolerance, int specified_polarity)
+PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::vector<std::vector<int>> * groups, 
+	double * coverages, image_double angles, double distance_tolerance, int specified_polarity,cv::Mat &image)
 {
     //加速计算
     //int* lineInliersIndex = (int*)malloc(sizeof(int)*line_num);//如果第i条线段找到了内点，则记录其索引为j = length(supportInliers),即supportInliers.at(j)存着该线段的支持内点,没找到内点的线段对应索引为初始值-1.
@@ -541,10 +544,51 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 				float cphi = cos(Phi);
 				float sphi = sin(Phi);
 				float a[3][3] = { { ellipara.a * cphi, -ellipara.b * sphi, ellipara.x}, \
-									{ ellipara.a * sphi, -ellipara.b * cphi, ellipara.y}, \
+									{ ellipara.a * sphi, ellipara.b * cphi, ellipara.y}, \
 									{ 0, 0, 1} };
 				// this is the affine matrix that warps points back to unit circle
 				Mat Ainv = Mat(3, 3, CV_32F, a).inv();
+
+#if USE_SPAN_CHECK
+				// check coverage span
+				// start point of first LSD
+				float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(0, 2);
+				float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(1, 2);
+				int kk = (*groups)[i].size()-1;
+				// end point of last LSD
+				float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(0, 2);
+				float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+				float ang1 = atan2(y1, x1);
+				ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
+				float ang2 = atan2(y2, x2);
+				ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
+				float span;
+				if (lines[(*groups)[i][0] * 8 + 7] == -1)// counter-clockwise
+				{
+					ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
+					span = ang2 - ang1;
+				}
+				else if (lines[(*groups)[i][0] * 8 + 7] == 1)// clockwise
+				{
+					ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
+					span = ang1 - ang2;
+				}
+
+				//// only for debug
+				//Mat ls_mat = Mat::zeros(image.rows, image.cols, CV_8UC3);
+				//image.copyTo(ls_mat);
+				//for (int kk = 0; kk<(*groups)[i].size(); kk++)//draw lines
+				//{
+				//	Point2d p1(lines[(*groups)[i][kk] * 8], lines[(*groups)[i][kk] * 8 + 1]), p2(lines[(*groups)[i][kk] * 8 + 2], lines[(*groups)[i][kk] * 8 + 3]);
+				//	cv::line(ls_mat, p1, p2, Scalar(255, 0, 0), 2);
+				//}
+				//std::cout << "span: " << (span) * 180.0 / M_PI << std::endl;
+				//cv::imshow("sss", ls_mat);
+				//cv::waitKey(0);
+
+				if (span / (M_PI * 2) < 0.25) continue;
+#endif
+
 				//std::cout << Ainv << std::endl;
 				//Mat M = (Mat_<double>(3, 3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
 				std::vector<int> candidates;
@@ -685,18 +729,99 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 						{
 
 #if USE_AFFINE_WARP
-							double allcoverage = coverages[i] + coverages[j];
+							// check arcs
+							float Phi = ellipara.phi;
+							float cphi = cos(Phi);
+							float sphi = sin(Phi);
+							float a[3][3] = { { ellipara.a * cphi, -ellipara.b * sphi, ellipara.x }, \
+							{ ellipara.a * sphi, ellipara.b * cphi, ellipara.y}, \
+							{ 0, 0, 1} };
+							// this is the affine matrix that warps points back to unit circle
+							Mat Ainv = Mat(3, 3, CV_32F, a).inv();
+
+#if USE_SPAN_CHECK
+							// check coverage span
+							// start point of first LSD
+							float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(0, 2);
+							float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(1, 2);
+							int kk = (*groups)[i].size() - 1;
+							// end point of last LSD
+							float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(0, 2);
+							float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+							float ang1 = atan2(y1, x1);
+							ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
+							float ang2 = atan2(y2, x2);
+							ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
+							float span1;
+							if (lines[(*groups)[i][0] * 8 + 7] == -1)// counter-clockwise
+							{
+								ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
+								span1 = ang2 - ang1;
+							}
+							else if (lines[(*groups)[i][0] * 8 + 7] == 1)// clockwise
+							{
+								ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
+								span1 = ang1 - ang2;
+							}
+
+							x1 = Ainv.at<float>(0, 0) * lines[(*groups)[j][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[j][0] * 8 + 1] + Ainv.at<float>(0, 2);
+							y1 = Ainv.at<float>(1, 0) * lines[(*groups)[j][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[j][0] * 8 + 1] + Ainv.at<float>(1, 2);
+							kk = (*groups)[j].size() - 1;
+							// end point of last LSD
+							x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][kk] * 8 + 3] + Ainv.at<float>(0, 2);
+							y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+							ang1 = atan2(y1, x1);
+							ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
+							ang2 = atan2(y2, x2);
+							ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
+							float span2;
+							if (lines[(*groups)[j][0] * 8 + 7] == -1)// counter-clockwise
+							{
+								ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
+								span2 = ang2 - ang1;
+							}
+							else if (lines[(*groups)[j][0] * 8 + 7] == 1)// clockwise
+							{
+								ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
+								span2 = ang1 - ang2;
+							}
+
+							//// only for debug
+							//Mat ls_mat = Mat::zeros(image.rows, image.cols, CV_8UC3);
+							//image.copyTo(ls_mat);
+							//for (int kk = 0; kk<(*groups)[i].size(); kk++)//draw lines
+							//{
+							//	Point2d p1(lines[(*groups)[i][kk] * 8], lines[(*groups)[i][kk] * 8 + 1]), p2(lines[(*groups)[i][kk] * 8 + 2], lines[(*groups)[i][kk] * 8 + 3]);
+							//	cv::line(ls_mat, p1, p2, Scalar(255, 0, 0), 2);
+							//}
+							//for (int kk = 0; kk<(*groups)[j].size(); kk++)//draw lines
+							//{
+							//	Point2d p1(lines[(*groups)[j][kk] * 8], lines[(*groups)[j][kk] * 8 + 1]), p2(lines[(*groups)[j][kk] * 8 + 2], lines[(*groups)[j][kk] * 8 + 3]);
+							//	cv::line(ls_mat, p1, p2, Scalar(0, 255, 0), 2);
+							//}
+
+							//std::cout << lines[(*groups)[i][0] * 8 + 7] << " ; " << lines[(*groups)[j][0] * 8 + 7] << std::endl;
+							//std::cout << (*groups)[i].size() << " ; " << (*groups)[j].size() << std::endl;
+							//std::cout << ellipara.x << " ; " << ellipara.y << " ; " << ellipara.a << " ; " << ellipara.b << " ; " << ellipara.phi << std::endl;
+							//std::cout << Ainv << std::endl;
+
+							//std::cout << lines[(*groups)[i][0] * 8] << " ; " << lines[(*groups)[i][0] * 8 + 1] << std::endl;
+							//std::cout << lines[(*groups)[i][(*groups)[i].size() - 1] * 8 + 2] << " ; " << lines[(*groups)[i][(*groups)[i].size() - 1] * 8 + 3] << std::endl;
+							//std::cout << lines[(*groups)[j][0] * 8] << " ; " << lines[(*groups)[j][0] * 8 + 1] << std::endl;
+							//std::cout << lines[(*groups)[j][(*groups)[j].size() - 1] * 8 + 2] << " ; " << lines[(*groups)[j][(*groups)[j].size() - 1] * 8 + 3] << std::endl;
+
+							//std::cout << "span: " << (span1 + span2) * 180.0 / M_PI << std::endl;
+							//cv::imshow("sss", ls_mat);
+							//cv::waitKey(0);
+
+
+							if ((span1 + span2) / (M_PI * 2) < 0.25) continue;
+#endif
+
+							double allcoverage = span1 + span2;
+
 							if (allcoverage >= M_4_9_PI)
 							{
-								// check arcs
-								float Phi = ellipara.phi;
-								float cphi = cos(Phi);
-								float sphi = sin(Phi);
-								float a[3][3] = { { ellipara.a * cphi, -ellipara.b * sphi, ellipara.x }, \
-								{ ellipara.a * sphi, -ellipara.b * cphi, ellipara.y}, \
-								{ 0, 0, 1} };
-								// this is the affine matrix that warps points back to unit circle
-								Mat Ainv = Mat(3, 3, CV_32F, a).inv();
 								//std::cout << Ainv << std::endl;
 								//Mat M = (Mat_<double>(3, 3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
 								std::vector<int> candidates;
