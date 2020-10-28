@@ -394,7 +394,8 @@ int  cluster1DDatas( double * datas, int datas_num, double distance_tolerance, d
     
     //至此，得到了均值漂移初始的initCenters，为一维double数组，长度是init_r_length
     meanShift(datas, datas_num, 1, initCenters, init_r_length, 1, distance_tolerance, 1e-6, 20);//迭代20次
-    
+    // gaussian smoothing the discrete bins
+
     //  cout<<"1D均值漂移后的聚类中心:"<<endl;
     //  for (int  i = 0; i<init_r_length; i++)
     //    cout<<initCenters[i]<<'\t';
@@ -403,6 +404,7 @@ int  cluster1DDatas( double * datas, int datas_num, double distance_tolerance, d
     //聚类
     //千万要注意centers_num是int型指针，++--时要(*centers_num).
     clusterByDistance(initCenters, init_r_length, 1, distance_tolerance/2, 40, centers, centers_num);//控制参数40，最多40个点合成1个点
+	// merge bins whose distance is with a threshold.
     
     //  cout<<"1D距离聚类，去除重复点后的点集:"<<endl;
     //  for (int  i = 0; i<(*centers_num); i++)
@@ -546,7 +548,7 @@ void generateEllipseCandidates( PairGroupList * pairGroupList, double distance_t
         bufferIndexes[i].x = ind;
         for ( int j = 0; j<pairGroupList->length; j++)
         {
-            if ( buffer_temp[j] == i)
+            if ( buffer_temp[j] == i)// if this ellipse belongs to this center
             {
                 addr = ind*2;//切记长短半轴是一组一组寸储的，需要 x 2
                 addr2 = bufferIndexes[i].y*2;

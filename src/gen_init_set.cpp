@@ -447,7 +447,7 @@ char checkCN(const point2d &Q11, const point2d &Q12, const point2d &Q21,
 
 	double cn_score = b11 / a11 * b12 / a12 * b21 / a21 * b22 / a22 * b31 / a31 * b32 / a32;
 
-	if (fabs(cn_score - 1) < 0.8)
+	if (fabs(cn_score - 1) < 1.5)
 		return 1;
 	else
 		return -1;
