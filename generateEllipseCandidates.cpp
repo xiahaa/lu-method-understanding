@@ -225,7 +225,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
        Mat ls_mat = Mat::zeros(imgy,imgx,CV_8UC1);
        for ( int i = 0; i<n ; i++)//draw lines
        {
-           Point2d p1(out[8*i],out[8*i+1]),p2(out[8*i+2],out[8*i+3]);
+           Point2d p1(out[TUPLELENGTH*i],out[TUPLELENGTH*i+1]),p2(out[TUPLELENGTH*i+2],out[TUPLELENGTH*i+3]);
            line(ls_mat,p1,p2,Scalar(255,0,0));
        }
        if(candidates_num > 0)//draw ellipses
@@ -399,7 +399,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 //             image.copyTo(ls_mat);
 //             for ( int i = 0; i<n ; i++)//draw lines
 //             {
-//                 Point2d p1(out[8*i],out[8*i+1]),p2(out[8*i+2],out[8*i+3]);
+//                 Point2d p1(out[TUPLELENGTH*i],out[TUPLELENGTH*i+1]),p2(out[TUPLELENGTH*i+2],out[TUPLELENGTH*i+3]);
 //                 line(ls_mat,p1,p2,Scalar(255,0,0));
 //             }
 //             if(candidates_num > 0)//draw ellipses

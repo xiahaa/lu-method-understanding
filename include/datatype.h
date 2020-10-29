@@ -99,7 +99,15 @@ struct  point5d
     double phi;
 };
 
+#define TUPLELENGTH 8
 
+#define QUAD14	0b00000001
+#define QUAD23	0b00000100
+
+#define QUAD1	0b00000001
+#define QUAD4	0b00000011
+#define QUAD2	0b00000100
+#define QUAD3	0b00001100
 
 /*----------------------------------------------------------------------------*/
 /** Rectangle structure: line segment with width.

@@ -80,9 +80,9 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                 label[currentLine] = 1; //标记该线段已经被分组
                 //head = tail = NULL;
                 bincnt = 0;
-                dir_vec1.x = lines[currentLine*8+4];// tuple-8
-                dir_vec1.y = lines[currentLine*8+5];
-                if ( lines[currentLine*8+7] == 1)//极性为正
+                dir_vec1.x = lines[currentLine*TUPLELENGTH +4];// tuple-8
+                dir_vec1.y = lines[currentLine*TUPLELENGTH +5];
+                if ( lines[currentLine*TUPLELENGTH +7] == 1)//极性为正
                 {
                     //将dir_vec1逆时针旋转45°
                     dir_vec2.x = (dir_vec1.x + dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
@@ -98,8 +98,8 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                     for ( int k = 1; k<=4; k++)//在4x4邻域内搜索
                     {
 						// dirty code.
-                        xx = (int)(lines[currentLine*8+2]*0.8+j*dir_vec1.x+k*dir_vec2.x);// here, 0.8 because of the rescale of the raw image, yes,
-                        yy = (int)(lines[currentLine*8+3]*0.8+j*dir_vec1.y+k*dir_vec2.y);// this is because the tuple8 store the rescaled coordinates, so here needs to times 0.8
+                        xx = (int)(lines[currentLine*TUPLELENGTH +2]*0.8+j*dir_vec1.x+k*dir_vec2.x);// here, 0.8 because of the rescale of the raw image, yes,
+                        yy = (int)(lines[currentLine*TUPLELENGTH +3]*0.8+j*dir_vec1.y+k*dir_vec2.y);// this is because the tuple8 store the rescaled coordinates, so here needs to times 0.8
                         if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//越界			
                             continue;
                         temp = region[yy*imgx+xx];
@@ -135,14 +135,14 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                     }
                 }
 				// dirty code: hard threshold without any explanation
-                if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7] )//待实验调整参数值
+                if ( temp >= 5 && label[xx] == 0 && lines[TUPLELENGTH*xx+7] == lines[TUPLELENGTH*i+7] )//待实验调整参数值
                 {
                     if(group_up_cnt == line_num)
                         error("group ls error2");
                     yy = group_up_cnt-1;//借用yy变量
-                    start_angle = atan2(lines[8*group_up[yy]+5],lines[8*group_up[yy]+4]);
-                    end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
-                    angle_delta = rotateAngle(start_angle,end_angle,(int)lines[8*i+7]);
+                    start_angle = atan2(lines[TUPLELENGTH*group_up[yy]+5],lines[TUPLELENGTH*group_up[yy]+4]);
+                    end_angle = atan2(lines[TUPLELENGTH*xx+5],lines[TUPLELENGTH*xx+4]);
+                    angle_delta = rotateAngle(start_angle,end_angle,(int)lines[TUPLELENGTH*i+7]);
                     if(angle_delta <= M_3_8_PI)//相邻两线段的旋转夹角也需要满足在pi/4内
                     {
                         group_up[group_up_cnt++] = xx;//压入线段
@@ -163,9 +163,9 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                 label[currentLine] = 1; //标记该线段已经被分组
                 //head = tail = NULL;
                 bincnt = 0;
-                dir_vec1.x = -lines[currentLine*8+4];
-                dir_vec1.y = -lines[currentLine*8+5];
-                if ( lines[currentLine*8+7] == 1)//极性相同
+                dir_vec1.x = -lines[currentLine*TUPLELENGTH +4];
+                dir_vec1.y = -lines[currentLine*TUPLELENGTH +5];
+                if ( lines[currentLine*TUPLELENGTH +7] == 1)//极性相同
                 {
                     //将dir_vec1顺时针旋转45°
                     dir_vec2.x = (dir_vec1.x - dir_vec1.y)*0.707106781186548; // sqrt(2)/2 = 0.707106781186548
@@ -180,8 +180,8 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                 for ( int j = 1; j<=4; j++)
                     for ( int k = 1; k<=4; k++)//在4x4邻域内搜索
                     {
-                        xx = (int)(lines[currentLine*8+0]*0.8+j*dir_vec1.x+k*dir_vec2.x);
-                        yy = (int)(lines[currentLine*8+1]*0.8+j*dir_vec1.y+k*dir_vec2.y);
+                        xx = (int)(lines[currentLine*TUPLELENGTH +0]*0.8+j*dir_vec1.x+k*dir_vec2.x);
+                        yy = (int)(lines[currentLine*TUPLELENGTH +1]*0.8+j*dir_vec1.y+k*dir_vec2.y);
                         if(xx < 0 || xx >= imgx || yy < 0 || yy >= imgy)//越界
                             continue;
                         temp = region[yy*imgx+xx];
@@ -216,14 +216,14 @@ void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std
                         xx = votebin[j].x;//借用xx变量
                     }
                 }
-                if ( temp >= 5 && label[xx] == 0 && lines[8*xx+7] == lines[8*i+7])//待实验调整参数值
+                if ( temp >= 5 && label[xx] == 0 && lines[TUPLELENGTH*xx+7] == lines[TUPLELENGTH*i+7])//待实验调整参数值
                 {
                     if(group_down_cnt == line_num)
                         error("group ls error2");
                     yy = group_down_cnt-1;//借用yy变量
-                    start_angle = atan2(lines[8*group_down[yy]+5],lines[8*group_down[yy]+4]);
-                    end_angle = atan2(lines[8*xx+5],lines[8*xx+4]);
-                    angle_delta = rotateAngle(end_angle,start_angle,(int)lines[8*i+7]);//注意此时需要调换一下，因为是从尾部开始搜索
+                    start_angle = atan2(lines[TUPLELENGTH*group_down[yy]+5],lines[TUPLELENGTH*group_down[yy]+4]);
+                    end_angle = atan2(lines[TUPLELENGTH*xx+5],lines[TUPLELENGTH*xx+4]);
+                    angle_delta = rotateAngle(end_angle,start_angle,(int)lines[TUPLELENGTH*i+7]);//注意此时需要调换一下，因为是从尾部开始搜索
                     if(angle_delta < M_3_8_PI)//相邻两线段的旋转夹角也需要满足在pi/4内,pi*3/8 =  66.5°
                     {
                         group_down[group_down_cnt++] = xx; //压入线段
@@ -275,9 +275,9 @@ void calcuGroupCoverage(double * lines, int line_num, std::vector<std::vector<in
         }
         else
         {
-            start_angle = atan2(lines[8*groups[i][0]+5],lines[8*groups[i][0]+4]);
-            end_angle = atan2(lines[8*groups[i][temp]+5],lines[8*groups[i][temp]+4]);
-            coverages[i] = rotateAngle(start_angle,end_angle,(int)lines[8*groups[i][0]+7]);
+            start_angle = atan2(lines[TUPLELENGTH*groups[i][0]+5],lines[TUPLELENGTH*groups[i][0]+4]);
+            end_angle = atan2(lines[TUPLELENGTH*groups[i][temp]+5],lines[TUPLELENGTH*groups[i][temp]+4]);
+            coverages[i] = rotateAngle(start_angle,end_angle,(int)lines[TUPLELENGTH*groups[i][0]+7]);
         }
     }
 }
