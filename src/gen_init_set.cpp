@@ -104,7 +104,7 @@ inline bool regionLimitation( point2d point_g1s, point2d g1s_ls_dir, point2d poi
 
 
 //输入
-//lsd算法检测得到的线段集合lines的数量line_num，return的返回值是line_nums条线段，为一维double型数组lines，长度为8*n，每8个为一组
+//lsd算法检测得到的线段集合lines的数量line_num，return的返回值是line_nums条线段，为一维double型数组lines，长度为TUPLELENGTH*n，每8个为一组
 //存着x1,y1,x2,y2,dx,dy,length,polarity
 //groups: 线段分组，每个组存按照几何分布顺序顺时针或者逆时针存储着线段索引，线段索引范围是0~line_num-1. 这里由于是指针，使用时要注意(*group)
 //first_group_ind、second_group_ind是匹配组队的索引，当提取salient hypothesis时，second_group_ind = -1, fit_matrix2 = NULL.
@@ -154,7 +154,7 @@ bool calcEllipseParametersAndValidate( double * lines, int line_num, std::vector
     //组队中的 first group先进行内点准则验证，并且更新组的支持内点数量
     for ( unsigned int i = 0; i<(*groups)[first_group_ind].size(); i++)
     {
-        addr = (*groups)[first_group_ind][i] * 8; //第first_group_ind分组的第i条线段索引*8
+        addr = (*groups)[first_group_ind][i] * TUPLELENGTH; //第first_group_ind分组的第i条线段索引*TUPLELENGTH
         rec.x1 = lines[addr];
         rec.y1 = lines[addr+1];
         rec.x2 = lines[addr+2];
@@ -265,7 +265,7 @@ bool calcEllipseParametersAndValidate( double * lines, int line_num, std::vector
         return FALSE;
     for ( unsigned int i = 0; i<(*groups)[second_group_ind].size(); i++)
     {
-        addr = (*groups)[second_group_ind][i] * 8; //第first_group_ind分组的第i条线段索引*8
+        addr = (*groups)[second_group_ind][i] * TUPLELENGTH; //第first_group_ind分组的第i条线段索引*TUPLELENGTH
         rec.x1 = lines[addr];
         rec.y1 = lines[addr+1];
         rec.x2 = lines[addr+2];
@@ -455,7 +455,7 @@ char checkCN(const point2d &Q11, const point2d &Q12, const point2d &Q21,
 }
 
 //输入
-//lsd算法检测得到的线段集合lines的数量line_num，return的返回值是line_nums条线段，为一维double型数组lines，长度为8*n，每8个为一组
+//lsd算法检测得到的线段集合lines的数量line_num，return的返回值是line_nums条线段，为一维double型数组lines，长度为TUPLELENGTH*n，每TUPLELENGTH个为一组
 //存着x1,y1,x2,y2,dx,dy,length,polarity
 //groups: 线段分组，每个组存按照几何分布顺序顺时针或者逆时针存储着线段索引，线段索引范围是0~line_num-1
 //coverages: 每个分组的角度覆盖范围0~2pi，如果组里只有1条线段，覆盖角度为0。数组长度等于分组的数量。
@@ -505,10 +505,10 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
         for ( j = 0; j<(*groups)[i].size(); j++)
         {
             //每一条线段有2个端点
-            dataxy[cnt_temp].x = lines[(*groups)[i][j]*8];
-            dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+1];
-            dataxy[cnt_temp].x = lines[(*groups)[i][j]*8+2];
-            dataxy[cnt_temp++].y = lines[(*groups)[i][j]*8+3];
+            dataxy[cnt_temp].x = lines[(*groups)[i][j]* TUPLELENGTH];
+            dataxy[cnt_temp++].y = lines[(*groups)[i][j]* TUPLELENGTH +1];
+            dataxy[cnt_temp].x = lines[(*groups)[i][j]* TUPLELENGTH +2];
+            dataxy[cnt_temp++].y = lines[(*groups)[i][j]* TUPLELENGTH +3];
         }
         calcuFitMatrix(dataxy,cnt_temp, fitMatrixes+i*36);
     }
@@ -526,7 +526,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
         if(coverages[i] >= M_4_9_PI )//当组的覆盖角度>= 4pi/9 = 80°, 我们认为具有很大的显著性，可直接拟合提取
         {
             //加入极性判断,只提取指定极性的椭圆
-            if (specified_polarity == 0 || (lines[(*groups)[i][0]*8+7] == specified_polarity))
+            if (specified_polarity == 0 || (lines[(*groups)[i][0]* TUPLELENGTH +7] == specified_polarity))
             {
                 //显著性大的初始椭圆提取，一定会返回TRUE，因此没必要再判断
                 info = calcEllipseParametersAndValidate(lines,line_num,groups,i,-1,(fitMatrixes+i*36),NULL,angles,distance_tolerance,supportInliersNum,&ellipara);
@@ -550,23 +550,23 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 #if USE_SPAN_CHECK
 				// check coverage span
 				// start point of first LSD
-				float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(0, 2);
-				float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(1, 2);
+				float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * TUPLELENGTH] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * TUPLELENGTH + 1] + Ainv.at<float>(0, 2);
+				float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * TUPLELENGTH] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * TUPLELENGTH + 1] + Ainv.at<float>(1, 2);
 				int kk = (*groups)[i].size()-1;
 				// end point of last LSD
-				float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(0, 2);
-				float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+				float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * TUPLELENGTH + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
+				float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * TUPLELENGTH + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 				float ang1 = atan2(y1, x1);
 				ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
 				float ang2 = atan2(y2, x2);
 				ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
 				float span;
-				if (lines[(*groups)[i][0] * 8 + 7] == -1)// counter-clockwise
+				if (lines[(*groups)[i][0] * TUPLELENGTH + 7] == -1)// counter-clockwise
 				{
 					ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
 					span = ang2 - ang1;
 				}
-				else if (lines[(*groups)[i][0] * 8 + 7] == 1)// clockwise
+				else if (lines[(*groups)[i][0] * TUPLELENGTH + 7] == 1)// clockwise
 				{
 					ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
 					span = ang1 - ang2;
@@ -582,19 +582,20 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 				for (int j = 0; j < groupsNum; j++)
 				{
 					if (j == i) continue;
-					if (lines[(*groups)[i][0] * 8 + 7] != lines[(*groups)[j][0] * 8 + 7]) continue;
+					if (lines[(*groups)[i][0] * TUPLELENGTH + 7] != lines[(*groups)[j][0] * TUPLELENGTH + 7]) continue;
+
 					int validsum = 0;
 					for (int k = 0; k<(*groups)[j].size(); k++)
 					{
-						//std::cout << lines[(*groups)[j][k] * 8] << ";" << lines[(*groups)[j][k] * 8 + 1] << std::endl;
-						//std::cout << lines[(*groups)[j][k] * 8+2] << ";" << lines[(*groups)[j][k] * 8 + 3] << std::endl;
+						//std::cout << lines[(*groups)[j][k] * TUPLELENGTH] << ";" << lines[(*groups)[j][k] * TUPLELENGTH + 1] << std::endl;
+						//std::cout << lines[(*groups)[j][k] * TUPLELENGTH+2] << ";" << lines[(*groups)[j][k] * TUPLELENGTH + 3] << std::endl;
 
 						//每一条线段有2个端点
-						float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[j][k] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[j][k] * 8 + 1] + Ainv.at<float>(0, 2);
-						float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[j][k] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[j][k] * 8 + 1] + Ainv.at<float>(1, 2);
+						float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[j][k] * TUPLELENGTH] + Ainv.at<float>(0, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 1] + Ainv.at<float>(0, 2);
+						float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[j][k] * TUPLELENGTH] + Ainv.at<float>(1, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 1] + Ainv.at<float>(1, 2);
 
-						float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][k] * 8+2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][k] * 8 + 3] + Ainv.at<float>(0, 2);
-						float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][k] * 8+2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][k] * 8 + 3] + Ainv.at<float>(1, 2);
+						float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][k] * TUPLELENGTH +2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
+						float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][k] * TUPLELENGTH +2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 
 						if (fabs(x1*x1 + y1*y1 - 1) < 0.4 && fabs(x2*x2 + y2*y2 - 1) < 0.4)
 							validsum++;
@@ -672,43 +673,43 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 				continue;
 #endif
 			//加入极性判断,只提取指定极性的椭圆
-			if (specified_polarity == 0 || (lines[(*groups)[i][0] * 8 + 7] == specified_polarity))
+			if (specified_polarity == 0 || (lines[(*groups)[i][0] * TUPLELENGTH + 7] == specified_polarity))
 			{
 				//group i 's polarity is the same as group j; and the number of two paired groups should be >= 3.
-				if (lines[(*groups)[i][0] * 8 + 7] == lines[(*groups)[j][0] * 8 + 7] && ((*groups)[i].size() + (*groups)[j].size()) >= 3)
+				if (lines[(*groups)[i][0] * TUPLELENGTH + 7] == lines[(*groups)[j][0] * TUPLELENGTH + 7] && ((*groups)[i].size() + (*groups)[j].size()) >= 3)
 				{
 					ind_start = (*groups)[i][0];//第i组的最开始一条线段索引
 					ind_end = (*groups)[i][(*groups)[i].size() - 1];//第i组的最后一条线段索引
-					pointG1s.x = lines[ind_start * 8];
-					pointG1s.y = lines[ind_start * 8 + 1];
-					g1s_ls_dir.x = lines[ind_start * 8 + 4];
-					g1s_ls_dir.y = lines[ind_start * 8 + 5];
-					pointG1e.x = lines[ind_end * 8 + 2];
-					pointG1e.y = lines[ind_end * 8 + 3];
-					g1e_ls_dir.x = lines[ind_end * 8 + 4];
-					g1e_ls_dir.y = lines[ind_end * 8 + 5];
+					pointG1s.x = lines[ind_start * TUPLELENGTH];
+					pointG1s.y = lines[ind_start * TUPLELENGTH + 1];
+					g1s_ls_dir.x = lines[ind_start * TUPLELENGTH + 4];
+					g1s_ls_dir.y = lines[ind_start * TUPLELENGTH + 5];
+					pointG1e.x = lines[ind_end * TUPLELENGTH + 2];
+					pointG1e.y = lines[ind_end * TUPLELENGTH + 3];
+					g1e_ls_dir.x = lines[ind_end * TUPLELENGTH + 4];
+					g1e_ls_dir.y = lines[ind_end * TUPLELENGTH + 5];
 
 					ind_start = (*groups)[j][0];//第j组的最开始一条线段索引
 					ind_end = (*groups)[j][(*groups)[j].size() - 1];//第j组的最后一条线段索引
-					pointG2s.x = lines[ind_start * 8];
-					pointG2s.y = lines[ind_start * 8 + 1];
-					g2s_ls_dir.x = lines[ind_start * 8 + 4];
-					g2s_ls_dir.y = lines[ind_start * 8 + 5];
-					pointG2e.x = lines[ind_end * 8 + 2];
-					pointG2e.y = lines[ind_end * 8 + 3];
-					g2e_ls_dir.x = lines[ind_end * 8 + 4];
-					g2e_ls_dir.y = lines[ind_end * 8 + 5];
+					pointG2s.x = lines[ind_start * TUPLELENGTH];
+					pointG2s.y = lines[ind_start * TUPLELENGTH + 1];
+					g2s_ls_dir.x = lines[ind_start * TUPLELENGTH + 4];
+					g2s_ls_dir.y = lines[ind_start * TUPLELENGTH + 5];
+					pointG2e.x = lines[ind_end * TUPLELENGTH + 2];
+					pointG2e.y = lines[ind_end * TUPLELENGTH + 3];
+					g2e_ls_dir.x = lines[ind_end * TUPLELENGTH + 4];
+					g2e_ls_dir.y = lines[ind_end * TUPLELENGTH + 5];
 
-					polarity = lines[ind_start * 8 + 7]; //i,j两组的极性
+					polarity = lines[ind_start * TUPLELENGTH + 7]; //i,j两组的极性
 					if (regionLimitation(pointG1s, g1s_ls_dir, pointG1e, g1e_ls_dir, pointG2s, g2s_ls_dir, pointG2e, g2e_ls_dir, polarity, -3 * distance_tolerance))//都在彼此的线性区域内
 					{
 						//if ( i == 2)
 						//  drawPairGroup(img,lines,(*groups),i,j);
 #if USE_CNSCORE
 						int ind_mid = (*groups)[i][(*groups)[i].size() / 2];
-						point2d pointG1m = point2d(lines[ind_mid * 8], lines[ind_mid * 8]);// chose the mid line's start point
+						point2d pointG1m = point2d(lines[ind_mid * TUPLELENGTH], lines[ind_mid * TUPLELENGTH]);// chose the mid line's start point
 						ind_mid = (*groups)[j][(*groups)[j].size() / 2];
-						point2d pointG2m = point2d(lines[ind_mid * 8], lines[ind_mid * 8]);
+						point2d pointG2m = point2d(lines[ind_mid * TUPLELENGTH], lines[ind_mid * TUPLELENGTH]);
 						// add cn score check
 						if (checkCN(pointG1s, pointG1m, pointG1e, pointG2s, pointG2m, pointG2e) == -1)continue;
 #endif
@@ -730,45 +731,45 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 #if USE_SPAN_CHECK
 							// check coverage span
 							// start point of first LSD
-							float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(0, 2);
-							float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * 8 + 1] + Ainv.at<float>(1, 2);
+							float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[i][0] * TUPLELENGTH] + Ainv.at<float>(0, 1) * lines[(*groups)[i][0] * TUPLELENGTH + 1] + Ainv.at<float>(0, 2);
+							float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[i][0] * TUPLELENGTH] + Ainv.at<float>(1, 1) * lines[(*groups)[i][0] * TUPLELENGTH + 1] + Ainv.at<float>(1, 2);
 							int kk = (*groups)[i].size() - 1;
 							// end point of last LSD
-							float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(0, 2);
-							float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+							float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[i][kk] * TUPLELENGTH + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[i][kk] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
+							float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[i][kk] * TUPLELENGTH + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[i][kk] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 							float ang1 = atan2(y1, x1);
 							ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
 							float ang2 = atan2(y2, x2);
 							ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
 							float span1;
-							if (lines[(*groups)[i][0] * 8 + 7] == -1)// counter-clockwise
+							if (lines[(*groups)[i][0] * TUPLELENGTH + 7] == -1)// counter-clockwise
 							{
 								ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
 								span1 = ang2 - ang1;
 							}
-							else if (lines[(*groups)[i][0] * 8 + 7] == 1)// clockwise
+							else if (lines[(*groups)[i][0] * TUPLELENGTH + 7] == 1)// clockwise
 							{
 								ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
 								span1 = ang1 - ang2;
 							}
 
-							x1 = Ainv.at<float>(0, 0) * lines[(*groups)[j][0] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[j][0] * 8 + 1] + Ainv.at<float>(0, 2);
-							y1 = Ainv.at<float>(1, 0) * lines[(*groups)[j][0] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[j][0] * 8 + 1] + Ainv.at<float>(1, 2);
+							x1 = Ainv.at<float>(0, 0) * lines[(*groups)[j][0] * TUPLELENGTH] + Ainv.at<float>(0, 1) * lines[(*groups)[j][0] * TUPLELENGTH + 1] + Ainv.at<float>(0, 2);
+							y1 = Ainv.at<float>(1, 0) * lines[(*groups)[j][0] * TUPLELENGTH] + Ainv.at<float>(1, 1) * lines[(*groups)[j][0] * TUPLELENGTH + 1] + Ainv.at<float>(1, 2);
 							kk = (*groups)[j].size() - 1;
 							// end point of last LSD
-							x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][kk] * 8 + 3] + Ainv.at<float>(0, 2);
-							y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+							x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][kk] * TUPLELENGTH + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][kk] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
+							y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][kk] * TUPLELENGTH + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][kk] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 							ang1 = atan2(y1, x1);
 							ang1 = ang1 < 0 ? ang1 + M_PI * 2 : ang1;
 							ang2 = atan2(y2, x2);
 							ang2 = ang2 < 0 ? ang2 + M_PI * 2 : ang2;
 							float span2;
-							if (lines[(*groups)[j][0] * 8 + 7] == -1)// counter-clockwise
+							if (lines[(*groups)[j][0] * TUPLELENGTH + 7] == -1)// counter-clockwise
 							{
 								ang2 = ang2 < ang1 ? ang2 + M_PI * 2 : ang2;
 								span2 = ang2 - ang1;
 							}
-							else if (lines[(*groups)[j][0] * 8 + 7] == 1)// clockwise
+							else if (lines[(*groups)[j][0] * TUPLELENGTH + 7] == 1)// clockwise
 							{
 								ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
 								span2 = ang1 - ang2;
@@ -788,19 +789,19 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 								for (int k = 0; k < groupsNum; k++)
 								{
 									if (k == i || k == j) continue;
-									if (lines[(*groups)[i][0] * 8 + 7] != lines[(*groups)[k][0] * 8 + 7]) continue;
+									if (lines[(*groups)[i][0] * TUPLELENGTH + 7] != lines[(*groups)[k][0] * TUPLELENGTH + 7]) continue;
 									int validsum = 0;
 									for (int kk = 0; kk<(*groups)[k].size(); kk++)
 									{
-										//std::cout << lines[(*groups)[j][k] * 8] << ";" << lines[(*groups)[j][k] * 8 + 1] << std::endl;
-										//std::cout << lines[(*groups)[j][k] * 8+2] << ";" << lines[(*groups)[j][k] * 8 + 3] << std::endl;
+										//std::cout << lines[(*groups)[j][k] * TUPLELENGTH] << ";" << lines[(*groups)[j][k] * TUPLELENGTH + 1] << std::endl;
+										//std::cout << lines[(*groups)[j][k] * TUPLELENGTH+2] << ";" << lines[(*groups)[j][k] * TUPLELENGTH + 3] << std::endl;
 
 										//每一条线段有2个端点
-										float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[k][kk] * 8] + Ainv.at<float>(0, 1) * lines[(*groups)[k][kk] * 8 + 1] + Ainv.at<float>(0, 2);
-										float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[k][kk] * 8] + Ainv.at<float>(1, 1) * lines[(*groups)[k][kk] * 8 + 1] + Ainv.at<float>(1, 2);
+										float x1 = Ainv.at<float>(0, 0) * lines[(*groups)[k][kk] * TUPLELENGTH] + Ainv.at<float>(0, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 1] + Ainv.at<float>(0, 2);
+										float y1 = Ainv.at<float>(1, 0) * lines[(*groups)[k][kk] * TUPLELENGTH] + Ainv.at<float>(1, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 1] + Ainv.at<float>(1, 2);
 
-										float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[k][kk] * 8 + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[k][kk] * 8 + 3] + Ainv.at<float>(0, 2);
-										float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[k][kk] * 8 + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[k][kk] * 8 + 3] + Ainv.at<float>(1, 2);
+										float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[k][kk] * TUPLELENGTH + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
+										float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[k][kk] * TUPLELENGTH + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 
 										if (fabs(x1*x1 + y1*y1 - 1) < 0.4 && fabs(x2*x2 + y2*y2 - 1) < 0.4)
 											validsum++;
