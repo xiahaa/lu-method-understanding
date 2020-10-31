@@ -394,7 +394,7 @@ int  cluster1DDatas( double * datas, int datas_num, double distance_tolerance, d
     
     //至此，得到了均值漂移初始的initCenters，为一维double数组，长度是init_r_length
     meanShift(datas, datas_num, 1, initCenters, init_r_length, 1, distance_tolerance, 1e-6, 20);//迭代20次
-    // gaussian smoothing the discrete bins
+    // gaussian smoothing the discrete bins, shift the centers for a certain time
 
     //  cout<<"1D均值漂移后的聚类中心:"<<endl;
     //  for (int  i = 0; i<init_r_length; i++)

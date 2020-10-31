@@ -27,6 +27,7 @@ function [ellipses, posi, L] = ellipseDetectionLU(I, Tac, Tr, specified_polarity
     t1 = clock;
     if verbose == true
         disp(['the time of generating ellipse candidates:',num2str(etime(t1,t0))]);
+        disp(['init ellipse candidates:',num2str(length(candidates))]);
     end
     candidates = candidates';%ellipse candidates matrix Transposition
     if(candidates(1) == 0)%??????????????????
