@@ -1,4 +1,4 @@
-function varargout = ellDetect(im)
+function varargout = ellDetect(im, varargin)
     % parameters
     Tac = 165;
     Tr = 0.6;
@@ -10,72 +10,56 @@ function varargout = ellDetect(im)
     
     % finish traditional ellipse detection
     % try some refinement steps
-    % 1. extract subpixel directly use the fitted ellipse, does not work
-    % very well
-%     figure;
-%     imshow(im);hold on;
-%     for i = 1:size(ellipses,1)
-%         poly = param2ellipse(ellipses(i,:));
-%         points = zeros(361,2);
-%         for j = 0:1:360
-%             theta = j / 360 * 2*pi;
-% %             [subpixedge] = subpixelEdgeWithLeastSquares(rgb2gray(im),
-% ellipses(i,:), poly, theta, -1, -1, 3, false);% does not work at all, 
-%             subpixedge = subpixelEdgeWithLeastSquares_parabola(rgb2gray(im), ellipses(i,:), poly, theta, 2, false);
-%             points(j+1,:) = subpixedge';
-%         end
-%         [new_ellipse,~] = fitEllipse(points(:,1),points(:,2));
-%         simpledrawEllipse(new_ellipse','r');
-%         simpledrawEllipse(ellipses(i,:)','g')
-%     end
 
-    % try use Ahn to refine it, minor changes. not sure if it actually
-    % works.
-%     figure;
-%     imshow(im);hold on;
-%     for i = 1:size(ellipses,1)
-%         points = pcl{i};
-%         new_ellipse = fitAhn( points(:,1), points(:,2), ellipses(i,:)');
-%          simpledrawEllipse(new_ellipse','r');
-%         simpledrawEllipse(ellipses(i,:)','g')
-%     end
-
-
-    % how about use subpixel edges, seems ok
-%     figure
-    addpath(genpath('C:\Users\xiahaa\Documents\DTU\publications\fore-end\ellipse_detection\src\3rdparty\Subpixel Matlab v2.11'));
-    if size(im,3) == 3
-        image = rgb2gray(im);
+    subpixel = 0;
+    othfit = 0;
+    if ~isempty(varargin)
+        for i = 1:length(varargin)
+            if ~isempty(strfind(varargin{i},'Subpixel'))
+                subpixel = 1;
+            end
+            if ~isempty(strfind(varargin{i},'Ahn'))
+                othfit = 1;
+            end
+        end
     end
-%     imshow(image,'InitialMagnification', 'fit');hold on;
-    threshold = 10;
-    edges = subpixelEdges(image, threshold); 
+
     if ellipses(1,3) > ellipses(2,3)
-        id = 1;
-        poly1 = param2ellipse(ellipses(1,:));
+        id = 1;        
     else
         id = 2;
-        poly1 = param2ellipse(ellipses(2,:));
     end
-%     poly2 = param2ellipse(ellipses(2,:));
-    x = edges.x; y = edges.y;
-    xx = x.^2;xy = x.*y;yy = y.^2;
-    f1 = poly1(1).*xx + poly1(2).*xy + poly1(3).*yy + poly1(4).*x + poly1(5).*y + poly1(6);
-%     f2 = poly2(1).*xx + poly2(2).*xy + poly2(3).*yy + poly2(4).*x + poly2(5).*y + poly2(6);
-    valid = abs(f1) < 0.05;% | abs(f2) < 0.01;
-%     edges.x = edges.x(valid);edges.y = edges.y(valid);edges.position = edges.position(valid);
-%     edges.nx = edges.nx(valid);edges.ny = edges.ny(valid);edges.curv = edges.curv(valid);
-%     edges.i0 = edges.i0(valid);edges.i1 = edges.i1(valid);
-%     %% show edges
-%     visEdges(edges, 'showNormals', false);
-%     disp('Done!');
-    points = [edges.x(valid) edges.y(valid)];
-%     new_ellipse = fitAhn( points(:,1), points(:,2), ellipses(id,:)');
-    new_ellipse = fitEllipse( points(:,1), points(:,2));
+    
+    % how about use subpixel edges, seems ok
+    if subpixel == 1
+        poly1 = param2ellipse(ellipses(id,:));
+        addpath(genpath('C:\Users\xiahaa\Documents\DTU\publications\fore-end\ellipse_detection\src\3rdparty\Subpixel Matlab v2.11'));
+        if size(im,3) == 3
+            image = rgb2gray(im);
+        end
+        threshold = 10;
+        edges = subpixelEdges(image, threshold); 
+        x = edges.x; y = edges.y;
+        xx = x.^2;xy = x.*y;yy = y.^2;
+        f1 = poly1(1).*xx + poly1(2).*xy + poly1(3).*yy + poly1(4).*x + poly1(5).*y + poly1(6);
+        valid = abs(f1) < 0.05;% | abs(f2) < 0.01;
+    %     %% show edges
+    %     visEdges(edges, 'showNormals', false);
+        points = [edges.x(valid) edges.y(valid)];
+    else
+        points = pcl{id};
+    end
+    
+    if othfit == 0
+        if subpixel == 0
+            % do nothing
+        else
+            new_ellipse = fitEllipse( points(:,1), points(:,2));
+        end
+    else 
+        new_ellipse = fitAhn( points(:,1), points(:,2), ellipses(id,:)');
+    end
     ellipses(id,:) = new_ellipse;
-%     simpledrawEllipse(new_ellipse','r');
-%     simpledrawEllipse(ellipses(id,:)','g')
-
     % here I want to add a conversion function that both outputs canonical
     % parameters as well as conic parameters in matrix form.
     ellconics = [];
