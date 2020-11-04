@@ -572,7 +572,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 					span = ang1 - ang2;
 				}
 
-				if (span / (M_PI * 2) < 0.25) continue;
+				if (coverages[i] / (M_PI * 2) < SPAN_CHECK_THRESH) continue;
 #endif
 
 				//std::cout << Ainv << std::endl;
@@ -597,7 +597,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 						float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[j][k] * TUPLELENGTH +2] + Ainv.at<float>(0, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
 						float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[j][k] * TUPLELENGTH +2] + Ainv.at<float>(1, 1) * lines[(*groups)[j][k] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 
-						if (fabs(x1*x1 + y1*y1 - 1) < 0.4 && fabs(x2*x2 + y2*y2 - 1) < 0.4)
+						if (fabs(x1*x1 + y1*y1 - 1) < WARP_RADIUS_THRESH && fabs(x2*x2 + y2*y2 - 1) < WARP_RADIUS_THRESH)
 							validsum++;
 					}
 					if (float(validsum) / (*groups)[j].size() > 0.5)
@@ -613,12 +613,15 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 					{
 						cv::Mat refitMatj(6, 6, CV_64F, fitMatrixes + candidates[j] * 36);
 						refitMat = refitMat + refitMatj;
-						isLabelled[candidates[j]] = 1;
 						allcoverage += coverages[candidates[j]];
 					}
 
-					if (allcoverage >= M_3_4_PI)
+					if (allcoverage >= M_PI)
+					{
+						for (int j = 0; j < candidates.size(); j++)
+							isLabelled[j] = 1;
 						isLabelled[i] = 1;
+					}
 					
 					double S[36]; //拟合矩阵S
 					memcpy(S, refitMat.data, sizeof(double) * 36);
@@ -774,11 +777,14 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 								ang1 = ang1 < ang2 ? ang1 + M_PI * 2 : ang1;
 								span2 = ang1 - ang2;
 							}
-
-							if ((span1 + span2) / (M_PI * 2) < 0.25) continue;
+							double allcoverage = coverages[i] + coverages[j];
+							if ((allcoverage) / (M_PI * 2) < SPAN_CHECK_THRESH) continue;
+							
+#else
+							double allcoverage = coverages[i] + coverages[j];
 #endif
 
-							double allcoverage = span1 + span2;
+							
 
 #if USE_LABEL_MATCH
 							if (allcoverage >= M_4_9_PI)
@@ -803,7 +809,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 										float x2 = Ainv.at<float>(0, 0) * lines[(*groups)[k][kk] * TUPLELENGTH + 2] + Ainv.at<float>(0, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 3] + Ainv.at<float>(0, 2);
 										float y2 = Ainv.at<float>(1, 0) * lines[(*groups)[k][kk] * TUPLELENGTH + 2] + Ainv.at<float>(1, 1) * lines[(*groups)[k][kk] * TUPLELENGTH + 3] + Ainv.at<float>(1, 2);
 
-										if (fabs(x1*x1 + y1*y1 - 1) < 0.4 && fabs(x2*x2 + y2*y2 - 1) < 0.4)
+										if (fabs(x1*x1 + y1*y1 - 1) < WARP_RADIUS_THRESH && fabs(x2*x2 + y2*y2 - 1) < WARP_RADIUS_THRESH)
 											validsum++;
 									}
 									if (float(validsum) / (*groups)[k].size() > 0.5)
@@ -820,12 +826,13 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 									{
 										cv::Mat refitMatk(6, 6, CV_64F, fitMatrixes + candidates[k] * 36);
 										refitMat = refitMat + refitMatk;
-										isLabelled[candidates[k]] = 1;
 										allcoverage += coverages[candidates[k]];
 									}
 
-									if (allcoverage >= M_3_4_PI)
+									if (allcoverage >= M_PI)
 									{
+										for (int k = 0; k < candidates.size(); k++)
+											isLabelled[candidates[k]] = 1;
 										isLabelled[i] = 1;
 										isLabelled[j] = 1;
 									}

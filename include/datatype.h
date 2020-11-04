@@ -17,6 +17,8 @@
 #define USE_LABEL_MATCH 1
 #define USE_CNSCORE 0
 
+#define WARP_RADIUS_THRESH 0.05
+
 
 #ifndef FALSE
 #define FALSE 0
@@ -54,6 +56,9 @@
 /** Doubles relative error factor
  */
 #define RELATIVE_ERROR_FACTOR 100.0
+
+#define SPAN_CHECK_THRESH 0.02
+#define LABEL_CHECK_THRESH M_PI
 
 struct point2i //(or pixel).
 {
