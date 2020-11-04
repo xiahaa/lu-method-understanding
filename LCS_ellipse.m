@@ -30,10 +30,16 @@ I = imread(filename);
 
 %% detecting ellipses from real-world images
 % [ellipses, ~, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, specified_polarity);
-[ellipses] = ellipseDetectionLU(I, Tac, Tr, specified_polarity,false);
+[ellipses,~,~,pcl] = ellipseDetectionLU(I, Tac, Tr, specified_polarity,false);
 
 disp('draw detected ellipses');
 drawEllipses(ellipses',I);
+
+for i = 1:length(pcl)
+    points = pcl{i};
+    plot(points(:,1),points(:,2),'ro');
+end
+
 % display
 ellipses(:,5) = ellipses(:,5)./pi*180;
 ellipses
