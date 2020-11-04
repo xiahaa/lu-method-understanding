@@ -37,8 +37,12 @@ drawEllipses(ellipses',I);
 
 for i = 1:length(pcl)
     points = pcl{i};
-    plot(points(:,1),points(:,2),'ro');
+%     plot(points(:,1),points(:,2),'ro');
+    tic
+    ellipses(i,:) = fitAhn( points(:,1), points(:,2), ellipses(i,:));
+    toc
 end
+drawEllipses(ellipses',I);
 
 % display
 ellipses(:,5) = ellipses(:,5)./pi*180;

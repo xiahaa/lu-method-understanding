@@ -19,18 +19,31 @@ alpha = ellipara(5);
 % step size
 lambda=0.1;
 
-for k=1:50
-    J = [];
-    X_new2 = [];
+XY = [Xi';Yi'];
+
+for k=1:20
+    J = zeros(2*length(Xi),5);
+%     X_new2 = [];
+    
+    R = [cos(alpha) sin(alpha);-sin(alpha) cos(alpha)];
+    r = R*(XY-[Xc;Yc]);%2xn
+    x_new = getOrthoPoint(r(1,:),r(2,:),a,b);
+    X_new = R'*x_new + [Xc;Yc];
+    X_new2 = XY - X_new;
+    
     for i=1:length(Xi)
-        r = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
-        x_new = getOrthoPoint(r(1),r(2),a,b);
-        X_new = xy2XY2(x_new, alpha, [Xc;Yc]);
-        xi = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
-        J = [J;calcJacobianMatrix(a,b,x_new(1),x_new(2),alpha,xi(1),xi(2))];
-        X_new2 = [X_new2; [Xi(i);Yi(i)]-X_new];
+%         r = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
+%         X_new = xy2XY2(x_new, alpha, [Xc;Yc]);
+%         xi = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
+        J(i*2-1:i*2,:) = calcJacobianMatrix(a,b,x_new(1),x_new(2),alpha,r(1,i),r(2,i));
+%         X_new2 = [X_new2; [Xi(i);Yi(i)]-X_new];
     end
-    r=-pinv(J) * X_new2;
+    r=-pinv(J) * X_new2(:);
+    
+    if norm(lambda*r)<1e-6
+        break;
+    end
+    
     % update 
     Xc=Xc-lambda*r(1);
     Yc=Yc-lambda*r(2);
@@ -54,18 +67,7 @@ B4 = [b * (a^2-x^2);-2 * b * x * (yi-y)];
 B5 = [(a^2-b^2) * x * y; (a^2-b^2) * (x^2 - y^2 - x * xi + y * yi)];
 B = [B1 B2 B3 B4 B5];
 Qk = [b^2 * x a^2*y; (a^2-b^2)*y+b^2*yi (a^2-b^2)*x-a^2*xi];
-r = pinv(R)*pinv(Qk)*B;
-end
-
-function r = XY2xy(X, alpha, Xc)
-%XY2XY Transforms ellipse that it is symmetric to x- and y-axis
-%
-% AUTHOR Sebastian Dingler <s.dingler@gmail.com>
-%        Karlsruhe Institute of Technology (KIT), Germany
-%
-% DATE   22.12.2014
-R = [cos(alpha) sin(alpha);-sin(alpha) cos(alpha)];
-r = R*(X-Xc);
+r = (R)'*pinv(Qk)*B;
 end
 
 function r = getOrthoPoint(xi, yi, a, b)
@@ -80,33 +82,29 @@ function r = getOrthoPoint(xi, yi, a, b)
 %
 % DATE   22.12.2014
 
-%Orthogonal contacting point on ellipse
-xk1 = ([xi;yi]*a*b)/sqrt(b^2*xi^2+a^2*yi^2);
-if abs(xi)<a
-    xk2=[xi;sign(yi)*(b/a)*sqrt(a^2-xi^2)];
-else
-    xk2=[sign(xi)*a;0];
-end
+    %Orthogonal contacting point on ellipse
+    xk1 = ([xi;yi].*a*b)./sqrt(b^2.*xi.^2+a^2.*yi.^2);
+    id = abs(xi) < a;
+    xk2 = zeros(2,size(xi,2));
+    xk2(:,id) = [xi(id);sign(yi(id)).*(b/a).*sqrt(a^2-xi(id).^2)];
+    xk2(:,~id) = [sign(xi(~id)).*a;zeros(1,sum(~id))];
 
-x_e = 0.5*(xk1+xk2); % x_0
-for i=1:4
-    x = x_e(1);
-    y = x_e(2);
-    Qk = [b^2*x a^2*y;(a^2-b^2)*y+b^2*yi (a^2-b^2)*x-a^2*xi];
-    fk = [0.5*(a^2*y^2+b^2*x^2-a^2*b^2);b^2*x*(yi-y)-a^2*y*(xi-x)];
-    x_e = x_e-pinv(Qk)*fk;
-end
-r = x_e;
-end
+    % if abs(xi)<a
+    %     xk2=[xi;sign(yi)*(b/a)*sqrt(a^2-xi^2)];
+    % else
+    %     xk2=[sign(xi)*a;0];
+    % end
 
-function r = xy2XY2(x, alpha, Xc)
-%XY2XY2 Rotates ellipse back (inverse function of XY2xy.m)
-%
-% AUTHOR Sebastian Dingler <s.dingler@gmail.com>
-%        Karlsruhe Institute of Technology (KIT), Germany
-%
-% DATE   22.12.2014
-R = [cos(alpha) sin(alpha);-sin(alpha) cos(alpha)];
-r = pinv(R)*x+Xc;
+    x_e = 0.5*(xk1+xk2); % x_0
+    r = x_e;
+    x = x_e(1,:);
+    y = x_e(2,:);
+    for j = 1:size(xk1,2)
+        for i=1:4
+            Qk = [b^2*x(j) a^2*y(j);(a^2-b^2)*y(j)+b^2*yi(j) (a^2-b^2)*x(j)-a^2*xi(j)];
+            fk = [0.5*(a^2*y(j)^2+b^2*x(j)^2-a^2*b^2);b^2*x(j)*(yi(j)-y(j))-a^2*y(j)*(xi(j)-x(j))];
+            r(:,j) = x_e(:,j)-pinv(Qk)*fk;
+        end
+    end
 end
 
