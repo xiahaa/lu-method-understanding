@@ -8,6 +8,8 @@ function varargout = ellDetect(im, varargin)
     % [ellipses, ~, posi] = ellipseDetectionByArcSupportLSs(I, Tac, Tr, specified_polarity);
     [ellipses,~,~,pcl] = ellipseDetectionLU(im, Tac, Tr, specified_polarity,false);
     
+    
+    
     % finish traditional ellipse detection
     % try some refinement steps
 
@@ -24,42 +26,50 @@ function varargout = ellDetect(im, varargin)
         end
     end
 
-    if ellipses(1,3) > ellipses(2,3)
-        id = 1;        
-    else
-        id = 2;
-    end
-    
-    % how about use subpixel edges, seems ok
-    if subpixel == 1
-        poly1 = param2ellipse(ellipses(id,:));
-        addpath(genpath('C:\Users\xiahaa\Documents\DTU\publications\fore-end\ellipse_detection\src\3rdparty\Subpixel Matlab v2.11'));
-        if size(im,3) == 3
-            image = rgb2gray(im);
-        end
-        threshold = 10;
-        edges = subpixelEdges(image, threshold); 
-        x = edges.x; y = edges.y;
-        xx = x.^2;xy = x.*y;yy = y.^2;
-        f1 = poly1(1).*xx + poly1(2).*xy + poly1(3).*yy + poly1(4).*x + poly1(5).*y + poly1(6);
-        valid = abs(f1) < 0.05;% | abs(f2) < 0.01;
-    %     %% show edges
-    %     visEdges(edges, 'showNormals', false);
-        points = [edges.x(valid) edges.y(valid)];
-    else
-        points = pcl{id};
-    end
-    
-    if othfit == 0
-        if subpixel == 0
-            % do nothing
+    if ~isempty(ellipses)
+        if size(ellipses,1) == 2
+            if ellipses(1,3) > ellipses(2,3)
+                id = 1;        
+            else
+                id = 2;
+            end
         else
-            new_ellipse = fitEllipse( points(:,1), points(:,2));
+            id = 1;
         end
-    else 
-        new_ellipse = fitAhn( points(:,1), points(:,2), ellipses(id,:)');
+    
+        % how about use subpixel edges, seems ok
+        if subpixel == 1
+            poly1 = param2ellipse(ellipses(id,:));
+            addpath(genpath('C:\Users\xiahaa\Documents\DTU\publications\fore-end\ellipse_detection\src\3rdparty\Subpixel Matlab v2.11'));
+            if size(im,3) == 3
+                image = rgb2gray(im);
+            end
+            threshold = 10;
+            edges = subpixelEdges(image, threshold); 
+            rmpath(genpath('C:\Users\xiahaa\Documents\DTU\publications\fore-end\ellipse_detection\src\3rdparty\Subpixel Matlab v2.11'));
+            x = edges.x; y = edges.y;
+            xx = x.^2;xy = x.*y;yy = y.^2;
+            f1 = poly1(1).*xx + poly1(2).*xy + poly1(3).*yy + poly1(4).*x + poly1(5).*y + poly1(6);
+            valid = abs(f1) < 0.05;% | abs(f2) < 0.01;
+        %     %% show edges
+        %     visEdges(edges, 'showNormals', false);
+            points = [edges.x(valid) edges.y(valid)];
+        else
+            points = pcl{id};
+        end
+    
+        if othfit == 0
+            if subpixel == 0
+                % do nothing
+            else
+                new_ellipse = fitEllipse( points(:,1), points(:,2));
+                ellipses(id,:) = new_ellipse;
+            end
+        else 
+            new_ellipse = fitAhn( points(:,1), points(:,2), ellipses(id,:)');
+            ellipses(id,:) = new_ellipse;
+        end
     end
-    ellipses(id,:) = new_ellipse;
     % here I want to add a conversion function that both outputs canonical
     % parameters as well as conic parameters in matrix form.
     ellconics = [];
