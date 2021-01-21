@@ -35,7 +35,7 @@ for k=1:20
 %         r = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
 %         X_new = xy2XY2(x_new, alpha, [Xc;Yc]);
 %         xi = XY2xy([Xi(i);Yi(i)],alpha,[Xc;Yc]);
-        J(i*2-1:i*2,:) = calcJacobianMatrix(a,b,x_new(1),x_new(2),alpha,r(1,i),r(2,i));
+        J(i*2-1:i*2,:) = calcJacobianMatrix(a,b,x_new(1,i),x_new(2,i),alpha,r(1,i),r(2,i));
 %         X_new2 = [X_new2; [Xi(i);Yi(i)]-X_new];
     end
     r=-pinv(J) * X_new2(:);
