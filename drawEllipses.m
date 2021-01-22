@@ -39,7 +39,7 @@ for i=1:size(ellipses_para,2)
     x=x0+Semi_major*cos(Phi)*cos(th)-Semi_minor*sin(Phi)*sin(th);
     y=y0+Semi_minor*cos(Phi)*sin(th)+Semi_major*sin(Phi)*cos(th);   
     
-    plot(x,y,'r', 'LineWidth',2);
+    plot(x,y,'g', 'LineWidth',2);
 end
 if ~isempty(im)
 axis on; set(gca,'XTick',[],'YTick',[]);axis ij;axis equal;axis([0 size_im(2) 0 size_im(1)]);

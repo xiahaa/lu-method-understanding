@@ -14,8 +14,8 @@ function []  = LCS_ellipse()
 close all;
 
 %image path
-filename = './pics/35.jpg';
-% filename = '/Volumes/document/fore-end/ellipse_detection/data/test_data/sample01.jpg';
+% filename = './pics/35.jpg';
+filename =  'D:/dtu/aamed_ellipse_datasets/Smartphone Images - Dataset #2/images/07_00139.bmp';
 
 % parameters
 Tac = 165;
