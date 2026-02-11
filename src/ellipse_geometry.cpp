@@ -17,7 +17,7 @@
 #include <stdio.h>
 #include <cstring>
 
-#ifdef MEX_COMPILE
+#if MEX_COMPILE
     //#include "lapack.h"  //matlab - not needed
 #else
     #ifdef __APPLE__
@@ -25,20 +25,15 @@
         //#include <clapack.h>
     #else
         #include <lapacke.h>  // LAPACK C interface
-        // Declare Fortran LAPACK functions
-        extern "C" {
-            void dggev_(char* jobvl, char* jobvr, int* n, double* a, int* lda,
-                       double* b, int* ldb, double* alphar, double* alphai,
-                       double* beta, double* vl, int* ldvl, double* vr, int* ldvr,
-                       double* work, int* lwork, int* info);
-        }
-        // Wrapper without underscore
-        inline void dggev(char* jobvl, char* jobvr, ptrdiff_t* n, double* a, ptrdiff_t* lda,
+        // Wrapper without underscore - use system dggev_ declaration from lapack.h
+        static void dggev(char* jobvl, char* jobvr, ptrdiff_t* n, double* a, ptrdiff_t* lda,
                          double* b, ptrdiff_t* ldb, double* alphar, double* alphai,
                          double* beta, double* vl, ptrdiff_t* ldvl, double* vr, ptrdiff_t* ldvr,
                          double* work, ptrdiff_t* lwork, ptrdiff_t* info) {
-            int n_int = *n, lda_int = *lda, ldb_int = *ldb, ldvl_int = *ldvl, ldvr_int = *ldvr, lwork_int = *lwork, info_int;
-            dggev_(jobvl, jobvr, &n_int, a, &lda_int, b, &ldb_int, alphar, alphai, beta, vl, &ldvl_int, vr, &ldvr_int, work, &lwork_int, &info_int);
+            int n_int = *n, lda_int = *lda, ldb_int = *ldb, ldvl_int = *ldvl, ldvr_int = *ldvr, lwork_int = *lwork;
+            int info_int;
+            // Call the system dggev_ with proper signature including string lengths
+            dggev_(jobvl, jobvr, &n_int, a, &lda_int, b, &ldb_int, alphar, alphai, beta, vl, &ldvl_int, vr, &ldvr_int, work, &lwork_int, &info_int, 1, 1);
             *info = info_int;
         }
     #endif
@@ -197,7 +192,7 @@ int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
     char JOBVR = 'V';
     double fitWork[64];
     
-#ifdef MEX_COMPILE
+#if MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
@@ -329,7 +324,7 @@ int fitEllipse2(double * S, double* ellicoeff)
     char JOBVR = 'V';
     double fitWork[64];
     
-#ifdef MEX_COMPILE
+#if MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
