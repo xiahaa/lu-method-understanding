@@ -15,11 +15,13 @@
 using namespace cv;
 
 // Forward declarations from elsd.hpp and other headers
-extern double * mylsd(int * n_out, double * img, int X, int Y, int ** reg_img, int * reg_x, int * reg_y);
+extern double * LineSegmentDetection(int * n_out, double * img, int X, int Y, double scale, double sigma_scale,
+                                     double quant, double ang_th, double log_eps, double density_th, int n_bins,
+                                     int ** reg_img, int * reg_x, int * reg_y);
 extern void groupLSs(double *lines, int lines_num, int *reg, int reg_x, int reg_y, std::vector<std::vector<int>> *groups);
-extern void calcuGroupCoverage(double *lines, int dim, std::vector<std::vector<int>> &groups, double *&coverages);
-extern void calculateGradient2(double *img, int imgx, int imgy, image_double *angles);
-extern void calculateGradient3(double *img, int imgx, int imgy, image_double *angles);
+extern void calcuGroupCoverage(double *lines, int dim, std::vector<std::vector<int>> groups, double *&coverages);
+extern void calculateGradient2(double *img, unsigned int imgx, unsigned int imgy, image_double *angles);
+extern void calculateGradient3(double *img, unsigned int imgx, unsigned int imgy, image_double *angles);
 extern PairGroupList * getValidInitialEllipseSet(double *lines, int linenum, std::vector<std::vector<int>> *groups,
                                                  double *coverages, image_double angles, double distance_tolerance,
                                                  int specified_polarity);
@@ -69,7 +71,17 @@ void generateEllipseCandidatesStandalone(
     int reg_x;
     int reg_y;
     
-    double* out = mylsd(&n, data, imgx, imgy, &reg, &reg_x, &reg_y);
+    // LSD parameters
+    double scale = 0.8;
+    double sigma_scale = 0.6;
+    double quant = 2.0;
+    double ang_th = 22.5;
+    double log_eps = 0.0;
+    double density_th = 0.7;
+    int n_bins = 1024;
+    
+    double* out = LineSegmentDetection(&n, data, imgx, imgy, scale, sigma_scale, quant,
+                                       ang_th, log_eps, density_th, n_bins, &reg, &reg_x, &reg_y);
     groupLSs(out, n, reg, reg_x, reg_y, &groups);
     free(reg);
     calcuGroupCoverage(out, n, groups, coverages);
