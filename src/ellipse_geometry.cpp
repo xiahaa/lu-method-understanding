@@ -15,15 +15,32 @@
 #include <float.h>
 #include <iostream>
 #include <stdio.h>
+#include <cstring>
 
 #ifdef MEX_COMPILE
-    #include "lapack.h"  //matlab
+    //#include "lapack.h"  //matlab - not needed
 #else
     #ifdef __APPLE__
 //#include <Accelerate/Accelerate.h>
-        #include <clapack.h>
+        //#include <clapack.h>
     #else
-        #include "lapack.h"  // make sure you have lapack
+        #include <lapacke.h>  // LAPACK C interface
+        // Declare Fortran LAPACK functions
+        extern "C" {
+            void dggev_(char* jobvl, char* jobvr, int* n, double* a, int* lda,
+                       double* b, int* ldb, double* alphar, double* alphai,
+                       double* beta, double* vl, int* ldvl, double* vr, int* ldvr,
+                       double* work, int* lwork, int* info);
+        }
+        // Wrapper without underscore
+        inline void dggev(char* jobvl, char* jobvr, ptrdiff_t* n, double* a, ptrdiff_t* lda,
+                         double* b, ptrdiff_t* ldb, double* alphar, double* alphai,
+                         double* beta, double* vl, ptrdiff_t* ldvl, double* vr, ptrdiff_t* ldvr,
+                         double* work, ptrdiff_t* lwork, ptrdiff_t* info) {
+            int n_int = *n, lda_int = *lda, ldb_int = *ldb, ldvl_int = *ldvl, ldvr_int = *ldvr, lwork_int = *lwork, info_int;
+            dggev_(jobvl, jobvr, &n_int, a, &lda_int, b, &ldb_int, alphar, alphai, beta, vl, &ldvl_int, vr, &ldvr_int, work, &lwork_int, &info_int);
+            *info = info_int;
+        }
     #endif
 #endif
 //#include "mex.h"

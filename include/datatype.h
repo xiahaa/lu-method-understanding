@@ -9,7 +9,10 @@
 #ifndef datatype_h
 #define datatype_h
 
-#define MEX_COMPILE 1
+// Set to 0 for standalone C++ build, 1 for MEX compilation
+#ifndef MEX_COMPILE
+#define MEX_COMPILE 0
+#endif
 
 // tune this to see if final score drops?
 #define USE_AFFINE_WARP 1

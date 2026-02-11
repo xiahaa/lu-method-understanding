@@ -50,6 +50,8 @@ add_executable(ellipse_detector
 target_link_libraries(ellipse_detector
     ${OpenCV_LIBS}
     Eigen3::Eigen
+    lapack
+    blas
 )
 
 # Install
