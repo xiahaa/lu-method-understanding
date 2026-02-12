@@ -37,7 +37,7 @@ echo ""
 echo "Step 3: Running MATLAB ellipse detection test..."
 if command -v matlab &> /dev/null; then
     cd tests
-    matlab -nodisplay -nosplash -nodesktop -r "try; test_matlab_detection; catch ME; disp(ME.message); exit(1); end; exit(0);"
+    matlab -nodisplay -nosplash -nodesktop -r "try; test_matlab_detection; catch ME; disp('Error occurred:'); disp(getReport(ME)); exit(1); end; exit(0);"
     cd ..
     echo ""
     

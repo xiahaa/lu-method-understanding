@@ -71,6 +71,14 @@ def ellipse_distance(e1, e2):
 
 def match_ellipses(matlab_ellipses, cpp_ellipses, threshold=10.0):
     """Match ellipses between MATLAB and C++ results."""
+    # Weights for combining different distance metrics into total distance
+    # Position is weighted most heavily (1.0) as it's the most reliable indicator
+    # Axes differences are less critical (0.1 weight) due to fitting variations
+    # Angle differences are also less critical (0.1 weight) and symmetric at 180°
+    POSITION_WEIGHT = 1.0
+    AXES_WEIGHT = 0.1
+    ANGLE_WEIGHT = 0.1
+    
     matches = []
     unmatched_matlab = list(range(len(matlab_ellipses)))
     unmatched_cpp = list(range(len(cpp_ellipses)))
@@ -83,7 +91,9 @@ def match_ellipses(matlab_ellipses, cpp_ellipses, threshold=10.0):
         for j in unmatched_cpp:
             e_cpp = cpp_ellipses[j]
             dist = ellipse_distance(e_matlab, e_cpp)
-            total_dist = dist['position'] + dist['axes'] * 0.1 + dist['angle'] * 0.1
+            total_dist = (dist['position'] * POSITION_WEIGHT + 
+                         dist['axes'] * AXES_WEIGHT + 
+                         dist['angle'] * ANGLE_WEIGHT)
             
             if total_dist < best_distance and dist['position'] < threshold:
                 best_distance = total_dist
@@ -98,6 +108,11 @@ def match_ellipses(matlab_ellipses, cpp_ellipses, threshold=10.0):
 
 def compare_ellipses(matlab_file, cpp_file, verbose=True):
     """Compare ellipse detection results."""
+    # Threshold for considering partial matches as acceptable
+    # 80% means at least 80% of ellipses from the larger set must match
+    # This allows for minor differences in edge case detections
+    PARTIAL_MATCH_THRESHOLD = 0.8
+    
     print("=" * 70)
     print("Ellipse Detection Comparison: MATLAB vs C++")
     print("=" * 70)
@@ -184,7 +199,7 @@ def compare_ellipses(matlab_file, cpp_file, verbose=True):
     elif len(matches) > 0:
         match_ratio = len(matches) / max(len(matlab_ellipses), len(cpp_ellipses))
         print(f"⚠ Partial match: {match_ratio*100:.1f}% of ellipses matched")
-        return match_ratio > 0.8  # Consider > 80% match as success
+        return match_ratio > PARTIAL_MATCH_THRESHOLD
     else:
         print("✗ No ellipses matched between implementations")
         return False

@@ -31,7 +31,7 @@ def test_read_ellipses():
         assert ellipses is not None, "Failed to read ellipses"
         assert len(ellipses) == 2, f"Expected 2 ellipses, got {len(ellipses)}"
         assert abs(ellipses[0]['x'] - 100.5) < 0.01, "X coordinate mismatch"
-        assert abs(ellipses[0]['a'] - 50.2) < 0.01, "Semi-major axis mismatch"
+        assert abs(ellipses[0]['a'] - 50.2) < 0.01, "Axis 'a' mismatch"
         print("✓ CSV reading test passed")
         return True
     finally:
