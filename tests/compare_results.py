@@ -10,6 +10,12 @@ import sys
 import csv
 from math import sqrt, fabs
 
+# Threshold for considering partial matches as acceptable
+# 80% means at least 80% of ellipses from the larger set must match
+# This allows for minor differences in edge case detections while still
+# validating that the implementations are largely consistent
+PARTIAL_MATCH_THRESHOLD = 0.8
+
 def normalize_angle(angle):
     """Normalize angle to [0, 360) range."""
     while angle < 0:
@@ -108,11 +114,6 @@ def match_ellipses(matlab_ellipses, cpp_ellipses, threshold=10.0):
 
 def compare_ellipses(matlab_file, cpp_file, verbose=True):
     """Compare ellipse detection results."""
-    # Threshold for considering partial matches as acceptable
-    # 80% means at least 80% of ellipses from the larger set must match
-    # This allows for minor differences in edge case detections
-    PARTIAL_MATCH_THRESHOLD = 0.8
-    
     print("=" * 70)
     print("Ellipse Detection Comparison: MATLAB vs C++")
     print("=" * 70)
