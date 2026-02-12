@@ -12,6 +12,7 @@
 #include <math.h>
 #include <float.h>
 #include <vector>
+#include <cstring>
 #include "utils.hpp"
 
 //==============================================================================

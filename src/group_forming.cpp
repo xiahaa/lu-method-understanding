@@ -10,6 +10,7 @@
 #include "datatype.h"
 #include "utils.hpp"
 #include <math.h>
+#include <cstring>
 
 /*----------------------------------------------------------------------------*/
 //输入：

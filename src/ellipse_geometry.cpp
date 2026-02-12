@@ -15,15 +15,27 @@
 #include <float.h>
 #include <iostream>
 #include <stdio.h>
+#include <cstring>
 
-#ifdef MEX_COMPILE
-    #include "lapack.h"  //matlab
+#if MEX_COMPILE
+    //#include "lapack.h"  //matlab - not needed
 #else
     #ifdef __APPLE__
 //#include <Accelerate/Accelerate.h>
-        #include <clapack.h>
+        //#include <clapack.h>
     #else
-        #include "lapack.h"  // make sure you have lapack
+        #include <lapacke.h>  // LAPACK C interface
+        // Wrapper without underscore - use system dggev_ declaration from lapack.h
+        static void dggev(char* jobvl, char* jobvr, ptrdiff_t* n, double* a, ptrdiff_t* lda,
+                         double* b, ptrdiff_t* ldb, double* alphar, double* alphai,
+                         double* beta, double* vl, ptrdiff_t* ldvl, double* vr, ptrdiff_t* ldvr,
+                         double* work, ptrdiff_t* lwork, ptrdiff_t* info) {
+            int n_int = *n, lda_int = *lda, ldb_int = *ldb, ldvl_int = *ldvl, ldvr_int = *ldvr, lwork_int = *lwork;
+            int info_int;
+            // Call the system dggev_ with proper signature including string lengths
+            dggev_(jobvl, jobvr, &n_int, a, &lda_int, b, &ldb_int, alphar, alphai, beta, vl, &ldvl_int, vr, &ldvr_int, work, &lwork_int, &info_int, 1, 1);
+            *info = info_int;
+        }
     #endif
 #endif
 //#include "mex.h"
@@ -180,7 +192,7 @@ int fitEllipse(point2d* dataxy, int datanum, double* ellipara)
     char JOBVR = 'V';
     double fitWork[64];
     
-#ifdef MEX_COMPILE
+#if MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
@@ -312,7 +324,7 @@ int fitEllipse2(double * S, double* ellicoeff)
     char JOBVR = 'V';
     double fitWork[64];
     
-#ifdef MEX_COMPILE
+#if MEX_COMPILE
     ptrdiff_t fitN = 6;
     ptrdiff_t workLen = 64;
     ptrdiff_t info;
