@@ -1,1 +1,33 @@
 build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test result files (keep test images, exclude result CSVs and visualizations)
+tests/test_data/matlab_results.csv
+tests/test_data/cpp_results.csv
+tests/test_data/matlab_detection_result.png
+tests/test_data/cpp_detection_result.png
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MATLAB auto-generated files
+*.asv
+*.m~
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary files
+*.tmp
+*.log
+

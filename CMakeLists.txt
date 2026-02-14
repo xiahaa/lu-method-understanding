@@ -56,3 +56,25 @@ target_link_libraries(ellipse_detector
 
 # Install
 install(TARGETS ellipse_detector DESTINATION bin)
+
+# Test executables
+add_executable(create_test_image
+    tests/create_test_image.cpp
+)
+
+add_executable(test_cpp_detection
+    tests/test_cpp_detection.cpp
+    ${ELLIPSE_SOURCES}
+)
+
+# Link libraries for test executables
+target_link_libraries(create_test_image
+    ${OpenCV_LIBS}
+)
+
+target_link_libraries(test_cpp_detection
+    ${OpenCV_LIBS}
+    Eigen3::Eigen
+    lapack
+    blas
+)

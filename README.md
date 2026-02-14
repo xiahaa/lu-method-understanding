@@ -116,6 +116,22 @@ Ellipse parameters are output in the format: (x, y, a, b, φ)
 - b: Semi-minor axis  
 - φ: Orientation angle in degrees
 
+## Testing
+
+A comprehensive test suite is available to compare results between MATLAB and C++ implementations:
+
+```bash
+# Run automated test suite
+./tests/run_tests.sh
+
+# Or run individual tests
+./build/create_test_image
+./build/test_cpp_detection
+python3 tests/compare_results.py
+```
+
+See [tests/README.md](tests/README.md) for detailed testing documentation.
+
 ## References
 
 Lu, C., Xia, S., Shao, M., & Fu, Y. (2019). Arc-support line segments revisited: An efficient high-quality ellipse detection. IEEE Transactions on Image Processing, 29, 768-781.
