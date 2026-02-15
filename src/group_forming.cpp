@@ -7,10 +7,14 @@
 // done
 
 #include "group_forming.hpp"
+#include "grouping_graph_solver.hpp"
 #include "datatype.h"
 #include "utils.hpp"
 #include <math.h>
 #include <cstring>
+#include <cstdlib>
+#include <iostream>
+#include <string>
 
 /*----------------------------------------------------------------------------*/
 //输入：
@@ -48,6 +52,26 @@ inline double rotateAngle(double start_angle, double end_angle, int polarity)
 // section III-A, done， bug exist, votebin needs to be set to zero each time for a valid search, potential bug, but not that often met
 void groupLSs(double *lines, int line_num, int * region, int imgx, int imgy, std::vector<std::vector<int>> * groups)
 {
+    const char* backend = std::getenv("LU_GROUPING_BACKEND");
+    if (backend != NULL && std::string(backend) == "grouping_graph_solver")
+    {
+        (void)region;
+        const char* opt_env = std::getenv("LU_GROUPING_OPTIMIZER");
+        std::string optimizer = (opt_env != NULL) ? std::string(opt_env) : std::string("multicut");
+        GroupingRuntimeBreakdown rt;
+        GroupingErrorBreakdown eb;
+        groupLSsGraphSolver(lines, line_num, imgx, imgy, groups, optimizer, &rt, &eb);
+        std::cout << "[grouping_graph_solver] optimizer=" << optimizer
+                  << " runtime_ms(feature=" << rt.feature_ms
+                  << ", graph=" << rt.graph_build_ms
+                  << ", opt=" << rt.optimization_ms
+                  << ", total=" << rt.total_ms << ")"
+                  << " error(attractive_cut=" << eb.attractive_cut_error
+                  << ", repulsive_join=" << eb.repulsive_join_error
+                  << ", total=" << eb.total_energy << ")" << std::endl;
+        return;
+    }
+
     if(line_num == 0)
     {
         groups = NULL;

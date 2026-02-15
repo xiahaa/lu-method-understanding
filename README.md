@@ -83,6 +83,21 @@ cmake --build . --config Release
   - -1: Detect ellipses with negative polarity only
   - 0: Detect all ellipses
 
+### Grouping backend switch (AAMED/LU interface-compatible)
+
+By default, the original LU arc grouping code is used. You can switch to the graph-based grouping backend without changing the pipeline interface:
+
+```bash
+export LU_GROUPING_BACKEND=grouping_graph_solver
+export LU_GROUPING_OPTIMIZER=multicut   # or greedy
+# optional manual weight calibration for 5 pairwise features:
+# endpoint proximity, tangential continuity, curvature compatibility,
+# shared-center prior, local fitting gain
+export LU_GROUPING_EDGE_WEIGHTS=1.0,0.9,0.6,0.55,0.7
+```
+
+The graph solver prints runtime decomposition (`feature`, `graph`, `opt`, `total` in ms) and error decomposition (`attractive_cut`, `repulsive_join`, `total`) to show optimization overhead is controlled.
+
 ## Converted MATLAB Functions
 
 The following MATLAB functions have been converted to C++:
