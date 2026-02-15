@@ -17,12 +17,18 @@ void ellipseDetectionLU(
     std::vector<point5d>& ellipses,
     std::vector<point5d>& posi,
     Mat& L,
-    std::vector<std::vector<Point2d>>& points) {
+    std::vector<std::vector<Point2d>>& points,
+    PipelineLogStats* pipeline_stats) {
     
     double angleCoverage = Tac;  // default 165
     double Tmin = Tr;            // default 0.6
     double unit_dis_tolerance = 2;  // max([2, 0.005 * min([size(I, 1), size(I, 2)])])
     double normal_tolerance = M_PI / 9;  // 20 degrees = pi/9
+
+    if (pipeline_stats != nullptr) {
+        if (pipeline_stats->dataset_label.empty()) pipeline_stats->dataset_label = "unspecified";
+        if (pipeline_stats->scenario_label.empty()) pipeline_stats->scenario_label = "unspecified";
+    }
     
     auto t0 = std::chrono::high_resolution_clock::now();
     
@@ -40,7 +46,7 @@ void ellipseDetectionLU(
     Mat lsimg;
     
     generateEllipseCandidatesStandalone(gray_image, 2, specified_polarity, 
-                                       candidates, edge, normals, lsimg);
+                                       candidates, edge, normals, lsimg, pipeline_stats);
     
     auto t1 = std::chrono::high_resolution_clock::now();
     
@@ -51,12 +57,15 @@ void ellipseDetectionLU(
         std::cout << "Init ellipse candidates: " << candidates.size() << std::endl;
     }
     
-    if (candidates.empty() || (candidates.size() == 1 && candidates[0].x == 0)) {
+    if (candidates.empty()) {
         candidates.clear();
         ellipses.clear();
         posi.clear();
         L = Mat::zeros(I.size(), CV_32S);
         points.clear();
+        if (pipeline_stats != nullptr) {
+            pipeline_stats->final_ellipse_count = 0;
+        }
         return;
     }
     
@@ -79,7 +88,7 @@ void ellipseDetectionLU(
     ellipseDetection(candidates, edge_points, normals, 
                     unit_dis_tolerance, normal_tolerance, Tmin, 
                     angleCoverage, gray_image,
-                    mylabels, labels, ellipses, pcl);
+                    mylabels, labels, ellipses, pcl, pipeline_stats);
     
     if (verbose) {
         auto t2 = std::chrono::high_resolution_clock::now();

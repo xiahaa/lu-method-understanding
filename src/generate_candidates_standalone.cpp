@@ -37,7 +37,8 @@ void generateEllipseCandidatesStandalone(
     std::vector<point5d>& candidates,
     Mat& edge_image,
     std::vector<Point2d>& normals,
-    Mat& lsimg) {
+    Mat& lsimg,
+    PipelineLogStats* pipeline_stats) {
     
     candidates.clear();
     normals.clear();
@@ -83,6 +84,10 @@ void generateEllipseCandidatesStandalone(
     double* out = LineSegmentDetection(&n, data, imgx, imgy, scale, sigma_scale, quant,
                                        ang_th, log_eps, density_th, n_bins, &reg, &reg_x, &reg_y);
     groupLSs(out, n, reg, reg_x, reg_y, &groups);
+    if (pipeline_stats != nullptr) {
+        pipeline_stats->stage_curve.arc_count = n;
+        pipeline_stats->stage_curve.group_count = static_cast<int>(groups.size());
+    }
     free(reg);
     calcuGroupCoverage(out, n, groups, coverages);
     
@@ -99,6 +104,11 @@ void generateEllipseCandidatesStandalone(
     
     pairGroupList = getValidInitialEllipseSet(out, n, &groups, coverages, angles, 
                                              distance_tolerance, specified_polarity);
+
+    if (pipeline_stats != nullptr) {
+        pipeline_stats->stage_curve.validated_count =
+            (pairGroupList != NULL) ? pairGroupList->length : 0;
+    }
     
     if (pairGroupList != NULL) {
         generateEllipseCandidates(pairGroupList, distance_tolerance, candidates_data, &candidates_num);
@@ -116,15 +126,6 @@ void generateEllipseCandidatesStandalone(
         
         freePairGroupList(pairGroupList);
         free(candidates_data);
-    } else {
-        // No candidates found
-        point5d zero_ellipse;
-        zero_ellipse.x = 0;
-        zero_ellipse.y = 0;
-        zero_ellipse.a = 0;
-        zero_ellipse.b = 0;
-        zero_ellipse.phi = 0;
-        candidates.push_back(zero_ellipse);
     }
     
     // Create edge image
