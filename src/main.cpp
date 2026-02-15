@@ -18,14 +18,18 @@ int main(int argc, char** argv) {
     if (argc > 1) {
         filename = argv[1];
     } else {
-        cout << "Usage: " << argv[0] << " <image_path> [Tac] [Tr] [polarity]" << endl;
-        cout << "Example: " << argv[0] << " image.jpg 165 0.6 0" << endl;
+        cout << "Usage: " << argv[0] << " <image_path> [Tac] [Tr] [polarity] [dataset_label] [scenario_label] [stats_json_path]" << endl;
+        cout << "Example: " << argv[0] << " image.jpg 165 0.6 0 DatasetA Occluded output/stats.json" << endl;
         return -1;
     }
     
     if (argc > 2) Tac = atof(argv[2]);
     if (argc > 3) Tr = atof(argv[3]);
     if (argc > 4) specified_polarity = atoi(argv[4]);
+
+    string dataset_label = (argc > 5) ? argv[5] : "default_dataset";
+    string scenario_label = (argc > 6) ? argv[6] : "default_scenario";
+    string stats_output_path = (argc > 7) ? argv[7] : "pipeline_stats.json";
     
     cout << "------read image------" << endl;
     Mat I = imread(filename);
@@ -37,6 +41,7 @@ int main(int argc, char** argv) {
     
     cout << "Image size: " << I.cols << " x " << I.rows << endl;
     cout << "Parameters: Tac=" << Tac << ", Tr=" << Tr << ", polarity=" << specified_polarity << endl;
+    cout << "Dataset=" << dataset_label << ", Scenario=" << scenario_label << endl;
     
     // Detecting ellipses
     cout << "------detecting ellipses------" << endl;
@@ -44,8 +49,12 @@ int main(int argc, char** argv) {
     std::vector<point5d> posi;
     Mat L;
     std::vector<std::vector<Point2d>> pcl;
-    
-    ellipseDetectionLU(I, Tac, Tr, specified_polarity, true, ellipses, posi, L, pcl);
+
+    PipelineLogStats pipeline_stats;
+    pipeline_stats.dataset_label = dataset_label;
+    pipeline_stats.scenario_label = scenario_label;
+
+    ellipseDetectionLU(I, Tac, Tr, specified_polarity, true, ellipses, posi, L, pcl, &pipeline_stats);
     
     cout << "------drawing detected ellipses------" << endl;
     drawEllipses(ellipses, I);
@@ -79,6 +88,9 @@ int main(int argc, char** argv) {
              << phi_deg << endl;
     }
     cout << "The total number of detected ellipses: " << ellipses.size() << endl;
+
+    writePipelineStatsJson(pipeline_stats, stats_output_path);
+    cout << "Pipeline statistics written to: " << stats_output_path << endl;
     
     // Wait for key press
     cout << "Press any key to exit..." << endl;
