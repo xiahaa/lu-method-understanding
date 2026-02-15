@@ -13,8 +13,161 @@
 #include "rect.hpp"
 #include "ellipse_geometry.hpp"
 #include <iostream>
+#include <algorithm>
+#include <cfloat>
+#include <utility>
 
 using namespace cv;
+
+struct PairGatingFeasibleDomain
+{
+    bool valid;
+    double axis_ratio_min;
+    double axis_ratio_max;
+    double eccentricity_max;
+    double center_x;
+    double center_y;
+    double center_drift_ub;
+};
+
+struct PairGatingStats
+{
+    int total_pairs = 0;
+    int rejected_pairs = 0;
+    int passed_pairs = 0;
+    int false_rejects = 0;
+    int fullfit_positive_pairs = 0;
+};
+
+static inline point2d arcCenterDirection(const point2d &ls_dir, double polarity)
+{
+    point2d arc_dir;
+    if (polarity == 1)
+    {
+        arc_dir.x = ls_dir.y;
+        arc_dir.y = -ls_dir.x;
+    }
+    else
+    {
+        arc_dir.x = -ls_dir.y;
+        arc_dir.y = ls_dir.x;
+    }
+    return arc_dir;
+}
+
+static inline bool intersectLines(const point2d &p1, const point2d &d1, const point2d &p2, const point2d &d2, point2d *out)
+{
+    double det = d1.x * d2.y - d1.y * d2.x;
+    if (fabs(det) < 1e-6)
+        return false;
+    point2d delta;
+    delta.x = p2.x - p1.x;
+    delta.y = p2.y - p1.y;
+    double t = (delta.x * d2.y - delta.y * d2.x) / det;
+    out->x = p1.x + t * d1.x;
+    out->y = p1.y + t * d1.y;
+    return true;
+}
+
+static PairGatingFeasibleDomain estimatePairFeasibleDomain(double *lines, std::vector<std::vector<int>> *groups,
+    int i, int j, double distance_tolerance)
+{
+    PairGatingFeasibleDomain domain = { false, 0, 0, 1, 0, 0, DBL_MAX };
+    const std::vector<int> &g1 = (*groups)[i];
+    const std::vector<int> &g2 = (*groups)[j];
+    if (g1.empty() || g2.empty())
+        return domain;
+
+    const int g1_start = g1.front();
+    const int g1_end = g1.back();
+    const int g1_mid = g1[g1.size() / 2];
+    const int g2_start = g2.front();
+    const int g2_end = g2.back();
+    const int g2_mid = g2[g2.size() / 2];
+    const double polarity = lines[g1_start * TUPLELENGTH + 7];
+
+    point2d g1_pts[3] = {
+        { lines[g1_start * TUPLELENGTH], lines[g1_start * TUPLELENGTH + 1] },
+        { lines[g1_end * TUPLELENGTH + 2], lines[g1_end * TUPLELENGTH + 3] },
+        { (lines[g1_mid * TUPLELENGTH] + lines[g1_mid * TUPLELENGTH + 2]) * 0.5,
+          (lines[g1_mid * TUPLELENGTH + 1] + lines[g1_mid * TUPLELENGTH + 3]) * 0.5 }
+    };
+    point2d g2_pts[3] = {
+        { lines[g2_start * TUPLELENGTH], lines[g2_start * TUPLELENGTH + 1] },
+        { lines[g2_end * TUPLELENGTH + 2], lines[g2_end * TUPLELENGTH + 3] },
+        { (lines[g2_mid * TUPLELENGTH] + lines[g2_mid * TUPLELENGTH + 2]) * 0.5,
+          (lines[g2_mid * TUPLELENGTH + 1] + lines[g2_mid * TUPLELENGTH + 3]) * 0.5 }
+    };
+    point2d g1_dirs[3] = {
+        arcCenterDirection(point2d(lines[g1_start * TUPLELENGTH + 4], lines[g1_start * TUPLELENGTH + 5]), polarity),
+        arcCenterDirection(point2d(lines[g1_end * TUPLELENGTH + 4], lines[g1_end * TUPLELENGTH + 5]), polarity),
+        arcCenterDirection(point2d(lines[g1_mid * TUPLELENGTH + 4], lines[g1_mid * TUPLELENGTH + 5]), polarity)
+    };
+    point2d g2_dirs[3] = {
+        arcCenterDirection(point2d(lines[g2_start * TUPLELENGTH + 4], lines[g2_start * TUPLELENGTH + 5]), polarity),
+        arcCenterDirection(point2d(lines[g2_end * TUPLELENGTH + 4], lines[g2_end * TUPLELENGTH + 5]), polarity),
+        arcCenterDirection(point2d(lines[g2_mid * TUPLELENGTH + 4], lines[g2_mid * TUPLELENGTH + 5]), polarity)
+    };
+
+    std::vector<point2d> centers;
+    centers.reserve(9);
+    for (int p = 0; p < 3; ++p)
+    {
+        for (int q = 0; q < 3; ++q)
+        {
+            point2d c;
+            if (intersectLines(g1_pts[p], g1_dirs[p], g2_pts[q], g2_dirs[q], &c))
+                centers.push_back(c);
+        }
+    }
+    if (centers.size() < 3)
+        return domain;
+
+    point2d mean_c = { 0.0, 0.0 };
+    for (size_t k = 0; k < centers.size(); ++k)
+    {
+        mean_c.x += centers[k].x;
+        mean_c.y += centers[k].y;
+    }
+    mean_c.x /= centers.size();
+    mean_c.y /= centers.size();
+
+    double max_center_drift = 0.0;
+    std::vector<point2d> support_points;
+    support_points.reserve(6);
+    support_points.insert(support_points.end(), g1_pts, g1_pts + 3);
+    support_points.insert(support_points.end(), g2_pts, g2_pts + 3);
+    double rmin = DBL_MAX;
+    double rmax = 0.0;
+    for (size_t k = 0; k < centers.size(); ++k)
+    {
+        double drift = hypot(centers[k].x - mean_c.x, centers[k].y - mean_c.y);
+        max_center_drift = std::max(max_center_drift, drift);
+    }
+    for (size_t k = 0; k < support_points.size(); ++k)
+    {
+        double rr = hypot(support_points[k].x - mean_c.x, support_points[k].y - mean_c.y);
+        rmin = std::min(rmin, rr);
+        rmax = std::max(rmax, rr);
+    }
+    if (rmax < 1e-6)
+        return domain;
+
+    domain.axis_ratio_min = std::max(0.0, rmin / rmax);
+    domain.axis_ratio_max = 1.0;
+    domain.eccentricity_max = sqrt(std::max(0.0, 1.0 - domain.axis_ratio_min * domain.axis_ratio_min));
+    domain.center_x = mean_c.x;
+    domain.center_y = mean_c.y;
+    domain.center_drift_ub = max_center_drift;
+
+    const double axis_range = domain.axis_ratio_max - domain.axis_ratio_min;
+    domain.valid = (domain.axis_ratio_min <= domain.axis_ratio_max)
+        && (domain.center_drift_ub <= 12.0 * distance_tolerance)
+        && (domain.axis_ratio_min >= 0.08)
+        && (domain.eccentricity_max <= 0.998)
+        && (axis_range >= 0.02);
+    return domain;
+}
 
 //入参：e1 = (x1,y1,a1,b1,phi1), e2 = (x2,y2,a2,b2,phi2)
 //输出：相等为1，否则为0
@@ -496,6 +649,8 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
     int i,j;
     int cnt_temp,ind_start,ind_end;
     bool info;
+    PairGatingStats gating_stats;
+    std::vector<std::pair<int, int>> gated_rejected_pairs;
     
     //实例化拟合矩阵Si
     point2d * dataxy = (point2d*)malloc(sizeof(point2d)*line_num*2);//申请足够大内存, line_num条线段，共有2line_num个端点
@@ -706,6 +861,15 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 					polarity = lines[ind_start * TUPLELENGTH + 7]; //i,j两组的极性
 					if (regionLimitation(pointG1s, g1s_ls_dir, pointG1e, g1e_ls_dir, pointG2s, g2s_ls_dir, pointG2e, g2e_ls_dir, polarity, -3 * distance_tolerance))//都在彼此的线性区域内
 					{
+                            gating_stats.total_pairs++;
+                            PairGatingFeasibleDomain domain = estimatePairFeasibleDomain(lines, groups, i, j, distance_tolerance);
+                            if (!domain.valid)
+                            {
+                                gating_stats.rejected_pairs++;
+                                gated_rejected_pairs.push_back(std::make_pair(i, j));
+                                continue;
+                            }
+                            gating_stats.passed_pairs++;
 						//if ( i == 2)
 						//  drawPairGroup(img,lines,(*groups),i,j);
 #if USE_CNSCORE
@@ -719,6 +883,7 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 
 						if (calcEllipseParametersAndValidate(lines, line_num, groups, i, j, (fitMatrixes + i * 36), (fitMatrixes + j * 36), angles, distance_tolerance, supportInliersNum, &ellipara))//二次一般方程线性求解，线段的内点支持比例
 						{
+                                gating_stats.fullfit_positive_pairs++;
 
 #if USE_AFFINE_WARP
 							// check arcs
@@ -878,6 +1043,28 @@ PairGroupList * getValidInitialEllipseSet( double * lines, int line_num, std::ve
 			}
 		}
 	}
+    for (size_t ridx = 0; ridx < gated_rejected_pairs.size(); ++ridx)
+    {
+        int gi = gated_rejected_pairs[ridx].first;
+        int gj = gated_rejected_pairs[ridx].second;
+        if (calcEllipseParametersAndValidate(lines, line_num, groups, gi, gj, (fitMatrixes + gi * 36), (fitMatrixes + gj * 36), angles, distance_tolerance, supportInliersNum, &ellipara))
+            gating_stats.false_rejects++;
+    }
+
+    if (gating_stats.total_pairs > 0)
+    {
+        double reduction = gating_stats.rejected_pairs * 1.0 / gating_stats.total_pairs;
+        double recall_loss = 0.0;
+        if ((gating_stats.fullfit_positive_pairs + gating_stats.false_rejects) > 0)
+            recall_loss = gating_stats.false_rejects * 1.0 / (gating_stats.fullfit_positive_pairs + gating_stats.false_rejects);
+        std::cout << "[PairGating] total=" << gating_stats.total_pairs
+                  << ", pass=" << gating_stats.passed_pairs
+                  << ", reject=" << gating_stats.rejected_pairs
+                  << ", reduction=" << reduction
+                  << ", false_reject=" << gating_stats.false_rejects
+                  << ", recall_loss=" << recall_loss << std::endl;
+    }
+
     if(pairlength > 0)
     {
         PairGroupNode *p;
