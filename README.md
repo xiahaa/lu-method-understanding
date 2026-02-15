@@ -132,6 +132,15 @@ python3 tests/compare_results.py
 
 See [tests/README.md](tests/README.md) for detailed testing documentation.
 
+## Optional ML arc-pair reranker
+
+This repository now includes an optional lightweight MLP-based arc-pair scorer in `ml_pairing/`.
+It automatically builds positive/negative arc-pair samples from existing image + GT ellipse data,
+uses geometric and local image features (gradient statistics + edge confidence), and is designed
+for candidate reranking only (not replacing final ellipse geometry fitting).
+
+See [ml_pairing/README.md](ml_pairing/README.md) for training/evaluation commands and rule-vs-ML comparison.
+
 ## References
 
 Lu, C., Xia, S., Shao, M., & Fu, Y. (2019). Arc-support line segments revisited: An efficient high-quality ellipse detection. IEEE Transactions on Image Processing, 29, 768-781.
