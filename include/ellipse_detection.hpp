@@ -4,6 +4,7 @@
 #include <vector>
 #include "opencv2/core/core.hpp"
 #include "datatype.h"
+#include "logging_stats.hpp"
 
 // Compute point normals for an ellipse
 std::vector<cv::Point2d> computePointAngle(const point5d& ellipse, const std::vector<cv::Point2d>& points);
@@ -53,7 +54,8 @@ void ellipseDetection(
     std::vector<int>& mylabels,
     std::vector<int>& labels,
     std::vector<point5d>& ellipses,
-    std::vector<std::vector<cv::Point2d>>& pointcloud);
+    std::vector<std::vector<cv::Point2d>>& pointcloud,
+    PipelineLogStats* pipeline_stats = nullptr);
 
 // Main ellipse detection LU
 void ellipseDetectionLU(
@@ -65,7 +67,8 @@ void ellipseDetectionLU(
     std::vector<point5d>& ellipses,
     std::vector<point5d>& posi,
     cv::Mat& L,
-    std::vector<std::vector<cv::Point2d>>& points);
+    std::vector<std::vector<cv::Point2d>>& points,
+    PipelineLogStats* pipeline_stats = nullptr);
 
 // Draw ellipses on image
 void drawEllipses(const std::vector<point5d>& ellipses, cv::Mat& image);

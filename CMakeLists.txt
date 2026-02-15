@@ -25,6 +25,7 @@ set(ELLIPSE_SOURCES
     src/gen_init_set.cpp
     src/gradient.cpp
     src/group_forming.cpp
+    src/grouping_graph_solver.cpp
     src/image.cpp
     src/nfa.cpp
     src/rect.cpp
@@ -38,6 +39,7 @@ set(ELLIPSE_SOURCES
     src/ellipse_detection_main.cpp
     src/ellipse_detection_lu.cpp
     src/generate_candidates_standalone.cpp
+    src/logging_stats.cpp
 )
 
 # Executable
