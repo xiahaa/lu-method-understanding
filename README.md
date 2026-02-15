@@ -132,6 +132,10 @@ python3 tests/compare_results.py
 
 See [tests/README.md](tests/README.md) for detailed testing documentation.
 
+## Documentation
+
+- [论文与实验重排方案（中文）](PAPER_EXPERIMENT_REORGANIZATION.md)
+
 ## References
 
 Lu, C., Xia, S., Shao, M., & Fu, Y. (2019). Arc-support line segments revisited: An efficient high-quality ellipse detection. IEEE Transactions on Image Processing, 29, 768-781.
